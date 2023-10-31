@@ -37,8 +37,8 @@ class MainMenuScreen extends StatelessWidget {
               angle: -0.05,
               child: SizedBox(
                 height: 800,
-                child: const Text(
-                  'Tawerna',
+                child: Text(
+                  settingsController.playerName.value,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: 'Permanent Marker',
