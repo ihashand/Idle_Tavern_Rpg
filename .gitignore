@@ -15,20 +15,16 @@
 *.iws
 .idea/
 
-# The .vscode folder contains launch configuration and tasks that
-# you configure in VS Code that you might want  include in version control,
-# so this line is commented out by default.
-#.vscode/
+# VSCode related
+.vscode/
 
 # Flutter/Dart/Pub related
 **/doc/api/
-**/ios/Flutter/.last_build_id
-.dart_tool/
-.flutter-plugins
-.flutter-plugins-dependencies
-.packages
-.pub-cache/
-.pub/
+/.dart_tool/
+/.flutter-plugins
+/.flutter-plugins-dependencies
+/.fvm/
+/.pub-cache/
 /build/
 .fvm/
 
@@ -38,7 +34,25 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
-# Android Studio places build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
+# Android Studio and Gradle related
+/android/app/build/
+/android/app/debug/
+/android/app/profile/
+/android/app/release/
+
+# Xcode and iOS related
+/ios/Pods/
+/ios/.symlinks/
+/ios/Flutter/App.framework
+/ios/Flutter/Flutter.framework
+/ios/Flutter/Flutter.podspec
+/ios/Flutter/Generated.xcconfig
+/ios/Flutter/flutter_export_environment.sh
+/ios/Flutter/flutter_assets/
+/ios/Flutter/Generated.xcconfig
+/ios/Flutter/flutter_export_environment.sh
+/ios/Flutter/flutter_assets/
+/ios/Runner.xcodeproj/
+/ios/Runner/GeneratedPluginRegistrant.h
+/ios/Runner/GeneratedPluginRegistrant.m
+/ios/Runner/Runner.xcodeproj/
