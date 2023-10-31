@@ -10,7 +10,6 @@ import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../games_services/games_services.dart';
 import '../settings/settings.dart';
-import '../style/palette.dart';
 import '../style/responsive_screen.dart';
 
 class MainMenuScreen extends StatelessWidget {
@@ -18,14 +17,20 @@ class MainMenuScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final palette = context.watch<Palette>();
     final gamesServicesController = context.watch<GamesServicesController?>();
     final settingsController = context.watch<SettingsController>();
     final audioController = context.watch<AudioController>();
 
     return Scaffold(
-      backgroundColor: palette.backgroundMain,
-      body: ResponsiveScreen(
+        body: Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(
+              "/Users/patrykkrzemien/Documents/GitHub/Idle_Tavern_Rpg/assets/images/menu/backgroundtest.jpeg"),
+          fit: BoxFit.cover, // Dopasuj obraz do całego ekranu
+        ),
+      ),
+      child: ResponsiveScreen(
         mainAreaProminence: 0.45,
         squarishMainArea: Center(
           child: Transform.rotate(
@@ -93,7 +98,7 @@ class MainMenuScreen extends StatelessWidget {
           ],
         ),
       ),
-    );
+    ));
   }
 
   /// Prevents the game from showing game-services-related menu items
