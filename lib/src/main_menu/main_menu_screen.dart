@@ -26,7 +26,7 @@ class MainMenuScreen extends StatelessWidget {
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage(
-                "/Users/patrykkrzemien/Documents/Projekty/Idle_Tavern_Rpg/assets/images/menu/backgroundtest.jpeg"),
+                "assets/images/menu/backgroundtest.jpeg"),
             fit: BoxFit.fill,
           ),
         ),
@@ -37,8 +37,8 @@ class MainMenuScreen extends StatelessWidget {
               angle: -0.05,
               child: SizedBox(
                 height: 800,
-                child: const Text(
-                  'Tawerna',
+                child: Text(
+                  settingsController.playerName.value,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: 'Permanent Marker',

@@ -58,6 +58,14 @@ class SettingsScreen extends StatelessWidget {
                 onSelected: () => settings.toggleMusicOn(),
               ),
             ),
+            ValueListenableBuilder<bool>(
+              valueListenable: settings.graphicModeOn,
+              builder: (context, graphicModeOn, child) => _SettingsLine(
+                'Graphic mode',
+                Icon(graphicModeOn ? Icons.image : Icons.image_not_supported),
+                onSelected: () => settings.toggleGraphicModeOn(),
+              ),
+            ),
             Consumer<InAppPurchaseController?>(
                 builder: (context, inAppPurchase, child) {
               if (inAppPurchase == null) {
