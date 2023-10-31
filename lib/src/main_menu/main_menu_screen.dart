@@ -22,83 +22,90 @@ class MainMenuScreen extends StatelessWidget {
     final audioController = context.watch<AudioController>();
 
     return Scaffold(
-        body: Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(
-              "/Users/patrykkrzemien/Documents/GitHub/Idle_Tavern_Rpg/assets/images/menu/backgroundtest.jpeg"),
-          fit: BoxFit.cover, // Dopasuj obraz do całego ekranu
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(
+                "/Users/patrykkrzemien/Documents/Projekty/Idle_Tavern_Rpg/assets/images/menu/backgroundtest.jpeg"),
+            fit: BoxFit.fill,
+          ),
         ),
-      ),
-      child: ResponsiveScreen(
-        mainAreaProminence: 0.45,
-        squarishMainArea: Center(
-          child: Transform.rotate(
-            angle: -0.1,
-            child: const Text(
-              'Flutter Game Template!',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Permanent Marker',
-                fontSize: 55,
-                height: 1,
+        child: ResponsiveScreen(
+          mainAreaProminence: 0.45,
+          squarishMainArea: Center(
+            child: Transform.rotate(
+              angle: -0.05,
+              child: SizedBox(
+                height: 800,
+                child: const Text(
+                  'Tawerna',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'Permanent Marker',
+                    fontSize: 40,
+                    height: 1,
+                  ),
+                ),
               ),
             ),
           ),
-        ),
-        rectangularMenuArea: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FilledButton(
-              onPressed: () {
-                audioController.playSfx(SfxType.buttonTap);
-                GoRouter.of(context).go('/play');
-              },
-              child: const Text('Play'),
-            ),
-            _gap,
-            if (gamesServicesController != null) ...[
-              _hideUntilReady(
-                ready: gamesServicesController.signedIn,
-                child: FilledButton(
-                  onPressed: () => gamesServicesController.showAchievements(),
-                  child: const Text('Achievements'),
-                ),
-              ),
-              _gap,
-              _hideUntilReady(
-                ready: gamesServicesController.signedIn,
-                child: FilledButton(
-                  onPressed: () => gamesServicesController.showLeaderboard(),
-                  child: const Text('Leaderboard'),
-                ),
-              ),
-              _gap,
-            ],
-            FilledButton(
-              onPressed: () => GoRouter.of(context).push('/settings'),
-              child: const Text('Settings'),
-            ),
-            _gap,
-            Padding(
-              padding: const EdgeInsets.only(top: 32),
-              child: ValueListenableBuilder<bool>(
-                valueListenable: settingsController.muted,
-                builder: (context, muted, child) {
-                  return IconButton(
-                    onPressed: () => settingsController.toggleMuted(),
-                    icon: Icon(muted ? Icons.volume_off : Icons.volume_up),
-                  );
+          rectangularMenuArea: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              FilledButton(
+                onPressed: () {
+                  audioController.playSfx(SfxType.buttonTap);
+                  GoRouter.of(context).go('/play');
                 },
+                child: const Text('Graj'),
               ),
-            ),
-            _gap,
-            const Text('Music by Mr Smith'),
-            _gap,
-          ],
+              _gap,
+              if (gamesServicesController != null) ...[
+                _hideUntilReady(
+                  ready: gamesServicesController.signedIn,
+                  child: FilledButton(
+                    onPressed: () => gamesServicesController.showAchievements(),
+                    child: const Text('Achievements'),
+                  ),
+                ),
+                _gap,
+                _hideUntilReady(
+                  ready: gamesServicesController.signedIn,
+                  child: FilledButton(
+                    onPressed: () => gamesServicesController.showLeaderboard(),
+                    child: const Text('Leaderboard'),
+                  ),
+                ),
+                _gap,
+              ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  SizedBox(width: 1), // Odstęp między przyciskami
+                  ValueListenableBuilder<bool>(
+                    valueListenable: settingsController.muted,
+                    builder: (context, muted, child) {
+                      return IconButton(
+                        onPressed: () => settingsController.toggleMuted(),
+                        icon: Icon(muted ? Icons.volume_off : Icons.volume_up),
+                        color: Color.fromARGB(255, 6, 27, 44),
+                      );
+                    },
+                  ),
+                  IconButton(
+                    onPressed: () => GoRouter.of(context).push('/settings'),
+                    icon: Icon(
+                      Icons.settings,
+                      color: Color.fromARGB(255, 6, 27, 44),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
-    ));
+    );
   }
 
   /// Prevents the game from showing game-services-related menu items
