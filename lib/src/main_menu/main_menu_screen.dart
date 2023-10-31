@@ -25,8 +25,7 @@ class MainMenuScreen extends StatelessWidget {
         body: Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage(
-              "/Users/patrykkrzemien/Documents/GitHub/Idle_Tavern_Rpg/assets/images/menu/backgroundtest.jpeg"),
+          image: AssetImage("assets/images/menu/backgroundtest.jpeg"),
           fit: BoxFit.cover, // Dopasuj obraz do całego ekranu
         ),
       ),
@@ -35,8 +34,8 @@ class MainMenuScreen extends StatelessWidget {
         squarishMainArea: Center(
           child: Transform.rotate(
             angle: -0.1,
-            child: const Text(
-              'Flutter Game Template!',
+            child: Text(
+              settingsController.playerName.value,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'Permanent Marker',

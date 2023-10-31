@@ -1,7 +1,3 @@
-// Copyright 2022, the Flutter project authors. Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed by a
-// BSD-style license that can be found in the LICENSE file.
-
 /// An interface of persistence stores for settings.
 ///
 /// Implementations can range from simple in-memory storage through
@@ -15,6 +11,8 @@ abstract class SettingsPersistence {
 
   Future<bool> getSoundsOn();
 
+  Future<bool> getGraphicModeOn();
+
   Future<void> saveMusicOn(bool value);
 
   Future<void> saveMuted(bool value);
@@ -22,4 +20,6 @@ abstract class SettingsPersistence {
   Future<void> savePlayerName(String value);
 
   Future<void> saveSoundsOn(bool value);
+
+  Future<void> saveGraphicModeOn(bool value);
 }

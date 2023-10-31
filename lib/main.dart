@@ -13,6 +13,7 @@ import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:game_template/src/graphic_tavern_interior/graphic_tavern_interior.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +24,7 @@ import 'src/audio/audio_controller.dart';
 import 'src/games_services/games_services.dart';
 import 'src/games_services/score.dart';
 import 'src/in_app_purchase/in_app_purchase.dart';
-import 'src/level_selection/level_selection_screen.dart';
+import 'src/level_selection/tavern_interior_screen.dart';
 import 'src/level_selection/levels.dart';
 import 'src/main_menu/main_menu_screen.dart';
 import 'src/play_session/play_session_screen.dart';
@@ -136,13 +137,23 @@ class MyApp extends StatelessWidget {
           routes: [
             GoRoute(
                 path: 'play',
-                pageBuilder: (context, state) => buildMyTransition<void>(
+                pageBuilder: (context, state) {
+                  final settings = context.read<SettingsController>();
+                  if (settings.graphicModeOn.value == true) {
+                    return buildMyTransition<void>(
                       key: ValueKey('play'),
-                      child: const LevelSelectionScreen(
-                        key: Key('level selection'),
-                      ),
+                      child: GraphicTavernInteriorScreen(),
                       color: context.watch<Palette>().backgroundLevelSelection,
+                    );
+                  }
+                  return buildMyTransition<void>(
+                    key: ValueKey('play'),
+                    child: const TavernInteriorScreen(
+                      key: Key('level selection'),
                     ),
+                    color: context.watch<Palette>().backgroundLevelSelection,
+                  );
+                },
                 routes: [
                   GoRoute(
                     path: 'session/:level',
