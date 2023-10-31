@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
@@ -17,6 +18,21 @@ class MainMenuScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const MaterialApp(
+      title: 'Localizations',
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+    );
+
+    MaterialApp(
+      localeResolutionCallback: (
+        locale,
+        supportedLocales,
+      ) {
+        return locale;
+      },
+    );
+
     final gamesServicesController = context.watch<GamesServicesController?>();
     final settingsController = context.watch<SettingsController>();
     final audioController = context.watch<AudioController>();
@@ -25,8 +41,7 @@ class MainMenuScreen extends StatelessWidget {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage(
-                "assets/images/menu/backgroundtest.jpeg"),
+            image: AssetImage("assets/images/menu/backgroundtest.jpeg"),
             fit: BoxFit.fill,
           ),
         ),
@@ -57,7 +72,7 @@ class MainMenuScreen extends StatelessWidget {
                   audioController.playSfx(SfxType.buttonTap);
                   GoRouter.of(context).go('/play');
                 },
-                child: const Text('Graj'),
+                child: Text(AppLocalizations.of(context)!.play),
               ),
               _gap,
               if (gamesServicesController != null) ...[

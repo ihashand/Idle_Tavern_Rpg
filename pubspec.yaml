@@ -28,6 +28,9 @@ dependencies:
   games_services: ^3.0.0 # Achievements and leaderboards
   google_mobile_ads: ^3.0.0 # Ads
   in_app_purchase: ^3.0.1 # In-app purchases
+  flutter_localizations:
+    sdk: flutter
+  intl: any
 
 dev_dependencies:
   flutter_lints: ^2.0.2
@@ -38,6 +41,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  generate: true
 
   assets:
     - assets/images/
