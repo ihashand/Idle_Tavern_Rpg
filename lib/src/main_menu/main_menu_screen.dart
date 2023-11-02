@@ -25,102 +25,109 @@ class MainMenuScreen extends StatelessWidget {
     );
 
     MaterialApp(
-      localeResolutionCallback: (
-        locale,
-        supportedLocales,
-      ) {
-        return locale;
-      },
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: MainMenuScreen(),
     );
 
     final gamesServicesController = context.watch<GamesServicesController?>();
     final settingsController = context.watch<SettingsController>();
     final audioController = context.watch<AudioController>();
+    print("<<<<");
+    print(settingsController.playerName.value);
 
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/menu/tawerna1.png"),
-            fit: BoxFit.fill,
-          ),
-        ),
-        child: ResponsiveScreen(
-          mainAreaProminence: 0.45,
-          squarishMainArea: Center(
-            child: Transform.rotate(
-              angle: -0.05,
-              child: SizedBox(
-                height: 800,
-                child: Text(
-                  settingsController.playerName.value,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontFamily: 'Permanent Marker',
-                    fontSize: 40,
-                    height: 1,
+    return ValueListenableBuilder<String>(
+        valueListenable: settingsController.playerName,
+        builder: (context, playerName, child) {
+          return Scaffold(
+            body: Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("assets/images/menu/tawerna1.png"),
+                  fit: BoxFit.fill,
+                ),
+              ),
+              child: ResponsiveScreen(
+                mainAreaProminence: 0.45,
+                squarishMainArea: Center(
+                  child: Transform.rotate(
+                    angle: -0.05,
+                    child: SizedBox(
+                      height: 800,
+                      child: Text(
+                        playerName,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: 'Permanent Marker',
+                          fontSize: 40,
+                          height: 1,
+                        ),
+                      ),
+                    ),
                   ),
+                ),
+                rectangularMenuArea: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    FilledButton(
+                      onPressed: () {
+                        audioController.playSfx(SfxType.buttonTap);
+                        GoRouter.of(context).go('/play');
+                      },
+                      child: Text(AppLocalizations.of(context)!.play),
+                    ),
+                    _gap,
+                    if (gamesServicesController != null) ...[
+                      _hideUntilReady(
+                        ready: gamesServicesController.signedIn,
+                        child: FilledButton(
+                          onPressed: () =>
+                              gamesServicesController.showAchievements(),
+                          child: const Text('Achievements'),
+                        ),
+                      ),
+                      _gap,
+                      _hideUntilReady(
+                        ready: gamesServicesController.signedIn,
+                        child: FilledButton(
+                          onPressed: () =>
+                              gamesServicesController.showLeaderboard(),
+                          child: const Text('Leaderboard'),
+                        ),
+                      ),
+                      _gap,
+                    ],
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        SizedBox(width: 1), // Odstęp między przyciskami
+                        ValueListenableBuilder<bool>(
+                          valueListenable: settingsController.muted,
+                          builder: (context, muted, child) {
+                            return IconButton(
+                              onPressed: () => settingsController.toggleMuted(),
+                              icon: Icon(
+                                  muted ? Icons.volume_off : Icons.volume_up),
+                              color: Color.fromARGB(255, 6, 27, 44),
+                            );
+                          },
+                        ),
+                        IconButton(
+                          onPressed: () =>
+                              GoRouter.of(context).push('/settings'),
+                          icon: Icon(
+                            Icons.settings,
+                            color: Color.fromARGB(255, 6, 27, 44),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),
-          ),
-          rectangularMenuArea: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              FilledButton(
-                onPressed: () {
-                  audioController.playSfx(SfxType.buttonTap);
-                  GoRouter.of(context).go('/play');
-                },
-                child: Text(AppLocalizations.of(context)!.play),
-              ),
-              _gap,
-              if (gamesServicesController != null) ...[
-                _hideUntilReady(
-                  ready: gamesServicesController.signedIn,
-                  child: FilledButton(
-                    onPressed: () => gamesServicesController.showAchievements(),
-                    child: const Text('Achievements'),
-                  ),
-                ),
-                _gap,
-                _hideUntilReady(
-                  ready: gamesServicesController.signedIn,
-                  child: FilledButton(
-                    onPressed: () => gamesServicesController.showLeaderboard(),
-                    child: const Text('Leaderboard'),
-                  ),
-                ),
-                _gap,
-              ],
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  SizedBox(width: 1), // Odstęp między przyciskami
-                  ValueListenableBuilder<bool>(
-                    valueListenable: settingsController.muted,
-                    builder: (context, muted, child) {
-                      return IconButton(
-                        onPressed: () => settingsController.toggleMuted(),
-                        icon: Icon(muted ? Icons.volume_off : Icons.volume_up),
-                        color: Color.fromARGB(255, 6, 27, 44),
-                      );
-                    },
-                  ),
-                  IconButton(
-                    onPressed: () => GoRouter.of(context).push('/settings'),
-                    icon: Icon(
-                      Icons.settings,
-                      color: Color.fromARGB(255, 6, 27, 44),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+          );
+        });
   }
 
   /// Prevents the game from showing game-services-related menu items

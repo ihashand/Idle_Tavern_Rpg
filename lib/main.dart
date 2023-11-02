@@ -13,6 +13,7 @@ import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:game_template/constants/settings.dart';
 import 'package:game_template/src/graphic_tavern_interior/graphic_tavern_interior.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
@@ -188,11 +189,8 @@ class MyApp extends StatelessWidget {
   );
 
   final SettingsPersistence settingsPersistence;
-
   final GamesServicesController? gamesServicesController;
-
   final InAppPurchaseController? inAppPurchaseController;
-
   final AdsController? adsController;
 
   const MyApp({
@@ -200,78 +198,108 @@ class MyApp extends StatelessWidget {
     required this.inAppPurchaseController,
     required this.adsController,
     required this.gamesServicesController,
-    super.key,
-  });
-
+    Key? key,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return AppLifecycleObserver(
-      child: MultiProvider(
-        providers: [
-          Provider<GamesServicesController?>.value(
-              value: gamesServicesController),
-          Provider<AdsController?>.value(value: adsController),
-          ChangeNotifierProvider<InAppPurchaseController?>.value(
-              value: inAppPurchaseController),
-          Provider<SettingsController>(
-            lazy: false,
-            create: (context) => SettingsController(
-              persistence: settingsPersistence,
-            )..loadStateFromPersistence(),
-          ),
-          ProxyProvider2<SettingsController, ValueNotifier<AppLifecycleState>,
-              AudioController>(
-            // Ensures that the AudioController is created on startup,
-            // and not "only when it's needed", as is default behavior.
-            // This way, music starts immediately.
-            lazy: false,
-            create: (context) => AudioController()..initialize(),
-            update: (context, settings, lifecycleNotifier, audio) {
-              if (audio == null) throw ArgumentError.notNull();
-              audio.attachSettings(settings);
-              audio.attachLifecycleNotifier(lifecycleNotifier);
-              return audio;
-            },
-            dispose: (context, audio) => audio.dispose(),
-          ),
-          Provider(
-            create: (context) => Palette(),
-          ),
-        ],
-        child: Builder(builder: (context) {
-          final palette = context.watch<Palette>();
+      child: FutureBuilder<AppLanguage>(
+        future: getAppLanguageFromSettings(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            final AppLanguage selectedLanguage =
+                snapshot.data ?? AppLanguage.english;
 
-          return MaterialApp.router(
-            title: 'Flutter Demo',
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: const [
-              Locale('en'),
-              Locale('pl'),
-            ],
-            theme: ThemeData.from(
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: palette.darkPen,
-                background: palette.backgroundMain,
-              ),
-              textTheme: TextTheme(
-                bodyMedium: TextStyle(
-                  color: palette.ink,
+            return MultiProvider(
+              providers: [
+                Provider<GamesServicesController?>.value(
+                  value: gamesServicesController,
                 ),
-              ),
-              useMaterial3: true,
-            ),
-            routeInformationProvider: _router.routeInformationProvider,
-            routeInformationParser: _router.routeInformationParser,
-            routerDelegate: _router.routerDelegate,
-            scaffoldMessengerKey: scaffoldMessengerKey,
-          );
-        }),
+                Provider<AdsController?>.value(
+                  value: adsController,
+                ),
+                ChangeNotifierProvider<InAppPurchaseController?>.value(
+                  value: inAppPurchaseController,
+                ),
+                Provider<SettingsController>(
+                  lazy: false,
+                  create: (context) => SettingsController(
+                    persistence: settingsPersistence,
+                  )..loadStateFromPersistence(),
+                ),
+                ProxyProvider2<SettingsController,
+                    ValueNotifier<AppLifecycleState>, AudioController>(
+                  lazy: false,
+                  create: (context) => AudioController()..initialize(),
+                  update: (context, settings, lifecycleNotifier, audio) {
+                    if (audio == null) throw ArgumentError.notNull();
+                    audio.attachSettings(settings);
+                    audio.attachLifecycleNotifier(lifecycleNotifier);
+                    return audio;
+                  },
+                  dispose: (context, audio) => audio.dispose(),
+                ),
+                Provider(
+                  create: (context) => Palette(),
+                ),
+              ],
+              child: Builder(builder: (context) {
+                final palette = context.watch<Palette>();
+
+                return MaterialApp.router(
+                  title: 'Flutter Demo',
+                  localizationsDelegates: const [
+                    AppLocalizations.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
+                  supportedLocales: AppLocalizations.supportedLocales,
+                  locale: _mapAppLanguageToLocale(selectedLanguage),
+                  theme: ThemeData.from(
+                    colorScheme: ColorScheme.fromSeed(
+                      seedColor: palette.darkPen,
+                      background: palette.backgroundMain,
+                    ),
+                    textTheme: TextTheme(
+                      bodyMedium: TextStyle(
+                        color: palette.ink,
+                      ),
+                    ),
+                    useMaterial3: true,
+                  ),
+                  routeInformationProvider: _router.routeInformationProvider,
+                  routeInformationParser: _router.routeInformationParser,
+                  routerDelegate: _router.routerDelegate,
+                  scaffoldMessengerKey: scaffoldMessengerKey,
+                );
+              }),
+            );
+          } else {
+            return CircularProgressIndicator(); // or another placeholder widget
+          }
+        },
       ),
     );
+  }
+
+  Future<AppLanguage> getAppLanguageFromSettings() async {
+    final language = await settingsPersistence.getAppLanguage();
+    return language;
+  }
+
+  Locale _mapAppLanguageToLocale(AppLanguage language) {
+    print(language);
+    switch (language) {
+      case AppLanguage.english:
+        return const Locale('en');
+      case AppLanguage.polish:
+        return const Locale('pl');
+      case AppLanguage.german:
+        return const Locale('de');
+      // Add other cases as needed
+      default:
+        return const Locale('en'); // Default to English
+    }
   }
 }

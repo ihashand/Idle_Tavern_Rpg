@@ -4,6 +4,7 @@
 
 import 'package:flutter/foundation.dart';
 
+import '../../constants/settings.dart';
 import 'persistence/settings_persistence.dart';
 
 /// An class that holds settings like [playerName] or [musicOn],
@@ -22,6 +23,8 @@ class SettingsController {
   ValueNotifier<bool> musicOn = ValueNotifier(false);
 
   ValueNotifier<bool> graphicModeOn = ValueNotifier(false);
+
+  ValueNotifier<AppLanguage> appLanguage = ValueNotifier(AppLanguage.english);
 
   /// Creates a new instance of [SettingsController] backed by [persistence].
   SettingsController({required SettingsPersistence persistence})
@@ -42,6 +45,7 @@ class SettingsController {
       _persistence
           .getGraphicModeOn()
           .then((value) => graphicModeOn.value = value),
+      _persistence.getAppLanguage().then((value) => appLanguage.value = value),
     ]);
   }
 
@@ -68,5 +72,10 @@ class SettingsController {
   void toggleGraphicModeOn() {
     graphicModeOn.value = !graphicModeOn.value;
     _persistence.saveSoundsOn(graphicModeOn.value);
+  }
+
+  void setAppLanguage(AppLanguage language) {
+    appLanguage.value = language;
+    _persistence.saveAppLanguage(language);
   }
 }
