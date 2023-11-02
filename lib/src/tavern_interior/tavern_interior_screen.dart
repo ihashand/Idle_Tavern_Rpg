@@ -43,13 +43,6 @@ class TavernInteriorScreen extends StatelessWidget {
                     context, 'Wood Storage', Icons.nature, WoodStorageScreen()),
                 _buildMenuItem(
                     context, 'Kitchen', Icons.restaurant, KitchenScreen()),
-                IconButton(
-                  padding: EdgeInsets.only(top: 60),
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: () {
-                    Navigator.pop(context); // Powrót do poprzedniego ekranu
-                  },
-                ),
               ],
             ),
           ),
