@@ -18,7 +18,7 @@ class TavernInteriorScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.only(top: 60, left: 16, right: 16),
             child: Center(
               child: Text(
                 'Tavern Menu',
@@ -45,6 +45,12 @@ class TavernInteriorScreen extends StatelessWidget {
                     context, 'Kitchen', Icons.restaurant, KitchenScreen()),
               ],
             ),
+          ),
+          IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context); // Powrót do poprzedniego ekranu
+            },
           ),
         ],
       ),

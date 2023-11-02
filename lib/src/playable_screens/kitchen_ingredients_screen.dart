@@ -20,6 +20,9 @@ class _KitchenIngredientsScreenState extends State<KitchenIngredientsScreen> {
   List<Ingredient> filteredIngredients = [];
   List<Recipe> filteredRecipes = [];
   bool showIngredients = true;
+  bool showStatistics = false;
+  Ingredient? selectedIngredient;
+  List<Ingredient> selectedIngredientsForRecipe = [];
 
   @override
   void initState() {
@@ -55,38 +58,123 @@ class _KitchenIngredientsScreenState extends State<KitchenIngredientsScreen> {
     });
   }
 
+  void _showRecipeDetails(List<Ingredient> ingredientsForRecipe) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Składniki recepty:'),
+          content: Container(
+            width: double.maxFinite,
+            child: ListView.builder(
+              itemCount: ingredientsForRecipe.length,
+              physics: NeverScrollableScrollPhysics(), // To prevent scrolling
+              shrinkWrap: true, // To wrap the content
+              itemBuilder: (context, index) {
+                final ingredient = ingredientsForRecipe[index];
+                final counter = index + 1;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('Składnik $counter: ${ingredient.name}'),
+                  ],
+                );
+              },
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Zamknij'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showIngredientDetails(Ingredient ingredient) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Informacje o składniku:'),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Nazwa: ${ingredient.name}'),
+              // Tutaj możesz dodać inne informacje o składniku
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Zamknij'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Recipesbook'),
-        automaticallyImplyLeading:
-            false, //usuniecie przycisku cofania z gornego paska nawigacyjnego
+        automaticallyImplyLeading: false,
       ),
       body: Column(
         children: [
           Expanded(
-            child: showIngredients
-                ? ListView.builder(
-                    itemCount: filteredIngredients.length,
-                    itemBuilder: (context, index) {
-                      final ingredient = filteredIngredients[index];
-                      return ListTile(
-                        title: Text('${ingredient.name}'),
-                      );
-                    },
+            child: showStatistics
+                ? Center(
+                    child: Text('Tu kiedyś będzie statystyka'),
                   )
-                : !showIngredients
+                : showIngredients
                     ? ListView.builder(
-                        itemCount: filteredRecipes.length,
+                        itemCount: filteredIngredients.length,
                         itemBuilder: (context, index) {
-                          final recipe = filteredRecipes[index];
+                          final ingredient = filteredIngredients[index];
                           return ListTile(
-                            title: Text('${recipe.name}'),
+                            title: Text('${ingredient.name}'),
+                            onTap: () {
+                              setState(() {
+                                selectedIngredient = ingredient;
+                              });
+                              _showIngredientDetails(ingredient);
+                            },
                           );
                         },
                       )
-                    : Container(),
+                    : !showIngredients
+                        ? ListView.builder(
+                            itemCount: filteredRecipes.length,
+                            itemBuilder: (context, index) {
+                              final recipe = filteredRecipes[index];
+                              return ListTile(
+                                title: Text('${recipe.name}'),
+                                onTap: () {
+                                  setState(() {
+                                    final ingredientIds = recipe.ingredientIds;
+                                    final ingredientsForRecipe = widget
+                                        .ingredients
+                                        .where((ingredient) => ingredientIds
+                                            .contains(ingredient.id))
+                                        .toList();
+                                    _showRecipeDetails(ingredientsForRecipe);
+                                  });
+                                },
+                              );
+                            },
+                          )
+                        : Container(),
           ),
         ],
       ),
@@ -96,7 +184,7 @@ class _KitchenIngredientsScreenState extends State<KitchenIngredientsScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(
-              icon: Icon(Icons.arrow_back), // Przycisk cofania na dole
+              icon: Icon(Icons.arrow_back),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -106,6 +194,7 @@ class _KitchenIngredientsScreenState extends State<KitchenIngredientsScreen> {
               onPressed: () {
                 setState(() {
                   showIngredients = true;
+                  showStatistics = false;
                 });
               },
             ),
@@ -114,13 +203,16 @@ class _KitchenIngredientsScreenState extends State<KitchenIngredientsScreen> {
               onPressed: () {
                 setState(() {
                   showIngredients = false;
+                  showStatistics = false;
                 });
               },
             ),
             IconButton(
               icon: Icon(Icons.bar_chart),
               onPressed: () {
-                // Obsługa nawigacji do ekranu ze statystykami (dodaj odpowiednią nawigację).
+                setState(() {
+                  showStatistics = true;
+                });
               },
             ),
           ],
@@ -158,7 +250,7 @@ class IngredientSearchDelegate extends SearchDelegate<String> {
           query = '';
           filterCallback('');
         },
-      ),
+      )
     ];
   }
 
