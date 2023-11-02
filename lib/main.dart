@@ -24,13 +24,8 @@ import 'src/audio/audio_controller.dart';
 import 'src/games_services/games_services.dart';
 import 'src/games_services/score.dart';
 import 'src/in_app_purchase/in_app_purchase.dart';
-import 'src/level_selection/tavern_interior_screen.dart';
-import 'src/level_selection/levels.dart';
+import 'src/tavern_interior/tavern_interior_screen.dart';
 import 'src/main_menu/main_menu_screen.dart';
-import 'src/play_session/play_session_screen.dart';
-import 'src/player_progress/persistence/local_storage_player_progress_persistence.dart';
-import 'src/player_progress/persistence/player_progress_persistence.dart';
-import 'src/player_progress/player_progress.dart';
 import 'src/settings/persistence/local_storage_settings_persistence.dart';
 import 'src/settings/persistence/settings_persistence.dart';
 import 'src/settings/settings.dart';
@@ -119,7 +114,6 @@ Future<void> main() async {
   runApp(
     MyApp(
       settingsPersistence: LocalStorageSettingsPersistence(),
-      playerProgressPersistence: LocalStoragePlayerProgressPersistence(),
       inAppPurchaseController: inAppPurchaseController,
       adsController: adsController,
       gamesServicesController: gamesServicesController,
@@ -158,23 +152,6 @@ class MyApp extends StatelessWidget {
                 },
                 routes: [
                   GoRoute(
-                    path: 'session/:level',
-                    pageBuilder: (context, state) {
-                      final levelNumber =
-                          int.parse(state.pathParameters['level']!);
-                      final level = gameLevels
-                          .singleWhere((e) => e.number == levelNumber);
-                      return buildMyTransition<void>(
-                        key: ValueKey('level'),
-                        child: PlaySessionScreen(
-                          level,
-                          key: const Key('play session'),
-                        ),
-                        color: context.watch<Palette>().backgroundPlaySession,
-                      );
-                    },
-                  ),
-                  GoRoute(
                     path: 'won',
                     redirect: (context, state) {
                       if (state.extra == null) {
@@ -210,8 +187,6 @@ class MyApp extends StatelessWidget {
     ],
   );
 
-  final PlayerProgressPersistence playerProgressPersistence;
-
   final SettingsPersistence settingsPersistence;
 
   final GamesServicesController? gamesServicesController;
@@ -221,7 +196,6 @@ class MyApp extends StatelessWidget {
   final AdsController? adsController;
 
   const MyApp({
-    required this.playerProgressPersistence,
     required this.settingsPersistence,
     required this.inAppPurchaseController,
     required this.adsController,
@@ -234,13 +208,6 @@ class MyApp extends StatelessWidget {
     return AppLifecycleObserver(
       child: MultiProvider(
         providers: [
-          ChangeNotifierProvider(
-            create: (context) {
-              var progress = PlayerProgress(playerProgressPersistence);
-              progress.getLatestFromStore();
-              return progress;
-            },
-          ),
           Provider<GamesServicesController?>.value(
               value: gamesServicesController),
           Provider<AdsController?>.value(value: adsController),
