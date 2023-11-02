@@ -59,21 +59,9 @@ class _KitchenIngredientsScreenState extends State<KitchenIngredientsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Kitchen Recipes'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              showSearch(
-                context: context,
-                delegate: IngredientSearchDelegate(
-                  showIngredients ? filteredIngredients : filteredRecipes,
-                  showIngredients ? _filterIngredients : _filterRecipes,
-                ),
-              );
-            },
-          ),
-        ],
+        title: Text('Recipesbook'),
+        automaticallyImplyLeading:
+            false, //usuniecie przycisku cofania z gornego paska nawigacyjnego
       ),
       body: Column(
         children: [
@@ -108,7 +96,7 @@ class _KitchenIngredientsScreenState extends State<KitchenIngredientsScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(
-              icon: Icon(Icons.arrow_back),
+              icon: Icon(Icons.arrow_back), // Przycisk cofania na dole
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -137,6 +125,19 @@ class _KitchenIngredientsScreenState extends State<KitchenIngredientsScreen> {
             ),
           ],
         ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showSearch(
+            context: context,
+            delegate: IngredientSearchDelegate(
+              showIngredients ? filteredIngredients : filteredRecipes,
+              showIngredients ? _filterIngredients : _filterRecipes,
+            ),
+          );
+        },
+        child: Icon(Icons.search),
       ),
     );
   }
