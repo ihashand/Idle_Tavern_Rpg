@@ -53,6 +53,12 @@ class TavernInteriorScreen extends StatelessWidget {
               ],
             ),
           ),
+          IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context); // Powrót do poprzedniego ekranu
+            },
+          ),
         ],
       ),
     );

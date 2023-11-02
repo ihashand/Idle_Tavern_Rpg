@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:game_template/src/playable_screens/kitchen_ingredients_screen.dart';
 
 class Recipe {
   final String name;
@@ -36,6 +37,19 @@ class _KitchenScreenState extends State<KitchenScreen> {
     Ingredient('7', 'Makaron', 120, 4),
     Ingredient('8', 'Marchewka', 60, 5),
     Ingredient('9', 'Kurczak', 240, 10),
+    Ingredient('10', 'Pieczarki', 45, 4),
+    Ingredient('11', 'Cebula', 45, 3),
+    Ingredient('12', 'Papryka', 60, 5),
+    Ingredient('13', 'Boczek', 180, 9),
+    Ingredient('14', 'Ryż', 150, 6),
+    Ingredient('15', 'Czosnek', 10, 2),
+    Ingredient('16', 'Krewetki', 120, 8),
+    Ingredient('17', 'Koper', 5, 1),
+    Ingredient('18', 'Sok z cytryny', 15, 2),
+    Ingredient('19', 'Pietruszka', 10, 3),
+    Ingredient('20', 'Mleko', 90, 5),
+    Ingredient('21', 'Chili', 5, 2),
+    // Dodaj pozostałe składniki tutaj
   ];
 
   final List<Recipe> recipes = [
@@ -43,6 +57,13 @@ class _KitchenScreenState extends State<KitchenScreen> {
     Recipe('Kanapka z pomidorem i szynką', ['1', '2', '4'], 12),
     Recipe('Makaron z sosem serowym', ['7', '5'], 10),
     Recipe('Kurczak z marchewką', ['9', '8'], 15),
+    Recipe('Omelet', ['3', '11', '15'], 10),
+    Recipe('Spaghetti Carbonara', ['7', '13', '15'], 20),
+    Recipe('Sałatka grecka', ['4', '5', '6', '18'], 18),
+    Recipe('Ryż z krewetkami', ['14', '16', '18'], 14),
+    Recipe('Zupa pomidorowa', ['4', '12', '15'], 10),
+    Recipe('Mleko ryżowe', ['14', '20', '19'], 12),
+    // Dodaj pozostałe przepisy tutaj
   ];
 
   List<String> craftingTable =
@@ -269,7 +290,14 @@ class _KitchenScreenState extends State<KitchenScreen> {
               IconButton(
                 icon: Icon(Icons.book),
                 onPressed: () {
-                  // Obsługa encyklopedii
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => KitchenIngredientsScreen(
+                              ingredients: inventoryItems,
+                              recipes: recipes,
+                            )),
+                  );
                 },
               ),
               IconButton(
