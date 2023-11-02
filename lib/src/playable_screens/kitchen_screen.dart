@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:game_template/src/playable_screens/kitchen_recipes_screen.dart';
 
 class Recipe {
   final String name;
@@ -269,7 +270,11 @@ class _KitchenScreenState extends State<KitchenScreen> {
               IconButton(
                 icon: Icon(Icons.book),
                 onPressed: () {
-                  // Obsługa encyklopedii
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => KitchenRecipesScreen()),
+                  );
                 },
               ),
               IconButton(
