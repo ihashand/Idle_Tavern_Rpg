@@ -2,6 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import '../../../constants/settings.dart';
 import 'settings_persistence.dart';
 
 /// An in-memory implementation of [SettingsPersistence].
@@ -16,6 +17,8 @@ class MemoryOnlySettingsPersistence implements SettingsPersistence {
   bool graphicModeOn = false;
 
   String playerName = 'Player';
+
+  AppLanguage appLanguage = AppLanguage.english;
 
   @override
   Future<bool> getMusicOn() async => musicOn;
@@ -33,6 +36,9 @@ class MemoryOnlySettingsPersistence implements SettingsPersistence {
   Future<bool> getGraphicModeOn() async => graphicModeOn;
 
   @override
+  Future<AppLanguage> getAppLanguage() async => appLanguage;
+
+  @override
   Future<void> saveMusicOn(bool value) async => musicOn = value;
 
   @override
@@ -46,4 +52,7 @@ class MemoryOnlySettingsPersistence implements SettingsPersistence {
 
   @override
   Future<void> saveGraphicModeOn(bool value) async => graphicModeOn = value;
+
+  @override
+  Future<void> saveAppLanguage(AppLanguage value) async => appLanguage = value;
 }

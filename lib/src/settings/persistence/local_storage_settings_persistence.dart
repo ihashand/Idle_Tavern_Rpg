@@ -2,6 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'package:game_template/constants/settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'settings_persistence.dart';
@@ -43,6 +44,27 @@ class LocalStorageSettingsPersistence extends SettingsPersistence {
   }
 
   @override
+  Future<AppLanguage> getAppLanguage() async {
+    final prefs = await instanceFuture;
+    final language = prefs.get('appLanguage');
+    AppLanguage appLanguage = AppLanguage.english;
+
+    switch (language) {
+      case 'english':
+        appLanguage = AppLanguage.english;
+        break;
+      case 'polish':
+        appLanguage = AppLanguage.polish;
+        break;
+      case "german":
+        appLanguage = AppLanguage.german;
+        break;
+      // TODO Add cases for other languages as needed
+    }
+    return appLanguage;
+  }
+
+  @override
   Future<void> saveMusicOn(bool value) async {
     final prefs = await instanceFuture;
     await prefs.setBool('musicOn', value);
@@ -70,5 +92,11 @@ class LocalStorageSettingsPersistence extends SettingsPersistence {
   Future<void> saveGraphicModeOn(bool value) async {
     final prefs = await instanceFuture;
     await prefs.setBool('graphicModeOn', value);
+  }
+
+  @override
+  Future<void> saveAppLanguage(AppLanguage value) async {
+    final prefs = await instanceFuture;
+    await prefs.setString('appLanguage', value.name);
   }
 }

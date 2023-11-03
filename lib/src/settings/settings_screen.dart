@@ -3,9 +3,11 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:game_template/src/settings/custom_language_dialog.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../constants/settings.dart';
 import '../in_app_purchase/in_app_purchase.dart';
 import '../style/palette.dart';
 import '../style/responsive_screen.dart';
@@ -41,6 +43,7 @@ class SettingsScreen extends StatelessWidget {
             const _NameChangeLine(
               'Name',
             ),
+            const _languageSettingsLine("Language"),
             ValueListenableBuilder<bool>(
               valueListenable: settings.soundsOn,
               builder: (context, soundsOn, child) => _SettingsLine(
@@ -192,5 +195,66 @@ class _SettingsLine extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _languageSettingsLine extends StatelessWidget {
+  final String language;
+
+  const _languageSettingsLine(this.language);
+
+  @override
+  Widget build(BuildContext context) {
+    final settings = context.watch<SettingsController>();
+    final currentLanguage = settings.appLanguage.value;
+
+    String languageName = getLanguageName(currentLanguage);
+
+    return InkResponse(
+      highlightShape: BoxShape.rectangle,
+      onTap: () => showLanguageSelectionDialog(context),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(languageName,
+                style: const TextStyle(
+                  fontFamily: 'Permanent Marker',
+                  fontSize: 30,
+                )),
+            const Spacer(),
+            ValueListenableBuilder(
+              valueListenable: settings.appLanguage,
+              builder: (context, name, child) => Text(
+                getLanguageName(name),
+                style: const TextStyle(
+                  fontFamily: 'Permanent Marker',
+                  fontSize: 30,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String getLanguageName(AppLanguage language) {
+    String languageName = '';
+    switch (language) {
+      case AppLanguage.english:
+        languageName = 'English';
+        break;
+      case AppLanguage.polish:
+        languageName = 'Polski';
+        break;
+      case AppLanguage.german:
+        languageName = 'Deutsch';
+        break;
+      // TODO Add cases for other languages as needed
+    }
+
+    return languageName;
   }
 }

@@ -1,3 +1,5 @@
+import '../../../constants/settings.dart';
+
 /// An interface of persistence stores for settings.
 ///
 /// Implementations can range from simple in-memory storage through
@@ -13,6 +15,8 @@ abstract class SettingsPersistence {
 
   Future<bool> getGraphicModeOn();
 
+  Future<AppLanguage> getAppLanguage();
+
   Future<void> saveMusicOn(bool value);
 
   Future<void> saveMuted(bool value);
@@ -22,4 +26,6 @@ abstract class SettingsPersistence {
   Future<void> saveSoundsOn(bool value);
 
   Future<void> saveGraphicModeOn(bool value);
+
+  Future<void> saveAppLanguage(AppLanguage value);
 }
