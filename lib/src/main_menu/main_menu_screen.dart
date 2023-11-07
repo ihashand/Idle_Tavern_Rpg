@@ -21,8 +21,6 @@ class MainMenuScreen extends StatelessWidget {
     final gamesServicesController = context.watch<GamesServicesController?>();
     final settingsController = context.watch<SettingsController>();
     final audioController = context.watch<AudioController>();
-    print('play'.tr());
-    print('language'.tr());
 
     return ValueListenableBuilder<String>(
         valueListenable: settingsController.playerName,

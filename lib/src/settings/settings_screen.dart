@@ -2,6 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:game_template/src/settings/custom_language_dialog.dart';
 import 'package:go_router/go_router.dart';
@@ -43,7 +44,7 @@ class SettingsScreen extends StatelessWidget {
             const _NameChangeLine(
               'Name',
             ),
-            const _languageSettingsLine("Language"),
+            const _LanguageSettingsLine("Language"),
             ValueListenableBuilder<bool>(
               valueListenable: settings.soundsOn,
               builder: (context, soundsOn, child) => _SettingsLine(
@@ -198,17 +199,14 @@ class _SettingsLine extends StatelessWidget {
   }
 }
 
-class _languageSettingsLine extends StatelessWidget {
+class _LanguageSettingsLine extends StatelessWidget {
   final String language;
 
-  const _languageSettingsLine(this.language);
+  const _LanguageSettingsLine(this.language);
 
   @override
   Widget build(BuildContext context) {
     final settings = context.watch<SettingsController>();
-    final currentLanguage = settings.appLanguage.value;
-
-    String languageName = getLanguageName(currentLanguage);
 
     return InkResponse(
       highlightShape: BoxShape.rectangle,
@@ -218,11 +216,11 @@ class _languageSettingsLine extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(languageName,
+            Text('language',
                 style: const TextStyle(
                   fontFamily: 'Permanent Marker',
                   fontSize: 30,
-                )),
+                )).tr(),
             const Spacer(),
             ValueListenableBuilder(
               valueListenable: settings.appLanguage,

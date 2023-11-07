@@ -13,7 +13,6 @@ import 'src/ads/ads_controller.dart';
 import 'src/app_lifecycle/app_lifecycle.dart';
 import 'src/audio/audio_controller.dart';
 import 'src/games_services/games_services.dart';
-import 'src/games_services/score.dart';
 import 'src/in_app_purchase/in_app_purchase.dart';
 import 'src/tavern_interior/tavern_interior_screen.dart';
 import 'src/main_menu/main_menu_screen.dart';
@@ -24,7 +23,6 @@ import 'src/settings/settings_screen.dart';
 import 'src/style/my_transition.dart';
 import 'src/style/palette.dart';
 import 'src/style/snack_bar.dart';
-import 'src/win_game/win_game_screen.dart';
 
 Future<void> main() async {
   // Subscribe to log messages.
@@ -100,6 +98,7 @@ Future<void> main() async {
   //   // Ask the store what the player has bought already.
   //   inAppPurchaseController.restorePurchases();
   // }
+
   runApp(
     EasyLocalization(
       supportedLocales: const [Locale('en'), Locale('de'), Locale('pl')],
@@ -126,52 +125,25 @@ class MyApp extends StatelessWidget {
               const MainMenuScreen(key: Key('main menu')),
           routes: [
             GoRoute(
-                path: 'play',
-                pageBuilder: (context, state) {
-                  final settings = context.read<SettingsController>();
-                  if (settings.graphicModeOn.value == true) {
-                    return buildMyTransition<void>(
-                      key: ValueKey('play'),
-                      child: GraphicTavernInteriorScreen(),
-                      color: context.watch<Palette>().backgroundLevelSelection,
-                    );
-                  }
+              path: 'play',
+              pageBuilder: (context, state) {
+                final settings = context.read<SettingsController>();
+                if (settings.graphicModeOn.value == true) {
                   return buildMyTransition<void>(
                     key: ValueKey('play'),
-                    child: const TavernInteriorScreen(
-                      key: Key('level selection'),
-                    ),
+                    child: GraphicTavernInteriorScreen(),
                     color: context.watch<Palette>().backgroundLevelSelection,
                   );
-                },
-                routes: [
-                  GoRoute(
-                    path: 'won',
-                    redirect: (context, state) {
-                      if (state.extra == null) {
-                        // Trying to navigate to a win screen without any data.
-                        // Possibly by using the browser's back button.
-                        return '/';
-                      }
-
-                      // Otherwise, do not redirect.
-                      return null;
-                    },
-                    pageBuilder: (context, state) {
-                      final map = state.extra! as Map<String, dynamic>;
-                      final score = map['score'] as Score;
-
-                      return buildMyTransition<void>(
-                        key: ValueKey('won'),
-                        child: WinGameScreen(
-                          score: score,
-                          key: const Key('win game'),
-                        ),
-                        color: context.watch<Palette>().backgroundPlaySession,
-                      );
-                    },
-                  )
-                ]),
+                }
+                return buildMyTransition<void>(
+                  key: ValueKey('play'),
+                  child: const TavernInteriorScreen(
+                    key: Key('level selection'),
+                  ),
+                  color: context.watch<Palette>().backgroundLevelSelection,
+                );
+              },
+            ),
             GoRoute(
               path: 'settings',
               builder: (context, state) =>
@@ -196,89 +168,82 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppLifecycleObserver(
-      child: FutureBuilder<AppLanguage>(
-        future: getAppLanguageFromSettings(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            final AppLanguage selectedLanguage =
-                snapshot.data ?? AppLanguage.english;
-            return EasyLocalization(
-              supportedLocales: context.supportedLocales,
-              path: 'assets/translations', // path to the translation files
-              fallbackLocale: Locale('en'), // default fallback locale
-              startLocale: _mapAppLanguageToLocale(selectedLanguage),
-              child: MultiProvider(
-                providers: [
-                  Provider<GamesServicesController?>.value(
-                    value: gamesServicesController,
-                  ),
-                  Provider<AdsController?>.value(
-                    value: adsController,
-                  ),
-                  ChangeNotifierProvider<InAppPurchaseController?>.value(
-                    value: inAppPurchaseController,
-                  ),
-                  Provider<SettingsController>(
-                    lazy: false,
-                    create: (context) => SettingsController(
-                      persistence: settingsPersistence,
-                    )..loadStateFromPersistence(),
-                  ),
-                  ProxyProvider2<SettingsController,
-                      ValueNotifier<AppLifecycleState>, AudioController>(
-                    lazy: false,
-                    create: (context) => AudioController()..initialize(),
-                    update: (context, settings, lifecycleNotifier, audio) {
-                      if (audio == null) throw ArgumentError.notNull();
-                      audio.attachSettings(settings);
-                      audio.attachLifecycleNotifier(lifecycleNotifier);
-                      return audio;
-                    },
-                    dispose: (context, audio) => audio.dispose(),
-                  ),
-                  Provider(
-                    create: (context) => Palette(),
-                  ),
-                ],
-                child: Builder(builder: (context) {
-                  final palette = context.watch<Palette>();
+      child: MultiProvider(
+        providers: [
+          Provider<GamesServicesController?>.value(
+            value: gamesServicesController,
+          ),
+          Provider<AdsController?>.value(
+            value: adsController,
+          ),
+          ChangeNotifierProvider<InAppPurchaseController?>.value(
+            value: inAppPurchaseController,
+          ),
+          Provider<SettingsController>(
+            lazy: false,
+            create: (context) => SettingsController(
+              persistence: settingsPersistence,
+            )..loadStateFromPersistence(),
+          ),
+          ProxyProvider2<SettingsController, ValueNotifier<AppLifecycleState>,
+              AudioController>(
+            lazy: false,
+            create: (context) => AudioController()..initialize(),
+            update: (context, settings, lifecycleNotifier, audio) {
+              if (audio == null) throw ArgumentError.notNull();
+              audio.attachSettings(settings);
+              audio.attachLifecycleNotifier(lifecycleNotifier);
+              return audio;
+            },
+            dispose: (context, audio) => audio.dispose(),
+          ),
+          Provider(
+            create: (context) => Palette(),
+          ),
+        ],
+        child: Builder(builder: (context) {
+          final palette = context.watch<Palette>();
 
-                  return MaterialApp.router(
-                    title: 'Flutter Demo',
-                    locale: context.locale,
-                    supportedLocales: context.supportedLocales,
-                    localizationsDelegates: context.localizationDelegates,
-                    theme: ThemeData.from(
-                      colorScheme: ColorScheme.fromSeed(
-                        seedColor: palette.darkPen,
-                        background: palette.backgroundMain,
-                      ),
-                      textTheme: TextTheme(
-                        bodyMedium: TextStyle(
-                          color: palette.ink,
-                        ),
-                      ),
-                      useMaterial3: true,
-                    ),
-                    routeInformationProvider: _router.routeInformationProvider,
-                    routeInformationParser: _router.routeInformationParser,
-                    routerDelegate: _router.routerDelegate,
-                    scaffoldMessengerKey: scaffoldMessengerKey,
-                  );
-                }),
-              ),
-            );
-          } else {
-            return CircularProgressIndicator(); // or another placeholder widget
+          Future<Locale> getLocaleFromSettings() async {
+            final selectedLanguage = await settingsPersistence.getAppLanguage();
+            print(selectedLanguage);
+            return _mapAppLanguageToLocale(selectedLanguage);
           }
-        },
+
+          return FutureBuilder<Locale>(
+            future: getLocaleFromSettings(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return MaterialApp.router(
+                  title: 'Flutter Demo',
+                  locale: snapshot.data,
+                  supportedLocales: context.supportedLocales,
+                  localizationsDelegates: context.localizationDelegates,
+                  theme: ThemeData.from(
+                    colorScheme: ColorScheme.fromSeed(
+                      seedColor: palette.darkPen,
+                      background: palette.backgroundMain,
+                    ),
+                    textTheme: TextTheme(
+                      bodyMedium: TextStyle(
+                        color: palette.ink,
+                      ),
+                    ),
+                    useMaterial3: true,
+                  ),
+                  routeInformationProvider: _router.routeInformationProvider,
+                  routeInformationParser: _router.routeInformationParser,
+                  routerDelegate: _router.routerDelegate,
+                  scaffoldMessengerKey: scaffoldMessengerKey,
+                );
+              } else {
+                return CircularProgressIndicator(); // Or any other loading indicator
+              }
+            },
+          );
+        }),
       ),
     );
-  }
-
-  Future<AppLanguage> getAppLanguageFromSettings() async {
-    final language = await settingsPersistence.getAppLanguage();
-    return language;
   }
 
   Locale _mapAppLanguageToLocale(AppLanguage language) {
