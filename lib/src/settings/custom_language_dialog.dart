@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../constants/settings.dart';
@@ -73,11 +74,15 @@ class _LanguageOption extends StatelessWidget {
       onTap: () {
         if (language == "English") {
           settings.setAppLanguage(AppLanguage.english);
+          context.setLocale(Locale("en"));
         } else if (language == "Polski") {
           settings.setAppLanguage(AppLanguage.polish);
+          context.setLocale(Locale("pl"));
         } else if (language == "Deutsch") {
           settings.setAppLanguage(AppLanguage.german);
+          context.setLocale(Locale("de"));
         }
+
         // Implement setting language logic for other languages
         Navigator.pop(context);
       },
