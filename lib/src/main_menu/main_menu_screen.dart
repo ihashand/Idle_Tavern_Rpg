@@ -2,10 +2,10 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
@@ -18,23 +18,11 @@ class MainMenuScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const MaterialApp(
-      title: 'Localizations',
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-    );
-
-    MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: MainMenuScreen(),
-    );
-
     final gamesServicesController = context.watch<GamesServicesController?>();
     final settingsController = context.watch<SettingsController>();
     final audioController = context.watch<AudioController>();
-    print("<<<<");
-    print(settingsController.playerName.value);
+    print('play'.tr());
+    print('language'.tr());
 
     return ValueListenableBuilder<String>(
         valueListenable: settingsController.playerName,
@@ -74,7 +62,7 @@ class MainMenuScreen extends StatelessWidget {
                         audioController.playSfx(SfxType.buttonTap);
                         GoRouter.of(context).go('/play');
                       },
-                      child: Text(AppLocalizations.of(context)!.play),
+                      child: Text('play').tr(),
                     ),
                     _gap,
                     if (gamesServicesController != null) ...[

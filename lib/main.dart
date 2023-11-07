@@ -1,14 +1,3 @@
-// Copyright 2022, the Flutter project authors. Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed by a
-// BSD-style license that can be found in the LICENSE file.
-
-// Uncomment the following lines when enabling Firebase Crashlytics
-// import 'dart:io';
-// import 'package:firebase_core/firebase_core.dart';
-// import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-// import 'package:flutter/foundation.dart';
-// import 'firebase_options.dart';
-
 import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
@@ -18,6 +7,7 @@ import 'package:game_template/src/graphic_tavern_interior/graphic_tavern_interio
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'src/ads/ads_controller.dart';
 import 'src/app_lifecycle/app_lifecycle.dart';
@@ -35,8 +25,6 @@ import 'src/style/my_transition.dart';
 import 'src/style/palette.dart';
 import 'src/style/snack_bar.dart';
 import 'src/win_game/win_game_screen.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Future<void> main() async {
   // Subscribe to log messages.
@@ -53,6 +41,7 @@ Future<void> main() async {
   });
 
   WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
 
   // TODO: To enable Firebase Crashlytics, uncomment the following line.
   // See the 'Crashlytics' section of the main README.md file for details.
@@ -111,13 +100,17 @@ Future<void> main() async {
   //   // Ask the store what the player has bought already.
   //   inAppPurchaseController.restorePurchases();
   // }
-
   runApp(
-    MyApp(
-      settingsPersistence: LocalStorageSettingsPersistence(),
-      inAppPurchaseController: inAppPurchaseController,
-      adsController: adsController,
-      gamesServicesController: gamesServicesController,
+    EasyLocalization(
+      supportedLocales: const [Locale('en'), Locale('de'), Locale('pl')],
+      path: 'assets/translations',
+      fallbackLocale: Locale('en'),
+      child: MyApp(
+        settingsPersistence: LocalStorageSettingsPersistence(),
+        inAppPurchaseController: inAppPurchaseController,
+        adsController: adsController,
+        gamesServicesController: gamesServicesController,
+      ),
     ),
   );
 }
@@ -209,71 +202,71 @@ class MyApp extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.done) {
             final AppLanguage selectedLanguage =
                 snapshot.data ?? AppLanguage.english;
-
-            return MultiProvider(
-              providers: [
-                Provider<GamesServicesController?>.value(
-                  value: gamesServicesController,
-                ),
-                Provider<AdsController?>.value(
-                  value: adsController,
-                ),
-                ChangeNotifierProvider<InAppPurchaseController?>.value(
-                  value: inAppPurchaseController,
-                ),
-                Provider<SettingsController>(
-                  lazy: false,
-                  create: (context) => SettingsController(
-                    persistence: settingsPersistence,
-                  )..loadStateFromPersistence(),
-                ),
-                ProxyProvider2<SettingsController,
-                    ValueNotifier<AppLifecycleState>, AudioController>(
-                  lazy: false,
-                  create: (context) => AudioController()..initialize(),
-                  update: (context, settings, lifecycleNotifier, audio) {
-                    if (audio == null) throw ArgumentError.notNull();
-                    audio.attachSettings(settings);
-                    audio.attachLifecycleNotifier(lifecycleNotifier);
-                    return audio;
-                  },
-                  dispose: (context, audio) => audio.dispose(),
-                ),
-                Provider(
-                  create: (context) => Palette(),
-                ),
-              ],
-              child: Builder(builder: (context) {
-                final palette = context.watch<Palette>();
-
-                return MaterialApp.router(
-                  title: 'Flutter Demo',
-                  localizationsDelegates: const [
-                    AppLocalizations.delegate,
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                  ],
-                  supportedLocales: AppLocalizations.supportedLocales,
-                  locale: _mapAppLanguageToLocale(selectedLanguage),
-                  theme: ThemeData.from(
-                    colorScheme: ColorScheme.fromSeed(
-                      seedColor: palette.darkPen,
-                      background: palette.backgroundMain,
-                    ),
-                    textTheme: TextTheme(
-                      bodyMedium: TextStyle(
-                        color: palette.ink,
-                      ),
-                    ),
-                    useMaterial3: true,
+            return EasyLocalization(
+              supportedLocales: context.supportedLocales,
+              path: 'assets/translations', // path to the translation files
+              fallbackLocale: Locale('en'), // default fallback locale
+              startLocale: _mapAppLanguageToLocale(selectedLanguage),
+              child: MultiProvider(
+                providers: [
+                  Provider<GamesServicesController?>.value(
+                    value: gamesServicesController,
                   ),
-                  routeInformationProvider: _router.routeInformationProvider,
-                  routeInformationParser: _router.routeInformationParser,
-                  routerDelegate: _router.routerDelegate,
-                  scaffoldMessengerKey: scaffoldMessengerKey,
-                );
-              }),
+                  Provider<AdsController?>.value(
+                    value: adsController,
+                  ),
+                  ChangeNotifierProvider<InAppPurchaseController?>.value(
+                    value: inAppPurchaseController,
+                  ),
+                  Provider<SettingsController>(
+                    lazy: false,
+                    create: (context) => SettingsController(
+                      persistence: settingsPersistence,
+                    )..loadStateFromPersistence(),
+                  ),
+                  ProxyProvider2<SettingsController,
+                      ValueNotifier<AppLifecycleState>, AudioController>(
+                    lazy: false,
+                    create: (context) => AudioController()..initialize(),
+                    update: (context, settings, lifecycleNotifier, audio) {
+                      if (audio == null) throw ArgumentError.notNull();
+                      audio.attachSettings(settings);
+                      audio.attachLifecycleNotifier(lifecycleNotifier);
+                      return audio;
+                    },
+                    dispose: (context, audio) => audio.dispose(),
+                  ),
+                  Provider(
+                    create: (context) => Palette(),
+                  ),
+                ],
+                child: Builder(builder: (context) {
+                  final palette = context.watch<Palette>();
+
+                  return MaterialApp.router(
+                    title: 'Flutter Demo',
+                    locale: context.locale,
+                    supportedLocales: context.supportedLocales,
+                    localizationsDelegates: context.localizationDelegates,
+                    theme: ThemeData.from(
+                      colorScheme: ColorScheme.fromSeed(
+                        seedColor: palette.darkPen,
+                        background: palette.backgroundMain,
+                      ),
+                      textTheme: TextTheme(
+                        bodyMedium: TextStyle(
+                          color: palette.ink,
+                        ),
+                      ),
+                      useMaterial3: true,
+                    ),
+                    routeInformationProvider: _router.routeInformationProvider,
+                    routeInformationParser: _router.routeInformationParser,
+                    routerDelegate: _router.routerDelegate,
+                    scaffoldMessengerKey: scaffoldMessengerKey,
+                  );
+                }),
+              ),
             );
           } else {
             return CircularProgressIndicator(); // or another placeholder widget
@@ -289,7 +282,6 @@ class MyApp extends StatelessWidget {
   }
 
   Locale _mapAppLanguageToLocale(AppLanguage language) {
-    print(language);
     switch (language) {
       case AppLanguage.english:
         return const Locale('en');
