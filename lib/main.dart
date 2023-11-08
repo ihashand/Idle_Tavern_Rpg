@@ -207,6 +207,8 @@ class MyApp extends StatelessWidget {
           Future<Locale> getLocaleFromSettings() async {
             final selectedLanguage = await settingsPersistence.getAppLanguage();
             Locale locale = _mapAppLanguageToLocale(selectedLanguage);
+            // ignore: use_build_context_synchronously
+            context.setLocale(locale);
             return locale;
           }
 
@@ -214,10 +216,9 @@ class MyApp extends StatelessWidget {
             future: getLocaleFromSettings(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
-                context.setLocale(snapshot.data ?? const Locale('en'));
                 return MaterialApp.router(
                   title: 'Flutter Demo',
-                  locale: snapshot.data,
+                  locale: context.locale,
                   supportedLocales: context.supportedLocales,
                   localizationsDelegates: context.localizationDelegates,
                   theme: ThemeData.from(
