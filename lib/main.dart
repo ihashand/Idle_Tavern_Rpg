@@ -1,5 +1,4 @@
 import 'dart:developer' as dev;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:game_template/constants/settings.dart';
@@ -8,13 +7,12 @@ import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
-
 import 'src/ads/ads_controller.dart';
 import 'src/app_lifecycle/app_lifecycle.dart';
 import 'src/audio/audio_controller.dart';
 import 'src/games_services/games_services.dart';
 import 'src/in_app_purchase/in_app_purchase.dart';
-import 'src/tavern_interior/tavern_interior_screen.dart';
+import 'src/town_menu/town_menu_screen.dart';
 import 'src/main_menu/main_menu_screen.dart';
 import 'src/settings/persistence/local_storage_settings_persistence.dart';
 import 'src/settings/persistence/settings_persistence.dart';
@@ -137,7 +135,7 @@ class MyApp extends StatelessWidget {
                 }
                 return buildMyTransition<void>(
                   key: ValueKey('play'),
-                  child: const TavernInteriorScreen(
+                  child: const TownMenuScreen(
                     key: Key('level selection'),
                   ),
                   color: context.watch<Palette>().backgroundLevelSelection,

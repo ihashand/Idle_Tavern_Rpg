@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class MainHallScreen extends StatelessWidget {
+class TavernScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
