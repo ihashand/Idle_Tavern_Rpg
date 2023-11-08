@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:game_template/src/playable_screens/tavern_screen.dart';
 
 class QuestsScreen extends StatefulWidget {
   @override
@@ -8,6 +9,7 @@ class QuestsScreen extends StatefulWidget {
 
 class _QuestsScreenState extends State<QuestsScreen> {
   String selectedCategory = 'Wszystkie';
+  int _selectedIndex = 0;
 
   final List<String> categories = [
     'Wszystkie',
@@ -21,22 +23,25 @@ class _QuestsScreenState extends State<QuestsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('quests').tr(),
+        automaticallyImplyLeading: false,
         actions: [
-          PopupMenuButton<String>(
-            onSelected: (category) {
-              setState(() {
-                selectedCategory = category;
-              });
-            },
-            itemBuilder: (BuildContext context) {
-              return categories.map((String category) {
-                return PopupMenuItem<String>(
+          Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: DropdownButton<String>(
+              value: selectedCategory,
+              onChanged: (category) {
+                setState(() {
+                  selectedCategory = category!;
+                });
+              },
+              items: categories.map((String category) {
+                return DropdownMenuItem<String>(
                   value: category,
-                  child: Text(category).tr(),
+                  child: Text(category),
                 );
-              }).toList();
-            },
+              }).toList(),
+            ),
           ),
         ],
       ),
@@ -46,8 +51,8 @@ class _QuestsScreenState extends State<QuestsScreen> {
             if (selectedCategory == 'Wszystkie' ||
                 quest.category == selectedCategory)
               ListTile(
-                title: Text(quest.title).tr(),
-                subtitle: Text(quest.description).tr(),
+                title: Text(quest.title),
+                subtitle: Text(quest.description),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -70,8 +75,45 @@ class _QuestsScreenState extends State<QuestsScreen> {
               ),
         ],
       ),
+     bottomNavigationBar: BottomNavigationBar(
+  backgroundColor: Colors.black,
+  unselectedItemColor: Colors.white, // Kolor ikon i etykiet dla niezaznaczonych pozycji
+  selectedItemColor: Colors.white, // Kolor ikon i etykiet dla zaznaczonej pozycji
+  items: <BottomNavigationBarItem>[
+    BottomNavigationBarItem(   
+      icon: Icon(Icons.arrow_back),
+      label: 'back'.tr(),
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.home),
+      label: 'tavern'.tr(),
+    ),
+  ],
+        currentIndex: _selectedIndex,
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
+        onTap: (int index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+          if (index == 0) {
+            Navigator.pop(context);
+          } else {
+            switch (index) {
+              case 1:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => TavernScreen()),
+                );
+                break;
+            }
+          }
+        },
+      ),
     );
   }
+}
+
 
   void _showInfoDialog(BuildContext context, Quest quest) {
     showDialog(
@@ -112,7 +154,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
       },
     );
   }
-}
+
 
 class Quest {
   final String title;
