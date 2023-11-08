@@ -75,20 +75,22 @@ class _QuestsScreenState extends State<QuestsScreen> {
               ),
         ],
       ),
-     bottomNavigationBar: BottomNavigationBar(
-  backgroundColor: Colors.black,
-  unselectedItemColor: Colors.white, // Kolor ikon i etykiet dla niezaznaczonych pozycji
-  selectedItemColor: Colors.white, // Kolor ikon i etykiet dla zaznaczonej pozycji
-  items: <BottomNavigationBarItem>[
-    BottomNavigationBarItem(   
-      icon: Icon(Icons.arrow_back),
-      label: 'back'.tr(),
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.home),
-      label: 'tavern'.tr(),
-    ),
-  ],
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.black,
+        unselectedItemColor:
+            Colors.white, // Kolor ikon i etykiet dla niezaznaczonych pozycji
+        selectedItemColor:
+            Colors.white, // Kolor ikon i etykiet dla zaznaczonej pozycji
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.arrow_back),
+            label: 'back'.tr(),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'tavern'.tr(),
+          ),
+        ],
         currentIndex: _selectedIndex,
         showSelectedLabels: true,
         showUnselectedLabels: true,
@@ -114,47 +116,45 @@ class _QuestsScreenState extends State<QuestsScreen> {
   }
 }
 
+void _showInfoDialog(BuildContext context, Quest quest) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text('Informacje o misji').tr(),
+        content: Text(quest.details).tr(),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('OK').tr(),
+          ),
+        ],
+      );
+    },
+  );
+}
 
-  void _showInfoDialog(BuildContext context, Quest quest) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Informacje o misji').tr(),
-          content: Text(quest.details).tr(),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('OK').tr(),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showRewardDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Odbierz nagrodę').tr(),
-          content: Text('Gratulacje! Odbierasz nagrodę.').tr(),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('OK').tr(),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
+void _showRewardDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text('Odbierz nagrodę').tr(),
+        content: Text('Gratulacje! Odbierasz nagrodę.').tr(),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('OK').tr(),
+          ),
+        ],
+      );
+    },
+  );
+}
 
 class Quest {
   final String title;
