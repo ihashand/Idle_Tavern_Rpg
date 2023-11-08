@@ -1,4 +1,12 @@
 {
   "play": "Graj",
-  "language": "Język"
+  "language": "Język",
+  "tavern": "Tawerna",
+  "rooms": "Izby",
+  "warehouse": "Magazyn",
+  "woodstorage": "Drwal",
+  "kitchen": "Kuchnia",
+  "back": "Cofnij",
+  "tavern menu": "Menu tawerny",
+  "quests": "Zadania"
 }

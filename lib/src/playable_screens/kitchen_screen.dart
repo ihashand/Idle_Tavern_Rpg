@@ -22,6 +22,8 @@ class Ingredient {
 }
 
 class KitchenScreen extends StatefulWidget {
+  const KitchenScreen({super.key});
+
   @override
   _KitchenScreenState createState() => _KitchenScreenState();
 }
