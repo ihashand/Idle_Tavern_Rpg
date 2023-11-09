@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:game_template/src/playable_screens/tavern_screen.dart';
-import 'package:game_template/src/temporary_database/quests/available_quests.dart';
+import 'package:game_template/src/temporary_database/quests/available_quests_data.dart';
 
 class QuestsScreen extends StatefulWidget {
   @override
@@ -61,7 +61,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
                       IconButton(
                         icon: Icon(Icons.info),
                         onPressed: () {
-                          _showInfoDialog(context, quest);
+                          _showInfoDialog(context, quest as Quest);
                         },
                       ),
                     if (quest.isCompleted)
