@@ -365,7 +365,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 ListTile(
-                  title: Text('Spin for Reward'),
+                  title: Text('Get reward'),
                   onTap: () {
                     _spinWheelOfFortune();
                   },
