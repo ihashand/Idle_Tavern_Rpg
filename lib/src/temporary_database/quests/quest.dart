@@ -1,4 +1,4 @@
-class Quest {
+final class Quest {
   final String title;
   final String description;
   final String category;
