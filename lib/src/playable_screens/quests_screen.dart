@@ -1,23 +1,24 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:game_template/src/playable_screens/tavern_screen.dart';
+import 'package:game_template/src/temporary_database/quests/available_quests_data.dart';
 
 class QuestsScreen extends StatefulWidget {
   @override
   _QuestsScreenState createState() => _QuestsScreenState();
 }
 
+final List<String> categories = [
+  'Wszystkie',
+  'Misje Gildijne',
+  'Misje Lokalnych Klientów',
+  'Misje Wydarzeniowe',
+  'Misje Dzienne i Tygodniowe'
+];
+
 class _QuestsScreenState extends State<QuestsScreen> {
   String selectedCategory = 'Wszystkie';
   int _selectedIndex = 0;
-
-  final List<String> categories = [
-    'Wszystkie',
-    'Misje Gildijne',
-    'Misje Lokalnych Klientów',
-    'Misje Wydarzeniowe',
-    'Misje Dzienne i Tygodniowe'
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +61,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
                       IconButton(
                         icon: Icon(Icons.info),
                         onPressed: () {
-                          _showInfoDialog(context, quest);
+                          _showInfoDialog(context, quest as Quest);
                         },
                       ),
                     if (quest.isCompleted)
@@ -167,21 +168,3 @@ class Quest {
   Quest(this.title, this.description, this.category, this.details,
       {this.isInfoAvailable = false, this.isCompleted = false});
 }
-
-final List<Quest> availableQuests = [
-  Quest('Tytuł Misji 1', 'Krótki opis misji 1', 'Misje Gildijne',
-      'Szczegóły misji 1',
-      isInfoAvailable: true, isCompleted: false),
-  Quest('Tytuł Misji 2', 'Krótki opis misji 2', 'Misje Lokalnych Klientów',
-      'Szczegóły misji 2',
-      isInfoAvailable: true, isCompleted: false),
-  Quest('Tytuł Misji 3', 'Krótki opis misji 3', 'Misje Wydarzeniowe',
-      'Szczegóły misji 3',
-      isInfoAvailable: true, isCompleted: false),
-  Quest('Tytuł Misji 4', 'Krótki opis misji 4', 'Misje Dzienne i Tygodniowe',
-      'Szczegóły misji 4',
-      isInfoAvailable: true, isCompleted: true),
-  Quest('Tytuł Misji 5', 'Krótki opis misji 5', 'Misje Gildijne',
-      'Szczegóły misji 5',
-      isInfoAvailable: true, isCompleted: true),
-];
