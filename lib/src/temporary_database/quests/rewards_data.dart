@@ -1,4 +1,3 @@
-import 'package:game_template/src/playable_screens/quests_screen.dart';
 import 'package:game_template/src/temporary_database/quests/reward.dart';
 
 List<Reward> rewards = [

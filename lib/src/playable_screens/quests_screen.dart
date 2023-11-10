@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:game_template/src/playable_screens/tavern_screen.dart';
 import 'package:game_template/src/temporary_database/quests/available_quests_data.dart';
-import 'package:game_template/src/temporary_database/quests/categories_data.dart';
 import 'package:game_template/src/temporary_database/quests/quest.dart';
 import 'package:game_template/src/temporary_database/quests/reward.dart';
 import 'dart:async';
