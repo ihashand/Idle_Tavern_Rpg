@@ -14,6 +14,14 @@ class QuestsScreen extends StatefulWidget {
   _QuestsScreenState createState() => _QuestsScreenState();
 }
 
+final List<String> categories = [
+  'Wszystkie',
+  'Misje Gildijne',
+  'Misje Lokalnych Klientów',
+  'Misje Wydarzeniowe',
+  'Misje Dzienne i Tygodniowe'
+];
+
 class _QuestsScreenState extends State<QuestsScreen> {
   String selectedCategory = 'All';
   int _selectedIndex = 0;
@@ -156,7 +164,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
                       IconButton(
                         icon: Icon(Icons.info),
                         onPressed: () {
-                          _showInfoDialog(context, quest);
+                          _showInfoDialog(context, quest as Quest);
                         },
                       ),
                     if (quest.isCompleted)
