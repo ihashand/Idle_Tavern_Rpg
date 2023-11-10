@@ -6,7 +6,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../games_services/games_services.dart';
@@ -23,17 +22,20 @@ class MainMenuScreen extends StatelessWidget {
     final audioController = context.watch<AudioController>();
 
     return ValueListenableBuilder<String>(
-        valueListenable: settingsController.playerName,
-        builder: (context, playerName, child) {
-          return Scaffold(
-            body: Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("assets/images/menu/tawerna1.png"),
-                  fit: BoxFit.fill,
+      valueListenable: settingsController.playerName,
+      builder: (context, playerName, child) {
+        return Scaffold(
+          body: Stack(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("assets/images/menu/homescreen.png"),
+                    fit: BoxFit.fill,
+                  ),
                 ),
               ),
-              child: ResponsiveScreen(
+              ResponsiveScreen(
                 mainAreaProminence: 0.45,
                 squarishMainArea: Center(
                   child: Transform.rotate(
@@ -55,13 +57,6 @@ class MainMenuScreen extends StatelessWidget {
                 rectangularMenuArea: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    FilledButton(
-                      onPressed: () {
-                        audioController.playSfx(SfxType.buttonTap);
-                        GoRouter.of(context).go('/play');
-                      },
-                      child: Text('play').tr(),
-                    ),
                     _gap,
                     if (gamesServicesController != null) ...[
                       _hideUntilReady(
@@ -84,50 +79,59 @@ class MainMenuScreen extends StatelessWidget {
                       _gap,
                     ],
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment
+                          .spaceBetween, // równomierne rozmieszczenie
                       children: [
-                        SizedBox(width: 1), // Odstęp między przyciskami
+                        FilledButton(
+                          onPressed: () {
+                            audioController.playSfx(SfxType.buttonTap);
+                            GoRouter.of(context).go('/play');
+                          },
+                          child: Text('play').tr(),
+                        ),
+                        Spacer(), // elastyczna przestrzeń między przyciskami
                         ValueListenableBuilder<bool>(
                           valueListenable: settingsController.muted,
                           builder: (context, muted, child) {
                             return IconButton(
                               onPressed: () => settingsController.toggleMuted(),
                               icon: Icon(
-                                  muted ? Icons.volume_off : Icons.volume_up),
-                              color: Color.fromARGB(255, 6, 27, 44),
+                                muted ? Icons.volume_off : Icons.volume_up,
+                              ),
+                              color: Color.fromARGB(255, 15, 147, 255),
                             );
                           },
                         ),
+                        Spacer(), // elastyczna przestrzeń między przyciskami
                         IconButton(
                           onPressed: () =>
                               GoRouter.of(context).push('/settings'),
                           icon: Icon(
                             Icons.settings,
-                            color: Color.fromARGB(255, 6, 27, 44),
                           ),
+                          color: Color.fromARGB(255, 15, 147, 255),
                         ),
                       ],
                     ),
                   ],
                 ),
               ),
-            ),
-          );
-        });
+            ],
+          ),
+          extendBody: true,
+          // This makes bootom bar transparent, that we can use ours
+          bottomNavigationBar: BottomAppBar(
+            color: Colors.transparent,
+          ),
+        );
+      },
+    );
   }
 
-  /// Prevents the game from showing game-services-related menu items
-  /// until we're sure the player is signed in.
-  ///
-  /// This normally happens immediately after game start, so players will not
-  /// see any flash. The exception is folks who decline to use Game Center
-  /// or Google Play Game Services, or who haven't yet set it up.
   Widget _hideUntilReady({required Widget child, required Future<bool> ready}) {
     return FutureBuilder<bool>(
       future: ready,
       builder: (context, snapshot) {
-        // Use Visibility here so that we have the space for the buttons
-        // ready.
         return Visibility(
           visible: snapshot.data ?? false,
           maintainState: true,

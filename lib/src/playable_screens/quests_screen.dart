@@ -5,26 +5,17 @@ import 'package:game_template/src/temporary_database/quests/available_quests_dat
 import 'package:game_template/src/temporary_database/quests/quest.dart';
 import 'package:game_template/src/temporary_database/quests/reward.dart';
 import 'dart:async';
-
 import 'package:game_template/src/temporary_database/quests/rewards_data.dart';
+import '../temporary_database/quests/categories_data.dart';
 
 class QuestsScreen extends StatefulWidget {
   @override
   _QuestsScreenState createState() => _QuestsScreenState();
 }
 
-final List<String> categories = [
-  'Wszystkie',
-  'Misje Gildijne',
-  'Misje Lokalnych Klientów',
-  'Misje Wydarzeniowe',
-  'Misje Dzienne i Tygodniowe'
-];
-
 class _QuestsScreenState extends State<QuestsScreen> {
   String selectedCategory = 'All';
   int _selectedIndex = 0;
-
   bool wheelOfFortuneAvailable = true;
   String wheelOfFortuneResult = '';
   String newDay = "";
@@ -32,57 +23,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
   int spinsRemaining = 7;
   bool wheelSpinAllowed = true;
   List<bool> daysSpun = List.generate(7, (index) => false);
-
   Timer? _dailyResetTimer;
-
-  @override
-  void initState() {
-    super.initState();
-    _generateRewards();
-    _startDailyResetTimer();
-  }
-
-  void _resetAndShuffleRewards() {
-    _generateRewards();
-    rewards.shuffle();
-    setState(() {
-      daysSpun = List.generate(7, (index) => false);
-    });
-  }
-
-  void _startDailyResetTimer() {
-    const oneDay = Duration(days: 1);
-    _dailyResetTimer = Timer.periodic(oneDay, (timer) {
-      if (mounted) {
-        _resetAndShuffleRewards();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _dailyResetTimer?.cancel(); // Anuluj timer przed usunięciem widgetu
-    super.dispose();
-  }
-
-  void _generateRewards() {
-    // Assign rewards based on the current day
-    for (int i = 0; i < rewards.length; i++) {
-      if (currentDay <= 3 && rewards[i].value == 1) {
-        rewards[i] = Reward(rewards[i].name, 1);
-      } else if (currentDay <= 6 && rewards[i].value == 2) {
-        rewards[i] = Reward(rewards[i].name, 2);
-      } else if (currentDay == 7 && rewards[i].value == 3) {
-        rewards[i] = Reward(rewards[i].name, 3);
-      }
-    }
-
-    // Shuffle rewards
-    rewards.shuffle();
-
-    // Sort rewards from least valuable to most valuable
-    rewards.sort((a, b) => a.value.compareTo(b.value));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -214,6 +155,55 @@ class _QuestsScreenState extends State<QuestsScreen> {
         },
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _generateRewards();
+    _startDailyResetTimer();
+  }
+
+  void _resetAndShuffleRewards() {
+    _generateRewards();
+    rewards.shuffle();
+    setState(() {
+      daysSpun = List.generate(7, (index) => false);
+    });
+  }
+
+  void _startDailyResetTimer() {
+    const oneDay = Duration(days: 1);
+    _dailyResetTimer = Timer.periodic(oneDay, (timer) {
+      if (mounted) {
+        _resetAndShuffleRewards();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _dailyResetTimer?.cancel(); // Anuluj timer przed usunięciem widgetu
+    super.dispose();
+  }
+
+  void _generateRewards() {
+    // Assign rewards based on the current day
+    for (int i = 0; i < rewards.length; i++) {
+      if (currentDay <= 3 && rewards[i].value == 1) {
+        rewards[i] = Reward(rewards[i].name, 1);
+      } else if (currentDay <= 6 && rewards[i].value == 2) {
+        rewards[i] = Reward(rewards[i].name, 2);
+      } else if (currentDay == 7 && rewards[i].value == 3) {
+        rewards[i] = Reward(rewards[i].name, 3);
+      }
+    }
+
+    // Shuffle rewards
+    rewards.shuffle();
+
+    // Sort rewards from least valuable to most valuable
+    rewards.sort((a, b) => a.value.compareTo(b.value));
   }
 
   String _addDay() {
