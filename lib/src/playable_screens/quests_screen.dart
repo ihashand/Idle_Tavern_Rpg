@@ -7,7 +7,7 @@ import 'package:game_template/src/temporary_database/quests/reward.dart';
 import 'dart:async';
 import 'package:game_template/src/temporary_database/quests/rewards_data.dart';
 import 'package:provider/provider.dart';
-import '../GameState.dart';
+import '../../GameState.dart';
 import '../temporary_database/quests/categories_data.dart';
 import '../temporary_database/tavern/tavern_models/item.dart';
 

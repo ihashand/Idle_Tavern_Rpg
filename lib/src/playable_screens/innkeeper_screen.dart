@@ -9,7 +9,7 @@ import 'package:game_template/src/temporary_database/tavern/tavern_models/player
 import 'package:game_template/src/temporary_database/tavern/tavern_data/player_one_data.dart';
 import 'package:provider/provider.dart';
 
-import '../GameState.dart';
+import '../../GameState.dart';
 
 class InnkeeperScreen extends StatefulWidget {
   const InnkeeperScreen({super.key});

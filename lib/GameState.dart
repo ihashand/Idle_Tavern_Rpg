@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'temporary_database/tavern/tavern_models/item.dart';
+import 'src/temporary_database/tavern/tavern_models/item.dart';
 
 class GameState extends ChangeNotifier {
   List<Item> inventory = [];
