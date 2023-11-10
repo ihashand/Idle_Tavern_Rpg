@@ -6,14 +6,20 @@ import 'package:game_template/src/temporary_database/quests/quest.dart';
 import 'package:game_template/src/temporary_database/quests/reward.dart';
 import 'dart:async';
 import 'package:game_template/src/temporary_database/quests/rewards_data.dart';
+import 'package:provider/provider.dart';
+import '../GameState.dart';
 import '../temporary_database/quests/categories_data.dart';
+import '../temporary_database/tavern/tavern_models/item.dart';
 
+// Define the QuestsScreen widget
 class QuestsScreen extends StatefulWidget {
   @override
   _QuestsScreenState createState() => _QuestsScreenState();
 }
 
+// Define the state for the QuestsScreen widget
 class _QuestsScreenState extends State<QuestsScreen> {
+  // Variables to manage state and data
   String selectedCategory = 'All';
   int _selectedIndex = 0;
   bool wheelOfFortuneAvailable = true;
@@ -25,12 +31,15 @@ class _QuestsScreenState extends State<QuestsScreen> {
   List<bool> daysSpun = List.generate(7, (index) => false);
   Timer? _dailyResetTimer;
 
+  // Build method to create the UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // App bar with navigation and options
       appBar: AppBar(
         automaticallyImplyLeading: false,
         actions: [
+          // Popup menu for selecting quest categories
           PopupMenuButton<String>(
             onSelected: (category) {
               setState(() {
@@ -55,6 +64,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
               ),
             ),
           ),
+          // Button to add a new day
           Expanded(
             child: Container(
               alignment: Alignment.center,
@@ -67,6 +77,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
               ),
             ),
           ),
+          // Display current day
           Expanded(
             child: Container(
               alignment: Alignment.center,
@@ -77,6 +88,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
               ),
             ),
           ),
+          // Button to access the wheel of fortune
           Expanded(
             child: Container(
               alignment: Alignment.center,
@@ -90,8 +102,10 @@ class _QuestsScreenState extends State<QuestsScreen> {
           ),
         ],
       ),
+      // List of quests
       body: ListView(
         children: <Widget>[
+          // Display quests based on selected category
           for (var quest in availableQuests)
             if (selectedCategory == 'All' || quest.category == selectedCategory)
               ListTile(
@@ -100,6 +114,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    // Button to show quest information
                     if (quest.isInfoAvailable)
                       IconButton(
                         icon: Icon(Icons.info),
@@ -107,11 +122,14 @@ class _QuestsScreenState extends State<QuestsScreen> {
                           _showInfoDialog(context, quest as Quest);
                         },
                       ),
+                    // Button to claim quest reward
                     if (quest.isCompleted)
                       IconButton(
                         icon: Icon(Icons.check),
                         onPressed: () {
+                          _claimQuest(quest, context);
                           _showRewardDialogQuest(context);
+                          removeQuest(quest.id);
                         },
                       ),
                   ],
@@ -119,6 +137,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
               ),
         ],
       ),
+      // Bottom navigation bar for app navigation
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.black,
         unselectedItemColor: Colors.white,
@@ -140,6 +159,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
           setState(() {
             _selectedIndex = index;
           });
+          // Navigate based on the selected index
           if (index == 0) {
             Navigator.pop(context);
           } else {
@@ -157,6 +177,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
     );
   }
 
+  // Initialize state and timers
   @override
   void initState() {
     super.initState();
@@ -164,6 +185,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
     _startDailyResetTimer();
   }
 
+  // Reset and shuffle rewards when the timer triggers
   void _resetAndShuffleRewards() {
     _generateRewards();
     rewards.shuffle();
@@ -172,6 +194,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
     });
   }
 
+  // Start the daily reset timer
   void _startDailyResetTimer() {
     const oneDay = Duration(days: 1);
     _dailyResetTimer = Timer.periodic(oneDay, (timer) {
@@ -181,14 +204,15 @@ class _QuestsScreenState extends State<QuestsScreen> {
     });
   }
 
+  // Dispose of the timer when the widget is removed
   @override
   void dispose() {
-    _dailyResetTimer?.cancel(); // Anuluj timer przed usunięciem widgetu
+    _dailyResetTimer?.cancel();
     super.dispose();
   }
 
+  // Generate rewards based on the current day
   void _generateRewards() {
-    // Assign rewards based on the current day
     for (int i = 0; i < rewards.length; i++) {
       if (currentDay <= 3 && rewards[i].value == 1) {
         rewards[i] = Reward(rewards[i].name, 1);
@@ -198,14 +222,11 @@ class _QuestsScreenState extends State<QuestsScreen> {
         rewards[i] = Reward(rewards[i].name, 3);
       }
     }
-
-    // Shuffle rewards
     rewards.shuffle();
-
-    // Sort rewards from least valuable to most valuable
     rewards.sort((a, b) => a.value.compareTo(b.value));
   }
 
+  // Add a new day and update the UI
   String _addDay() {
     setState(() {
       currentDay = (currentDay % 7) + 1;
@@ -214,20 +235,24 @@ class _QuestsScreenState extends State<QuestsScreen> {
     return newDay;
   }
 
+  // Spin the wheel of fortune and manage rewards
   void _spinWheelOfFortune() {
+    // Check if the current day's reward has already been claimed
     if (!daysSpun[currentDay - 1]) {
       final reward = rewards[currentDay - 1];
 
+      // Check if a previous day was skipped
       if (currentDay > 1 && !daysSpun[currentDay - 2]) {
         _showSkippedDayDialog();
         _resetAndShuffleRewards();
         _resetDayCounter();
       } else {
+        // Claim the reward for the current day
         if (!daysSpun[currentDay - 1]) {
           _showRewardDialog(context, reward);
           daysSpun[currentDay - 1] = true;
 
-          // Sprawdź, czy wszystkie nagrody zostały już odebrane
+          // Check if all rewards have been claimed
           if (daysSpun.every((day) => day)) {
             _resetDayCounter();
             _resetAndShuffleRewards();
@@ -241,6 +266,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
     }
   }
 
+  // Show a dialog if the reward for the current day has already been claimed
   void _showAlreadyClaimedDialog() {
     showDialog(
       context: context,
@@ -261,6 +287,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
     );
   }
 
+  // Show a dialog if a day was skipped
   void _showSkippedDayDialog() {
     showDialog(
       context: context,
@@ -282,6 +309,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
     );
   }
 
+  // Reset the day counter to one
   void _resetDayCounter() {
     setState(() {
       currentDay = 1;
@@ -289,6 +317,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
     _resetAndShuffleRewards();
   }
 
+  // Show a dialog with quest information
   void _showInfoDialog(BuildContext context, Quest quest) {
     showDialog(
       context: context,
@@ -309,6 +338,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
     );
   }
 
+  // Show a dialog with the claimed reward
   void _showRewardDialog(BuildContext context, Reward reward) async {
     Navigator.of(context).pop();
     await showDialog(
@@ -331,6 +361,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
     );
   }
 
+  // Show a dialog for claiming quest rewards
   void _showRewardDialogQuest(BuildContext context) async {
     await showDialog(
       context: context,
@@ -351,6 +382,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
     );
   }
 
+  // Show a bottom sheet with dice menu options
   void _showDiceMenu() async {
     await showModalBottomSheet(
       context: context,
@@ -382,5 +414,22 @@ class _QuestsScreenState extends State<QuestsScreen> {
         );
       },
     );
+  }
+
+  void _claimQuest(Quest quest, BuildContext context) {
+    Item itemTestOne = quest.items[0];
+    Provider.of<GameState>(context, listen: false)
+        .addItemToInventory(itemTestOne);
+  }
+
+  void _claimReward(Quest quest, BuildContext context) {
+    Item itemTestOne = quest.items[0];
+    Provider.of<GameState>(context, listen: false)
+        .addItemToInventory(itemTestOne);
+  }
+
+  void removeQuest(String questId) {
+    availableQuests.removeWhere((quest) => quest.id == questId);
+    setState(() {});
   }
 }

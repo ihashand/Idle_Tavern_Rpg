@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'src/GameState.dart';
 import 'src/ads/ads_controller.dart';
 import 'src/app_lifecycle/app_lifecycle.dart';
 import 'src/audio/audio_controller.dart';
@@ -168,6 +169,9 @@ class MyApp extends StatelessWidget {
     return AppLifecycleObserver(
       child: MultiProvider(
         providers: [
+          ChangeNotifierProvider<GameState>(
+            create: (context) => GameState(),
+          ),
           Provider<GamesServicesController?>.value(
             value: gamesServicesController,
           ),
