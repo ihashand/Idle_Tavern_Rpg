@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:game_template/src/playable_screens/innkeeper_screen.dart';
 import 'package:game_template/src/playable_screens/quests_screen.dart';
 import '../playable_screens/tavern_screen.dart';
 import '../playable_screens/rooms_screen.dart';
@@ -54,6 +55,8 @@ class _TownMenuScreenState extends State<TownMenuScreen> {
                     KitchenScreen()),
                 _buildMenuItem(context, 'quests'.tr(), Icons.question_mark, 5,
                     QuestsScreen()),
+                _buildMenuItem(context, 'innkeeper'.tr(), Icons.question_mark,
+                    6, InnkeeperScreen()),
               ],
             ),
           ),
@@ -129,6 +132,11 @@ class _TownMenuScreenState extends State<TownMenuScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => QuestsScreen()),
+                );
+              case 6:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => InnkeeperScreen()),
                 );
                 break;
             }
