@@ -1,35 +1,18 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-
-class TavernUpgrade {
-  String name;
-  int level;
-  int goldCost;
-
-  TavernUpgrade(this.name, this.level, this.goldCost);
-}
+import 'package:easy_localization/easy_localization.dart';
+import 'package:game_template/src/temporary_database/tavern/tavern_data/player_one_data.dart';
+import 'package:game_template/src/temporary_database/tavern/tavern_data/tavern_upgrade_data.dart';
+import 'package:game_template/src/temporary_database/tavern/tavern_models/tavern.dart';
 
 class UpgradeScreen extends StatefulWidget {
+  const UpgradeScreen({super.key});
+
   @override
   _UpgradeScreenState createState() => _UpgradeScreenState();
 }
 
 class _UpgradeScreenState extends State<UpgradeScreen> {
   int _selectedIndex = 0;
-
-  List<TavernUpgrade> upgrades = [
-    TavernUpgrade("Sala Główna", 1, 100),
-    TavernUpgrade("Pokoje dla Ludzi", 1, 150),
-    TavernUpgrade("Pokoje dla Elfów", 1, 200),
-    TavernUpgrade("Pokoje dla Orków", 1, 250),
-    TavernUpgrade("Pokoje dla Wampirów", 1, 300),
-    TavernUpgrade("Stajnia", 1, 350),
-    TavernUpgrade("Taras Karczmy", 1, 400),
-    TavernUpgrade("Kuchnia", 1, 450),
-    TavernUpgrade("Magazyn", 1, 500),
-  ];
-
-  int gold = 1000; // TODO Replace with actual gold value
 
   @override
   Widget build(BuildContext context) {
@@ -38,16 +21,20 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
         title: Text('upgradeScreen.appBarTitle').tr(),
       ),
       body: ListView.builder(
-        itemCount: upgrades.length,
+        itemCount: tavernUpgrades.length,
         itemBuilder: (context, index) {
-          var upgrade = upgrades[index];
+          var upgrade = tavernUpgrades[index];
           return ListTile(
             title: Text(upgrade.name),
             subtitle: Text(
-                '${'upgradeScreen.itemLevel'.tr()}: ${upgrade.level} | ${'upgradeScreen.itemCost'.tr()}: ${upgrade.goldCost} złoto'),
+              'upgradeScreen.itemLevelAndCost'.tr(namedArgs: {
+                'level': upgrade.level.toString(),
+                'cost': upgrade.goldCost.toString()
+              }),
+            ),
             trailing: ElevatedButton(
               onPressed: () {
-                if (gold >= upgrade.goldCost) {
+                if (player_one.gold >= upgrade.goldCost) {
                   _upgradeTavern(upgrade);
                 } else {
                   _showNotEnoughGoldDialog();
@@ -86,8 +73,42 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
   }
 
   void _upgradeTavern(TavernUpgrade upgrade) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('upgradeScreen.confirmUpgradeContent').tr(namedArgs: {
+            'name': upgrade.name,
+            'lvl': (upgrade.level + 1).toString(),
+            "cost": upgrade.goldCost.toString()
+          }),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the confirmation dialog
+                if (player_one.gold >= upgrade.goldCost) {
+                  _performUpgrade(upgrade);
+                } else {
+                  _showNotEnoughGoldDialog();
+                }
+              },
+              child: Text('upgradeScreen.yesButton').tr(),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the confirmation dialog
+              },
+              child: Text('upgradeScreen.noButton').tr(),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _performUpgrade(TavernUpgrade upgrade) {
     setState(() {
-      gold -= upgrade.goldCost;
+      player_one.gold -= upgrade.goldCost;
       upgrade.level++;
 
       // Apply cost multiplier for the next level
@@ -106,14 +127,14 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Brak Złota').tr(),
-          content: Text('Nie masz wystarczająco złota na ten zakup.').tr(),
+          title: Text('upgradeScreen.notEnoughGoldDialogTitle').tr(),
+          content: Text('upgradeScreen.notEnoughGoldDialogContent').tr(),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('OK').tr(),
+              child: Text('upgradeScreen.okButton').tr(),
             ),
           ],
         );
@@ -126,16 +147,18 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Ulepszenie Zakończone Sukcesem').tr(),
-          content: Text(
-                  'Gratulacje! ${upgrade.name} zostało ulepszone do poziomu ${upgrade.level}.')
-              .tr(),
+          title: Text('upgradeScreen.upgradeSuccessDialogTitle').tr(),
+          content: Text('upgradeScreen.upgradeSuccessDialogContent').tr(
+              namedArgs: {
+                "itemName": upgrade.name,
+                "itemLevel": (upgrade.level + 1).toString()
+              }),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('OK').tr(),
+              child: Text('upgradeScreen.okButton').tr(),
             ),
           ],
         );

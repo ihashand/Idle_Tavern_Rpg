@@ -12,7 +12,7 @@
   "upgrades": "Ulepszenia",
   "upgradeScreen": {
     "appBarTitle": "Tawerna",
-    "itemLevel": "Poziom",
+    "itemLevelAndCost": "Poziom: {level} | Koszt: {cost} złota",
     "itemCost": "Koszt",
     "upgradeButton": "Ulepsz",
     "notEnoughGoldDialogTitle": "Brak Złota",
@@ -20,6 +20,10 @@
     "upgradeSuccessDialogTitle": "Ulepszenie Zakończone Sukcesem",
     "upgradeSuccessDialogContent": "Gratulacje! {itemName} zostało ulepszone do poziomu {itemLevel}.",
     "bottomNavBackLabel": "Wróć",
-    "bottomNavTavernLabel": "Tawerna"
+    "bottomNavTavernLabel": "Tawerna",
+    "confirmUpgradeContent": "Czy na pewno chcesz ulepszyć {name} do poziomu {lvl} za {cost} złota?",
+    "yesButton": "Tak",
+    "noButton": "Nie",
+    "okButton": "OK"
   }
 }
