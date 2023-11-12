@@ -143,6 +143,16 @@ class MyApp extends StatelessWidget {
               },
             ),
             GoRoute(
+              path: 'interior',
+              pageBuilder: (context, state) {
+                return buildMyTransition<void>(
+                  key: ValueKey('interior'),
+                  child: GraphicTavernInteriorScreen(),
+                  color: context.watch<Palette>().backgroundLevelSelection,
+                );
+              },
+            ),
+            GoRoute(
               path: 'settings',
               builder: (context, state) =>
                   const SettingsScreen(key: Key('settings')),
