@@ -8,5 +8,18 @@
   "kitchen": "Kuchnia",
   "back": "Cofnij",
   "tavern menu": "Menu tawerny",
-  "quests": "Zadania"
+  "quests": "Zadania",
+  "upgrades": "Ulepszenia",
+  "upgradeScreen": {
+    "appBarTitle": "Tawerna",
+    "itemLevel": "Poziom",
+    "itemCost": "Koszt",
+    "upgradeButton": "Ulepsz",
+    "notEnoughGoldDialogTitle": "Brak Złota",
+    "notEnoughGoldDialogContent": "Nie masz wystarczająco złota na ten zakup.",
+    "upgradeSuccessDialogTitle": "Ulepszenie Zakończone Sukcesem",
+    "upgradeSuccessDialogContent": "Gratulacje! {itemName} zostało ulepszone do poziomu {itemLevel}.",
+    "bottomNavBackLabel": "Wróć",
+    "bottomNavTavernLabel": "Tawerna"
+  }
 }
