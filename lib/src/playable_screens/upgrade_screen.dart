@@ -151,7 +151,7 @@ class UpgradeScreenState extends State<UpgradeScreen> {
           content: Text('upgradeScreen.upgradeSuccessDialogContent').tr(
               namedArgs: {
                 "itemName": upgrade.name,
-                "itemLevel": (upgrade.level + 1).toString()
+                "itemLevel": upgrade.level.toString()
               }),
           actions: [
             TextButton(
