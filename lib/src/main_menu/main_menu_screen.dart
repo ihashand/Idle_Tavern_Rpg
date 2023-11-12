@@ -29,7 +29,7 @@ class MainMenuScreen extends StatelessWidget {
             body: Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage("assets/images/menu/tawerna1.png"),
+                  image: AssetImage("assets/images/menu/tawerna.png"),
                   fit: BoxFit.fill,
                 ),
               ),
