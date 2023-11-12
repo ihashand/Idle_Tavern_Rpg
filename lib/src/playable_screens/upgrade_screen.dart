@@ -5,13 +5,13 @@ import 'package:game_template/src/temporary_database/tavern/tavern_data/tavern_u
 import 'package:game_template/src/temporary_database/tavern/tavern_models/tavern.dart';
 
 class UpgradeScreen extends StatefulWidget {
-  const UpgradeScreen({super.key});
+  const UpgradeScreen({Key? key}) : super(key: key);
 
   @override
-  _UpgradeScreenState createState() => _UpgradeScreenState();
+  UpgradeScreenState createState() => UpgradeScreenState();
 }
 
-class _UpgradeScreenState extends State<UpgradeScreen> {
+class UpgradeScreenState extends State<UpgradeScreen> {
   int _selectedIndex = 0;
 
   @override
