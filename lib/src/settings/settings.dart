@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 import '../../constants/settings.dart';
 import 'persistence/settings_persistence.dart';
@@ -73,5 +74,17 @@ class SettingsController {
   void setAppLanguage(AppLanguage language) {
     appLanguage.value = language;
     _persistence.saveAppLanguage(language);
+  }
+
+  double getScreenHeight(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    return screenHeight;
+  }
+
+  double getScreenWidth(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    return screenWidth;
   }
 }
