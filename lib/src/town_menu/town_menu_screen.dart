@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:game_template/src/playable_screens/innkeeper_screen.dart';
 import 'package:game_template/src/playable_screens/quests_screen.dart';
+import 'package:game_template/src/playable_screens/upgrade_screen.dart';
 import '../playable_screens/tavern_screen.dart';
 import '../playable_screens/rooms_screen.dart';
 import '../playable_screens/warehouse_screen.dart';
@@ -45,18 +46,20 @@ class _TownMenuScreenState extends State<TownMenuScreen> {
               children: [
                 _buildMenuItem(
                     context, 'tavern'.tr(), Icons.home, 0, TavernScreen()),
+                _buildMenuItem(context, 'upgrades'.tr(), Icons.upgrade, 1,
+                    UpgradeScreen()),
                 _buildMenuItem(
-                    context, 'rooms'.tr(), Icons.hotel, 1, RoomsScreen()),
-                _buildMenuItem(context, 'warehouse'.tr(), Icons.storage, 2,
+                    context, 'rooms'.tr(), Icons.hotel, 2, RoomsScreen()),
+                _buildMenuItem(context, 'warehouse'.tr(), Icons.storage, 3,
                     WarehouseScreen()),
-                _buildMenuItem(context, 'woodstorage'.tr(), Icons.nature, 3,
+                _buildMenuItem(context, 'woodstorage'.tr(), Icons.nature, 4,
                     WoodStorageScreen()),
-                _buildMenuItem(context, 'kitchen'.tr(), Icons.restaurant, 4,
+                _buildMenuItem(context, 'kitchen'.tr(), Icons.restaurant, 5,
                     KitchenScreen()),
-                _buildMenuItem(context, 'quests'.tr(), Icons.question_mark, 5,
+                _buildMenuItem(context, 'quests'.tr(), Icons.question_mark, 6,
                     QuestsScreen()),
                 _buildMenuItem(context, 'innkeeper'.tr(), Icons.question_mark,
-                    6, InnkeeperScreen()),
+                    7, InnkeeperScreen()),
               ],
             ),
           ),
@@ -74,6 +77,10 @@ class _TownMenuScreenState extends State<TownMenuScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'tavern'.tr(),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.upgrade),
+            label: 'upgrades'.tr(),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.hotel),
@@ -104,6 +111,7 @@ class _TownMenuScreenState extends State<TownMenuScreen> {
             Navigator.pop(context);
           } else {
             // Otherwise, use Navigator.push to go to a new screen.
+            // TODO zastąpić numery enumem
             switch (index) {
               case 1:
                 Navigator.push(
@@ -114,26 +122,32 @@ class _TownMenuScreenState extends State<TownMenuScreen> {
               case 2:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => WarehouseScreen()),
+                  MaterialPageRoute(builder: (context) => UpgradeScreen()),
                 );
                 break;
               case 3:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => WoodStorageScreen()),
+                  MaterialPageRoute(builder: (context) => WarehouseScreen()),
                 );
                 break;
               case 4:
                 Navigator.push(
                   context,
+                  MaterialPageRoute(builder: (context) => WoodStorageScreen()),
+                );
+                break;
+              case 5:
+                Navigator.push(
+                  context,
                   MaterialPageRoute(builder: (context) => KitchenScreen()),
                 );
-              case 5:
+              case 6:
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => QuestsScreen()),
                 );
-              case 6:
+              case 7:
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => InnkeeperScreen()),

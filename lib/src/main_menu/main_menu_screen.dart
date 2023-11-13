@@ -22,17 +22,14 @@ class MainMenuScreen extends StatelessWidget {
     final audioController = context.watch<AudioController>();
 
     return ValueListenableBuilder<String>(
-      valueListenable: settingsController.playerName,
-      builder: (context, playerName, child) {
-        return Scaffold(
-          body: Stack(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage("assets/images/menu/homescreen.png"),
-                    fit: BoxFit.fill,
-                  ),
+        valueListenable: settingsController.playerName,
+        builder: (context, playerName, child) {
+          return Scaffold(
+            body: Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("assets/images/menu/tawerna.png"),
+                  fit: BoxFit.fill,
                 ),
               ),
               ResponsiveScreen(
