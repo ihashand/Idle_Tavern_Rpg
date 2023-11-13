@@ -10,7 +10,7 @@ import '../settings/settings.dart';
 import '../style/responsive_screen.dart';
 
 class MainMenuScreen extends StatefulWidget {
-  const MainMenuScreen({Key? key});
+  const MainMenuScreen({Key? key}) : super(key: key);
 
   @override
   MainMenuScreenState createState() => MainMenuScreenState();
