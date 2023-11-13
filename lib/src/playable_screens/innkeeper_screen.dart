@@ -7,6 +7,9 @@ import 'package:game_template/src/temporary_database/tavern/tavern_models/main_p
 import 'package:game_template/src/temporary_database/tavern/tavern_data/main_prestige_level_data.dart';
 import 'package:game_template/src/temporary_database/tavern/tavern_models/player.dart';
 import 'package:game_template/src/temporary_database/tavern/tavern_data/player_one_data.dart';
+import 'package:provider/provider.dart';
+
+import '../../GameState.dart';
 
 class InnkeeperScreen extends StatefulWidget {
   const InnkeeperScreen({super.key});
@@ -49,6 +52,8 @@ class PlayerInfoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    GameState gameState = Provider.of<GameState>(context);
+
     return Container(
       padding: EdgeInsets.all(16.0),
       color: Colors.blue,
@@ -152,19 +157,28 @@ class InnExpansionSection extends StatelessWidget {
 
 class InventorySection extends StatelessWidget {
   final List<Item> inventory;
-  const InventorySection(this.inventory, {super.key});
+
+  const InventorySection(this.inventory, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    GameState gameState = Provider.of<GameState>(context);
+
     return Container(
       padding: EdgeInsets.all(16.0),
       color: Colors.yellow,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
+        children: [
           Text('Inventory',
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
-          // Add an interface for inventory management, such as a list of items
+          for (Item item in gameState.inventory)
+            ListTile(
+              title: Text(item.name),
+              subtitle: Text(
+                  'Quantity: ${item.value}'), // Dodaj więcej informacji o przedmiocie
+            ),
+          // Dodaj więcej interfejsu do zarządzania inwentarzem, np. przyciski do ulepszania itp.
         ],
       ),
     );
