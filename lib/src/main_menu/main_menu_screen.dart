@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../games_services/games_services.dart';
@@ -30,28 +31,46 @@ class MainMenuScreen extends StatelessWidget {
                 image: AssetImage("assets/images/menu/tawerna.png"),
                 fit: BoxFit.fill,
               ),
-              ResponsiveScreen(
-                mainAreaProminence: 0.45,
-                squarishMainArea: Center(
-                  child: Transform.rotate(
-                    angle: -0.05,
-                    child: SizedBox(
-                      height: 800,
-                      child: Text(
-                        playerName,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: 'Permanent Marker',
-                          fontSize: 40,
-                          height: 1,
-                        ),
+            ),
+            child: ResponsiveScreen(
+              mainAreaProminence: 0.45,
+              squarishMainArea: Center(
+                child: Transform.rotate(
+                  angle: -0.05,
+                  child: SizedBox(
+                    height: squarishMainAreaHeight,
+                    child: Text(
+                      settingsController.playerName.value,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Permanent Marker',
+                        fontSize: screenWidth * 0.05,
+                        height: 1,
                       ),
                     ),
                   ),
                 ),
-                rectangularMenuArea: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
+              ),
+              rectangularMenuArea: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  FilledButton(
+                    onPressed: () {
+                      audioController.playSfx(SfxType.buttonTap);
+                      GoRouter.of(context).go('/play');
+                    },
+                    child: Text('play').tr(),
+                  ),
+                  _gap,
+                  if (gamesServicesController != null) ...[
+                    _hideUntilReady(
+                      ready: gamesServicesController.signedIn,
+                      child: FilledButton(
+                        onPressed: () =>
+                            gamesServicesController.showAchievements(),
+                        child: const Text('Achievements'),
+                      ),
+                    ),
                     _gap,
                     _hideUntilReady(
                       ready: gamesServicesController.signedIn,
@@ -60,51 +79,6 @@ class MainMenuScreen extends StatelessWidget {
                             gamesServicesController.showLeaderboard(),
                         child: const Text('Leaderboard'),
                       ),
-                      _gap,
-                      _hideUntilReady(
-                        ready: gamesServicesController.signedIn,
-                        child: FilledButton(
-                          onPressed: () =>
-                              gamesServicesController.showLeaderboard(),
-                          child: const Text('Leaderboard'),
-                        ),
-                      ),
-                      _gap,
-                    ],
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment
-                          .spaceBetween, // równomierne rozmieszczenie
-                      children: [
-                        FilledButton(
-                          onPressed: () {
-                            audioController.playSfx(SfxType.buttonTap);
-                            GoRouter.of(context).go('/play');
-                          },
-                          child: Text('play').tr(),
-                        ),
-                        Spacer(), // elastyczna przestrzeń między przyciskami
-                        ValueListenableBuilder<bool>(
-                          valueListenable: settingsController.muted,
-                          builder: (context, muted, child) {
-                            return IconButton(
-                              onPressed: () => settingsController.toggleMuted(),
-                              icon: Icon(
-                                muted ? Icons.volume_off : Icons.volume_up,
-                              ),
-                              color: Color.fromARGB(255, 15, 147, 255),
-                            );
-                          },
-                        ),
-                        Spacer(), // elastyczna przestrzeń między przyciskami
-                        IconButton(
-                          onPressed: () =>
-                              GoRouter.of(context).push('/settings'),
-                          icon: Icon(
-                            Icons.settings,
-                          ),
-                          color: Color.fromARGB(255, 15, 147, 255),
-                        ),
-                      ],
                     ),
                     _gap,
                   ],
@@ -154,15 +128,10 @@ class MainMenuScreen extends StatelessWidget {
                   ),
                 ),
               ),
-            ],
+            ),
           ),
-          extendBody: true,
-          // This makes bootom bar transparent, that we can use ours
-          bottomNavigationBar: BottomAppBar(
-            color: Colors.transparent,
-          ),
-        );
-      },
+        ],
+      ),
     );
   }
 
