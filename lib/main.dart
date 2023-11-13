@@ -120,8 +120,7 @@ class MyApp extends StatelessWidget {
     routes: [
       GoRoute(
           path: '/',
-          builder: (context, state) =>
-              const MainMenuScreen(key: Key('main menu')),
+          builder: (context, state) => MainMenuScreen(key: Key('main menu')),
           routes: [
             GoRoute(
               path: 'play',
