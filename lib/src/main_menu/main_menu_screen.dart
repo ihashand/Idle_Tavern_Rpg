@@ -25,7 +25,7 @@ class MainMenuScreen extends StatelessWidget {
           _buildBackground(screenHeight, screenWidth, squarishMainAreaHeight,
               settingsController, audioController, context),
           // Tavern
-          PositionedElement(
+          InteractivePositionedElement(
             screenHeight: screenHeight,
             screenWidth: screenWidth,
             context: context,
@@ -156,8 +156,8 @@ class MainMenuScreen extends StatelessWidget {
   }
 }
 
-class PositionedElement extends StatelessWidget {
-  const PositionedElement({
+class InteractivePositionedElement extends StatelessWidget {
+  const InteractivePositionedElement({
     super.key,
     required this.screenHeight,
     required this.screenWidth,
@@ -185,12 +185,9 @@ class PositionedElement extends StatelessWidget {
         onTap: () {
           GoRouter.of(context).push(routePath);
         },
-        child: Container(
-          //color: Colors.yellow.shade600, // Set color for container while working on it.
-          child: Image(
-            image: AssetImage(assetPath),
-            fit: BoxFit.cover,
-          ),
+        child: Image(
+          image: AssetImage(assetPath),
+          fit: BoxFit.cover,
         ),
       ),
     );
