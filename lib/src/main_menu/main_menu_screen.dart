@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:game_template/utils/build_paths.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../audio/audio_controller.dart';
@@ -8,8 +9,27 @@ import '../games_services/games_services.dart';
 import '../settings/settings.dart';
 import '../style/responsive_screen.dart';
 
-class MainMenuScreen extends StatelessWidget {
+class MainMenuScreen extends StatefulWidget {
   const MainMenuScreen({Key? key});
+
+  @override
+  MainMenuScreenState createState() => MainMenuScreenState();
+}
+
+class MainMenuScreenState extends State<MainMenuScreen> {
+  late BuildingImagePaths buildingImagePaths;
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshBuildingImagePaths();
+  }
+
+  void _refreshBuildingImagePaths() {
+    setState(() {
+      buildingImagePaths = getBuildingImagePaths();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +46,21 @@ class MainMenuScreen extends StatelessWidget {
               settingsController, audioController, context),
           // Tavern
           InteractivePositionedElement(
-            screenHeight: screenHeight,
-            screenWidth: screenWidth,
             context: context,
-            assetPath: 'assets/images/menu/karczma.png',
+            assetPath: buildingImagePaths.tavern,
             routePath: '/interior',
+            topOffset: screenHeight * 0.06,
+            rightOffset: screenWidth * 0.01,
+            size: screenHeight * 0.31,
+          ),
+          // Wood Storage
+          InteractivePositionedElement(
+            context: context,
+            assetPath: buildingImagePaths.woodStorage,
+            routePath: '/woodStorage',
+            topOffset: screenHeight * 0.62,
+            rightOffset: screenWidth * 0.03,
+            size: screenHeight * 0.2,
           ),
         ],
       ),
@@ -159,28 +189,27 @@ class MainMenuScreen extends StatelessWidget {
 class InteractivePositionedElement extends StatelessWidget {
   const InteractivePositionedElement({
     super.key,
-    required this.screenHeight,
-    required this.screenWidth,
     required this.context,
     required this.assetPath,
     required this.routePath,
+    required this.topOffset,
+    required this.rightOffset,
+    required this.size,
   });
 
-  final double screenHeight;
-  final double screenWidth;
   final BuildContext context;
   final String assetPath;
   final String routePath;
+  final double topOffset;
+  final double rightOffset;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
-    double topOffset = screenHeight * 0.06;
-    double rightOffset = screenWidth * 0.01;
-
     return Positioned(
       top: topOffset,
       right: rightOffset,
-      width: 220, // size of displayed object
+      width: size,
       child: InkWell(
         onTap: () {
           GoRouter.of(context).push(routePath);

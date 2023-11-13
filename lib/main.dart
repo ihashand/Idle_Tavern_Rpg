@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:game_template/constants/settings.dart';
 import 'package:game_template/src/graphic_tavern_interior/graphic_tavern_interior.dart';
+import 'package:game_template/src/playable_screens/wood_storage_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
@@ -148,6 +149,16 @@ class MyApp extends StatelessWidget {
                 return buildMyTransition<void>(
                   key: ValueKey('interior'),
                   child: GraphicTavernInteriorScreen(),
+                  color: context.watch<Palette>().backgroundLevelSelection,
+                );
+              },
+            ),
+            GoRoute(
+              path: 'woodStorage',
+              pageBuilder: (context, state) {
+                return buildMyTransition<void>(
+                  key: ValueKey('woodStorage'),
+                  child: WoodStorageScreen(),
                   color: context.watch<Palette>().backgroundLevelSelection,
                 );
               },
