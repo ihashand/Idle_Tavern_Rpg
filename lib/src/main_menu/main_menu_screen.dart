@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../games_services/games_services.dart';
@@ -16,15 +15,16 @@ class MainMenuScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final settingsController = context.watch<SettingsController>();
     final audioController = context.watch<AudioController>();
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
-    final squarishMainAreaHeight = screenHeight * 0.5;
+    final screenHeight = settingsController.getScreenHeight(context);
+    final screenWidth = settingsController.getScreenWidth(context);
+    final squarishMainAreaHeight = settingsController.getScreenHeight(context);
 
     return Scaffold(
       body: Stack(
         children: [
           _buildBackground(screenHeight, screenWidth, squarishMainAreaHeight,
               settingsController, audioController, context),
+          // Tavern
           PositionedElement(
             screenHeight: screenHeight,
             screenWidth: screenWidth,
