@@ -17,18 +17,9 @@ class MainMenuScreen extends StatefulWidget {
 }
 
 class MainMenuScreenState extends State<MainMenuScreen> {
-  late BuildingImagePaths buildingImagePaths;
-
   @override
   void initState() {
     super.initState();
-    _refreshBuildingImagePaths();
-  }
-
-  void _refreshBuildingImagePaths() {
-    setState(() {
-      buildingImagePaths = getBuildingImagePaths();
-    });
   }
 
   @override
@@ -38,6 +29,7 @@ class MainMenuScreenState extends State<MainMenuScreen> {
     final screenHeight = settingsController.getScreenHeight(context);
     final screenWidth = settingsController.getScreenWidth(context);
     final squarishMainAreaHeight = settingsController.getScreenHeight(context);
+    final buildingImagePaths = getBuildingImagePaths();
 
     return Scaffold(
       body: Stack(
