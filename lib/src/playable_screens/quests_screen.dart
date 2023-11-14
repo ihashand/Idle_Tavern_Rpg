@@ -17,6 +17,10 @@ class QuestsScreen extends StatefulWidget {
   _QuestsScreenState createState() => _QuestsScreenState();
 }
 
+late GameState gameState;
+
+@override
+
 // Define the state for the QuestsScreen widget
 class _QuestsScreenState extends State<QuestsScreen> {
   // Variables to manage state and data
@@ -25,15 +29,14 @@ class _QuestsScreenState extends State<QuestsScreen> {
   bool wheelOfFortuneAvailable = true;
   String wheelOfFortuneResult = '';
   String newDay = "";
-  int currentDay = 1;
   int spinsRemaining = 7;
   bool wheelSpinAllowed = true;
-  List<bool> daysSpun = List.generate(7, (index) => false);
   Timer? _dailyResetTimer;
 
   // Build method to create the UI
   @override
   Widget build(BuildContext context) {
+    int currentDay = Provider.of<GameState>(context, listen: false).currentDay;
     return Scaffold(
       // App bar with navigation and options
       appBar: AppBar(
@@ -181,17 +184,18 @@ class _QuestsScreenState extends State<QuestsScreen> {
   @override
   void initState() {
     super.initState();
+    gameState = Provider.of<GameState>(context, listen: false);
     _generateRewards();
     _startDailyResetTimer();
   }
 
   // Reset and shuffle rewards when the timer triggers
   void _resetAndShuffleRewards() {
+    gameState = Provider.of<GameState>(context, listen: false);
+
     _generateRewards();
     rewards.shuffle();
-    setState(() {
-      daysSpun = List.generate(7, (index) => false);
-    });
+    gameState.updateDaysSpun(List.generate(7, (index) => false));
   }
 
   // Start the daily reset timer
@@ -214,12 +218,12 @@ class _QuestsScreenState extends State<QuestsScreen> {
   // Generate rewards based on the current day
   void _generateRewards() {
     for (int i = 0; i < rewards.length; i++) {
-      if (currentDay <= 3 && rewards[i].value == 1) {
-        rewards[i] = Reward(rewards[i].name, 1);
-      } else if (currentDay <= 6 && rewards[i].value == 2) {
-        rewards[i] = Reward(rewards[i].name, 2);
-      } else if (currentDay == 7 && rewards[i].value == 3) {
-        rewards[i] = Reward(rewards[i].name, 3);
+      if (gameState.currentDay <= 3 && rewards[i].value == 1) {
+        rewards[i] = Reward(rewards[i].name, 1, rewards[i].item);
+      } else if (gameState.currentDay <= 6 && rewards[i].value == 2) {
+        rewards[i] = Reward(rewards[i].name, 2, rewards[i].item);
+      } else if (gameState.currentDay == 7 && rewards[i].value == 3) {
+        rewards[i] = Reward(rewards[i].name, 3, rewards[i].item);
       }
     }
     rewards.shuffle();
@@ -228,42 +232,11 @@ class _QuestsScreenState extends State<QuestsScreen> {
 
   // Add a new day and update the UI
   String _addDay() {
+    gameState.incrementDay();
     setState(() {
-      currentDay = (currentDay % 7) + 1;
-      newDay = currentDay.toString();
+      newDay = gameState.currentDay.toString();
     });
     return newDay;
-  }
-
-  // Spin the wheel of fortune and manage rewards
-  void _spinWheelOfFortune() {
-    // Check if the current day's reward has already been claimed
-    if (!daysSpun[currentDay - 1]) {
-      final reward = rewards[currentDay - 1];
-
-      // Check if a previous day was skipped
-      if (currentDay > 1 && !daysSpun[currentDay - 2]) {
-        _showSkippedDayDialog();
-        _resetAndShuffleRewards();
-        _resetDayCounter();
-      } else {
-        // Claim the reward for the current day
-        if (!daysSpun[currentDay - 1]) {
-          _showRewardDialog(context, reward);
-          daysSpun[currentDay - 1] = true;
-
-          // Check if all rewards have been claimed
-          if (daysSpun.every((day) => day)) {
-            _resetDayCounter();
-            _resetAndShuffleRewards();
-          }
-        } else {
-          _showAlreadyClaimedDialog();
-        }
-      }
-    } else {
-      _showAlreadyClaimedDialog();
-    }
   }
 
   // Show a dialog if the reward for the current day has already been claimed
@@ -312,7 +285,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
   // Reset the day counter to one
   void _resetDayCounter() {
     setState(() {
-      currentDay = 1;
+      gameState.currentDay = 1;
     });
     _resetAndShuffleRewards();
   }
@@ -404,7 +377,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
                 for (int i = 0; i < 7; i++)
                   ListTile(
                     title: Text('Day ${i + 1}'),
-                    trailing: daysSpun[i]
+                    trailing: gameState.daysSpun[i]
                         ? Icon(Icons.check_circle, color: Colors.green)
                         : Icon(Icons.cancel, color: Colors.red),
                   ),
@@ -416,16 +389,51 @@ class _QuestsScreenState extends State<QuestsScreen> {
     );
   }
 
-  void _claimQuest(Quest quest, BuildContext context) {
-    Item itemTestOne = quest.items[0];
-    Provider.of<GameState>(context, listen: false)
-        .addItemToInventory(itemTestOne);
+  void _spinWheelOfFortune() {
+    // Check if the current day's reward has already been claimed
+    if (!gameState.daysSpun[gameState.currentDay - 1]) {
+      final reward = rewards[gameState.currentDay - 1];
+
+      // Check if a previous day was skipped
+      if (gameState.currentDay > 1 &&
+          !gameState.daysSpun[gameState.currentDay - 2]) {
+        _showSkippedDayDialog();
+        _resetAndShuffleRewards();
+        _resetDayCounter();
+      } else {
+        // Claim the reward for the current day
+        if (!gameState.daysSpun[gameState.currentDay - 1]) {
+          _claimReward(reward, context);
+          _showRewardDialog(context, reward);
+          gameState.daysSpun[gameState.currentDay - 1] = true;
+
+          // Check if all rewards have been claimed
+          if (gameState.daysSpun.every((day) => day)) {
+            _resetDayCounter();
+            _resetAndShuffleRewards();
+          }
+        } else {
+          _showAlreadyClaimedDialog();
+        }
+      }
+
+      // Here, generate your wheel of fortune result
+      String wheelResult = "";
+      gameState.spinWheelOfFortune(
+          wheelResult); // Update wheel of fortune result in GameState
+    } else {
+      _showAlreadyClaimedDialog();
+    }
   }
 
-  void _claimReward(Quest quest, BuildContext context) {
-    Item itemTestOne = quest.items[0];
-    Provider.of<GameState>(context, listen: false)
-        .addItemToInventory(itemTestOne);
+  void _claimQuest(Quest quest, BuildContext context) {
+    Item item = quest.items[0];
+    Provider.of<GameState>(context, listen: false).addItemToInventory(item);
+  }
+
+  void _claimReward(Reward reward, BuildContext context) {
+    Item item = reward.item;
+    Provider.of<GameState>(context, listen: false).addItemToInventory(item);
   }
 
   void removeQuest(String questId) {

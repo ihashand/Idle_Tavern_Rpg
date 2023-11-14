@@ -158,17 +158,17 @@ class MyApp extends StatelessWidget {
               builder: (context, state) =>
                   const SettingsScreen(key: Key('settings')),
             ),
+            GoRoute(
+              path: 'woodStorage',
+              pageBuilder: (context, state) {
+                return buildMyTransition<void>(
+                  key: ValueKey('woodStorage'),
+                  child: WoodStorageScreen(),
+                  color: context.watch<Palette>().backgroundLevelSelection,
+                );
+              },
+            ),
           ]),
-      GoRoute(
-        path: 'woodStorage',
-        pageBuilder: (context, state) {
-          return buildMyTransition<void>(
-            key: ValueKey('woodStorage'),
-            child: WoodStorageScreen(),
-            color: context.watch<Palette>().backgroundLevelSelection,
-          );
-        },
-      ),
     ],
   );
 

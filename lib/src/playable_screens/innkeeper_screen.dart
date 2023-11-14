@@ -170,7 +170,7 @@ class InventorySection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Inventory',
+          Text('Inventory, Current day: ${gameState.currentDay}',
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
           for (Item item in gameState.inventory)
             ListTile(
