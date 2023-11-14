@@ -48,6 +48,7 @@ flutter:
     - assets/sfx/
     - assets/images/menu/
     - assets/translations/
+    - assets/images/menu/tavern_lvl_1.png
 
   fonts:
     - family: Permanent Marker

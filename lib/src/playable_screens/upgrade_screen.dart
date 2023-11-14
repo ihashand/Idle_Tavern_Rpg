@@ -119,6 +119,7 @@ class UpgradeScreenState extends State<UpgradeScreen> {
         upgrade.level = 100;
       }
     });
+
     _showUpgradeSuccessDialog(upgrade);
   }
 
