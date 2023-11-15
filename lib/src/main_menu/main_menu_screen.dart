@@ -37,23 +37,23 @@ class MainMenuScreenState extends State<MainMenuScreen> {
           _buildBackground(screenHeight, screenWidth, squarishMainAreaHeight,
               settingsController, audioController, context),
           // Tavern
-          InteractivePositionedElement(
-            context: context,
-            assetPath: buildingImagePaths.tavern,
-            routePath: '/interior',
-            topOffset: screenHeight * 0.06,
-            rightOffset: screenWidth * 0.01,
-            size: screenHeight * 0.31,
-          ),
-          // Wood Storage
-          InteractivePositionedElement(
-            context: context,
-            assetPath: buildingImagePaths.woodStorage,
-            routePath: '/woodStorage',
-            topOffset: screenHeight * 0.62,
-            rightOffset: screenWidth * 0.03,
-            size: screenHeight * 0.2,
-          ),
+          // InteractivePositionedElement(
+          //   context: context,
+          //   assetPath: buildingImagePaths.tavern,
+          //   routePath: '/interior',
+          //   topOffset: screenHeight * 0.06,
+          //   rightOffset: screenWidth * 0.01,
+          //   size: screenHeight * 0.31,
+          // ),
+          // // Wood Storage
+          // InteractivePositionedElement(
+          //   context: context,
+          //   assetPath: buildingImagePaths.woodStorage,
+          //   routePath: '/woodStorage',
+          //   topOffset: screenHeight * 0.62,
+          //   rightOffset: screenWidth * 0.03,
+          //   size: screenHeight * 0.2,
+          // ),
         ],
       ),
     );
