@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:game_template/src/playable_screens/expeditions_screen.dart';
 import 'package:game_template/src/temporary_database/tavern/tavern_models/item.dart';
 
 class GameState extends ChangeNotifier {
@@ -12,6 +15,13 @@ class GameState extends ChangeNotifier {
   String get wheelOfFortuneResult =>
       _wheelOfFortuneResult; // Getter dla wyniku koła fortuny
   List<bool> get daysSpun => _daysSpun;
+
+  List<Expedition> expeditions = [];
+
+  void setExpedition(Expedition expedition) {
+    expeditions.add(expedition);
+    notifyListeners();
+  }
 
   void addItemToInventory(Item item) {
     inventory.add(item);
