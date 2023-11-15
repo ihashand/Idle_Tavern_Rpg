@@ -1,107 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:game_template/GameState.dart';
+import 'package:game_template/src/temporary_database/expeditions/data/heroes.dart';
+import 'package:game_template/src/temporary_database/expeditions/models/expedition.dart';
+import 'package:game_template/src/temporary_database/expeditions/models/character.dart';
 import 'package:game_template/src/temporary_database/tavern/tavern_models/item.dart';
 import 'package:provider/provider.dart';
-
-// Definicje modeli danych
-class Hero {
-  final String name;
-  final int level;
-  final String classType;
-
-  Hero({required this.name, required this.level, required this.classType});
-}
-
-enum ExpeditionType { regular, medium, legendary }
-
-class Expedition {
-  final String title;
-  final String duration;
-  final String description;
-  final ExpeditionType type;
-  List<Hero> assignedHeroes;
-
-  Expedition({
-    required this.title,
-    required this.duration,
-    required this.description,
-    required this.type,
-    List<Hero>? assignedHeroes,
-  }) : assignedHeroes =
-            assignedHeroes ?? []; // Ustawienie pustej modyfikowalnej listy
-}
 
 // Główny ekran aplikacji
 class ExpeditionsScreen extends StatefulWidget {
   @override
   _ExpeditionsScreenState createState() => _ExpeditionsScreenState();
 }
-
-final List<Hero> heroes = [
-  Hero(name: 'Sir Lancelot', level: 10, classType: 'Warrior'),
-  Hero(name: 'Elena Moonshadow', level: 8, classType: 'Ranger'),
-  Hero(name: 'Thorn Ironfist', level: 12, classType: 'Dwarf Berserker'),
-  Hero(name: 'Aria Stormbringer', level: 9, classType: 'Mage'),
-  Hero(name: 'Finn Shadowblade', level: 7, classType: 'Rogue'),
-  Hero(name: 'Isabella Fireheart', level: 11, classType: 'Fire Elementalist'),
-  Hero(name: 'Gromm Stonehammer', level: 10, classType: 'Paladin'),
-  Hero(name: 'Lydia Frostwind', level: 8, classType: 'Ice Witch'),
-  Hero(name: 'Darius Blackthorn', level: 9, classType: 'Assassin'),
-  Hero(name: 'Aurora Starlight', level: 10, classType: 'Priest'),
-];
-
-final List<Expedition> expeditions = [
-  Expedition(
-      title: 'Forest Expedition',
-      duration: '3 hours',
-      description: 'Explore the enchanted forest',
-      type: ExpeditionType.regular),
-  Expedition(
-      title: 'Cave Exploration',
-      duration: '4 hours',
-      description: 'Delve deep into the mysterious cave',
-      type: ExpeditionType.regular),
-  Expedition(
-      title: 'Mountain Climb',
-      duration: '5 hours',
-      description: 'Conquer the treacherous mountain peaks',
-      type: ExpeditionType.regular),
-  Expedition(
-      title: 'Underwater Adventure',
-      duration: '2 hours',
-      description: 'Discover the secrets of the deep sea',
-      type: ExpeditionType.regular),
-  Expedition(
-      title: 'Desert Expedition',
-      duration: '6 hours',
-      description: 'Survive the scorching desert sands',
-      type: ExpeditionType.regular),
-  Expedition(
-      title: 'Haunted Mansion Quest',
-      duration: '3 hours',
-      description: 'Uncover the mysteries of the haunted mansion',
-      type: ExpeditionType.regular),
-  Expedition(
-      title: 'Swamp Exploration',
-      duration: '4 hours',
-      description: 'Navigate through the murky swamps',
-      type: ExpeditionType.regular),
-  Expedition(
-      title: 'Sky Islands Expedition',
-      duration: '7 hours',
-      description: 'Visit floating islands in the sky',
-      type: ExpeditionType.regular),
-  Expedition(
-      title: 'Ancient Ruins Expedition',
-      duration: '5 hours',
-      description: 'Search for lost treasures in ancient ruins',
-      type: ExpeditionType.regular),
-  Expedition(
-      title: 'Time-travel Adventure',
-      duration: '8 hours',
-      description: 'Travel through time and change history',
-      type: ExpeditionType.regular),
-];
 
 class _ExpeditionsScreenState extends State<ExpeditionsScreen> {
   int _selectedIndex = 0;
@@ -113,8 +22,8 @@ class _ExpeditionsScreenState extends State<ExpeditionsScreen> {
     final gameState = Provider.of<GameState>(context, listen: false);
     final currentDay = gameState.currentDay;
     final List<Item> inventoryItems = gameState.inventory;
-    final expeditionsFromProvider =
-        Provider.of<GameState>(context, listen: false).expeditions;
+    final dailyExpeditions = gameState.dailyExpeditions;
+    final dailySelectedExpeditions = gameState.dailySelectedExpeditions;
 
     // Wartość domyślna dla zmiennej 'content'
     Widget content = Center(child: Text('Welcome to the Main Hall!'));
@@ -122,13 +31,13 @@ class _ExpeditionsScreenState extends State<ExpeditionsScreen> {
     // Wybór zawartości na podstawie wybranego indeksu
     switch (_selectedIndex) {
       case 0:
-        content = MainScreen(expeditions: expeditionsFromProvider);
+        content = MainScreen(expeditions: dailySelectedExpeditions);
         break;
       case 1:
-        content = ExpeditionScreen(expeditions: expeditions);
+        content = ExpeditionScreen(expeditions: dailyExpeditions);
         break;
       case 2:
-        content = HeroesScreen(heroes: heroes);
+        content = HeroesScreen(characters: characters);
         break;
       case 3:
         content = InventoryScreen(items: inventoryItems);
@@ -139,21 +48,27 @@ class _ExpeditionsScreenState extends State<ExpeditionsScreen> {
     return Scaffold(
       body: content,
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.black,
+        unselectedItemColor: Colors.white,
+        selectedItemColor: const Color.fromARGB(255, 179, 42, 42),
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Main Hall'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Main Hall',
+              backgroundColor: Colors.black),
           BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Expeditions'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Heroes'),
           BottomNavigationBarItem(
               icon: Icon(Icons.backpack), label: 'Inventory'),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
         onTap: (index) => setState(() => _selectedIndex = index),
       ),
     );
   }
 }
 
+// Main hall
 class MainScreen extends StatelessWidget {
   final List<Expedition> expeditions;
 
@@ -165,16 +80,23 @@ class MainScreen extends StatelessWidget {
       itemCount: expeditions.length,
       itemBuilder: (context, index) {
         final expedition = expeditions[index];
+        String subtitleText = expedition.duration;
+
+        if (expedition.assignedHeroes.isNotEmpty) {
+          subtitleText += " - ${expedition.assignedHeroes[0].name}";
+        }
+
         return ListTile(
           title: Text(expedition.title),
-          subtitle: Text(expedition.duration),
+          subtitle: Text(subtitleText),
           onTap: () {
             // Navigacja do szczegółów wyprawy
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) =>
-                      ExpeditionDetailsScreen(expedition: expedition)),
+                builder: (context) =>
+                    SelectedExpeditionDetailsScreen(expedition: expedition),
+              ),
             );
           },
         );
@@ -227,12 +149,13 @@ class ExpeditionDetailsScreen extends StatelessWidget {
         children: <Widget>[
           Text('Duration: ${expedition.duration}'),
           Text('Description: ${expedition.description}'),
+          if (expedition.assignedHeroes.isNotEmpty)
+            Text('Assigned hero: ${expedition.assignedHeroes.first.name}'),
           // Przycisk przypisania bohaterów do wyprawy
           ElevatedButton(
             onPressed: () => _assignHero(context, expedition),
             child: Text('Assign Heroes'),
           ),
-
           ElevatedButton(
             onPressed: () {
               setExpedition(expedition, context);
@@ -245,27 +168,91 @@ class ExpeditionDetailsScreen extends StatelessWidget {
   }
 }
 
+// Ekran szczegółów rozpoczetych wypraw
+class SelectedExpeditionDetailsScreen extends StatelessWidget {
+  final Expedition expedition;
+
+  SelectedExpeditionDetailsScreen({required this.expedition});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(expedition.title)),
+      body: Column(
+        children: <Widget>[
+          Text('Duration: ${expedition.duration}'),
+          Text('Description: ${expedition.description}'),
+          if (expedition.assignedHeroes.isNotEmpty)
+            Text('Assigned hero: ${expedition.assignedHeroes.first.name}'),
+          // Przycisk przypisania bohaterów do wyprawy
+        ],
+      ),
+    );
+  }
+}
+
+void setExpedition(Expedition expedition, BuildContext context) {
+  if (expedition.assignedHeroes.isEmpty) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('No heroes assigned to this expedition!'),
+            content: Text('Assign heroes to this expedition before saving.'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+    return;
+  } else {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Hero asigned!'),
+            content: Text('Congratulation, your hero is asigned'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Provider.of<GameState>(context, listen: false)
+                      .setExpedition(expedition);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
+}
+
 // Ekran bohaterów
 class HeroesScreen extends StatelessWidget {
-  final List<Hero> heroes;
+  final List<Character> characters;
 
-  HeroesScreen({required this.heroes});
+  HeroesScreen({required this.characters});
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: heroes.length,
+      itemCount: characters.length,
       itemBuilder: (context, index) {
-        final hero = heroes[index];
+        final character = characters[index];
         return ListTile(
-          title: Text(hero.name),
-          subtitle: Text('${hero.classType}, Level: ${hero.level}'),
+          title: Text(character.name),
+          subtitle: Text('${character.classType}, Level: ${character.level}'),
           onTap: () {
             // Navigacja do szczegółów bohatera
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => HeroDetailsScreen(hero: hero)),
+                  builder: (context) => HeroDetailsScreen(hero: character)),
             );
           },
         );
@@ -276,7 +263,7 @@ class HeroesScreen extends StatelessWidget {
 
 // Ekran szczegółów bohatera
 class HeroDetailsScreen extends StatelessWidget {
-  final Hero hero;
+  final Character hero;
 
   HeroDetailsScreen({required this.hero});
 
@@ -327,10 +314,6 @@ class InventoryScreen extends StatelessWidget {
   }
 }
 
-void setExpedition(Expedition expedition, BuildContext context) {
-  Provider.of<GameState>(context, listen: false).setExpedition(expedition);
-}
-
 void _assignHero(BuildContext context, Expedition expedition) {
   showDialog(
     context: context,
@@ -339,12 +322,13 @@ void _assignHero(BuildContext context, Expedition expedition) {
         title: Text('Select a Hero'),
         content: SingleChildScrollView(
           child: ListBody(
-            children: heroes
-                .map((hero) => ListTile(
-                      title: Text(hero.name),
-                      subtitle: Text('${hero.classType}, Level: ${hero.level}'),
-                      onTap: () =>
-                          assignHeroToExpedition(hero, expedition, context),
+            children: characters
+                .map((character) => ListTile(
+                      title: Text(character.name),
+                      subtitle: Text(
+                          '${character.classType}, Level: ${character.level}'),
+                      onTap: () => assignHeroToExpedition(
+                          character, expedition, context),
                     ))
                 .toList(),
           ),
@@ -363,14 +347,16 @@ void _assignHero(BuildContext context, Expedition expedition) {
 }
 
 void assignHeroToExpedition(
-    Hero hero, Expedition expedition, BuildContext context) {
-  expedition.assignedHeroes.add(hero);
+    Character character, Expedition expedition, BuildContext context) {
+  expedition.assignedHeroes.add(character);
+
+  Provider.of<GameState>(context, listen: false)
+      .dailyExpeditions
+      .remove(expedition);
 
   Navigator.of(context).pop(); // Zamyka okno dialogowe po przypisaniu bohatera
 }
 
-
-//todo Chce zeby juz przypisana ekspedycja wyswietlala bohatera ktory zostal przypisany, w szczeolach jak i nie tyllo
 
 //todo juz "wybrane" ekspedycje powinny sie usuwac
 //todo powinny dzialac razem z systemem dnia w calej grze
