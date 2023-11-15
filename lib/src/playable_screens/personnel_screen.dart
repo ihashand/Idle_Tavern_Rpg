@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:game_template/src/temporary_database/tavern/tavern_data/employees_data.dart';
+import 'package:game_template/src/temporary_database/tavern/tavern_data/player_one_data.dart';
 import 'package:game_template/src/temporary_database/tavern/tavern_models/employee.dart';
 
 class PersonnelScreen extends StatefulWidget {
@@ -177,8 +178,13 @@ class PersonnelScreenState extends State<PersonnelScreen> {
                 if (!employee.isHired)
                   ElevatedButton(
                     onPressed: () {
-                      _hireEmployee(employee);
-                      Navigator.of(context).pop(); // Close the modal
+                      if (player_one.gold >= employee.payment) {
+                        _hireEmployee(employee);
+                        Navigator.of(context).pop();
+                      } else {
+                        Navigator.of(context).pop();
+                        _showNotEnoughGoldDialog();
+                      }
                     },
                     child: Text('Hire'),
                   ),
@@ -192,6 +198,7 @@ class PersonnelScreenState extends State<PersonnelScreen> {
 
   void _hireEmployee(Employee employee) {
     setState(() {
+      player_one.gold -= employee.payment;
       employee.isHired = true;
     });
   }
@@ -200,5 +207,36 @@ class PersonnelScreenState extends State<PersonnelScreen> {
     setState(() {
       employee.isHired = false;
     });
+  }
+
+  void _showNotEnoughGoldDialog() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Not Enough Gold',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 20),
+                Text('You do not have enough gold to hire this employee.'),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }

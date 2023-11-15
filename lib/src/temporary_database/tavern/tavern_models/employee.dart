@@ -2,7 +2,7 @@ class Employee {
   late String name;
   late EmployeeCategory category;
   late int skill;
-  late double payment;
+  late int payment;
   late String iconUrl;
   bool isHired = false;
   bool isAvailable = true;
