@@ -1,4 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:game_template/src/temporary_database/expeditions/data/expeditions.dart';
+import 'package:game_template/src/temporary_database/expeditions/data/heroes.dart';
+import 'package:game_template/src/temporary_database/expeditions/models/character.dart';
+import 'package:game_template/src/temporary_database/expeditions/models/expedition.dart';
 import 'package:game_template/src/temporary_database/tavern/tavern_models/item.dart';
 
 class GameState extends ChangeNotifier {
@@ -12,6 +18,38 @@ class GameState extends ChangeNotifier {
   String get wheelOfFortuneResult =>
       _wheelOfFortuneResult; // Getter dla wyniku koła fortuny
   List<bool> get daysSpun => _daysSpun;
+
+  List<Expedition> allExpeditions = expeditions;
+  List<Expedition> dailySelectedExpeditions = [];
+  List<Character> allCharacters = characters;
+
+  List<Expedition> dailyExpeditions = [];
+
+  GameState() {
+    // Wywołaj funkcję generateDailyExpeditions podczas inicjalizacji GameState
+    // W przeciwnym wypadku wyprawy pojawialy sie dopiero 2 dnia symulacji.
+    generateDailyExpeditions();
+  }
+
+  void generateDailyExpeditions() {
+    // Poniższa linia kodu generuje losowy seed na podstawie aktualnego dnia
+    final randomSeed = _currentDay * 12345;
+
+    // Ponieważ chcesz wygenerować 6 wypraw codziennie, możesz użyć pętli for
+    dailyExpeditions.clear(); // Wyczyść poprzednie wyprawy
+
+    for (int i = 0; i < 7; i++) {
+      final randomIndex = Random(randomSeed + i).nextInt(expeditions.length);
+      dailyExpeditions.add(expeditions[randomIndex]);
+    }
+
+    notifyListeners();
+  }
+
+  void setExpedition(Expedition expedition) {
+    dailySelectedExpeditions.add(expedition);
+    notifyListeners();
+  }
 
   void addItemToInventory(Item item) {
     inventory.add(item);
@@ -45,6 +83,7 @@ class GameState extends ChangeNotifier {
     } else {
       _currentDay = 1; // Wraca do pierwszego dnia po osiągnięciu 7 dni
     }
+    generateDailyExpeditions();
     notifyListeners(); // Powiadamianie o zmianie wartości currentDay
   }
 

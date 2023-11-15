@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:game_template/src/playable_screens/innkeeper_screen.dart';
 import 'package:game_template/src/playable_screens/quests_screen.dart';
 import 'package:game_template/src/playable_screens/upgrade_screen.dart';
-import '../playable_screens/tavern_screen.dart';
+import '../playable_screens/expeditions_screen.dart';
 import '../playable_screens/rooms_screen.dart';
 import '../playable_screens/warehouse_screen.dart';
 import '../playable_screens/wood_storage_screen.dart';
@@ -44,8 +44,8 @@ class _TownMenuScreenState extends State<TownMenuScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _buildMenuItem(
-                    context, 'tavern'.tr(), Icons.home, 0, TavernScreen()),
+                _buildMenuItem(context, 'expeditions'.tr(), Icons.home, 0,
+                    ExpeditionsScreen()),
                 _buildMenuItem(context, 'upgrades'.tr(), Icons.upgrade, 1,
                     UpgradeScreen()),
                 _buildMenuItem(
@@ -76,7 +76,7 @@ class _TownMenuScreenState extends State<TownMenuScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'tavern'.tr(),
+            label: 'expeditions'.tr(),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.upgrade),
@@ -116,7 +116,7 @@ class _TownMenuScreenState extends State<TownMenuScreen> {
               case 1:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => TavernScreen()),
+                  MaterialPageRoute(builder: (context) => ExpeditionsScreen()),
                 );
                 break;
               case 2:
