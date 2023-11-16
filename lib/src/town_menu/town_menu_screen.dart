@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:game_template/src/playable_screens/innkeeper_screen.dart';
+import 'package:game_template/src/playable_screens/personnel_screen.dart';
 import 'package:game_template/src/playable_screens/quests_screen.dart';
 import 'package:game_template/src/playable_screens/upgrade_screen.dart';
 import '../playable_screens/expeditions_screen.dart';
@@ -13,34 +14,34 @@ class TownMenuScreen extends StatefulWidget {
   const TownMenuScreen({Key? key}) : super(key: key);
 
   @override
-  _TownMenuScreenState createState() => _TownMenuScreenState();
+  TownMenuScreenState createState() => TownMenuScreenState();
 }
 
-class _TownMenuScreenState extends State<TownMenuScreen> {
+class TownMenuScreenState extends State<TownMenuScreen> {
   int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent, // Transparent background
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(
-            padding: EdgeInsets.only(top: 60, left: 16, right: 16),
-            child: Center(
-              child: Text(
-                'tavern menu'.tr(),
-                style: TextStyle(
-                  fontSize: 30,
-                  color: Colors.brown, // Text color to match the medieval theme
+      backgroundColor: Colors.transparent,
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: 60, left: 16, right: 16),
+              child: Center(
+                child: Text(
+                  'tavern menu'.tr(),
+                  style: TextStyle(
+                    fontSize: 30,
+                    color: Colors.brown,
+                  ),
                 ),
               ),
             ),
-          ),
-          Expanded(
-            child: Column(
+            Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -60,12 +61,13 @@ class _TownMenuScreenState extends State<TownMenuScreen> {
                     QuestsScreen()),
                 _buildMenuItem(context, 'innkeeper'.tr(), Icons.question_mark,
                     7, InnkeeperScreen()),
+                _buildMenuItem(context, 'personnel'.tr(), Icons.question_mark,
+                    8, PersonnelScreen()),
               ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -151,6 +153,12 @@ class _TownMenuScreenState extends State<TownMenuScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => InnkeeperScreen()),
+                );
+                break;
+              case 8:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PersonnelScreen()),
                 );
                 break;
             }
