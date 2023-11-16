@@ -48,6 +48,7 @@ flutter:
     - assets/sfx/
     - assets/images/menu/
     - assets/images/employees/
+    - assets/images/characters/
     - assets/translations/
 
   fonts:

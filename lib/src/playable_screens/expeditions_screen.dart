@@ -87,7 +87,7 @@ class MainScreen extends StatelessWidget {
         }
 
         return ListTile(
-          title: Text(expedition.title),
+          title: Text(expedition.name),
           subtitle: Text(subtitleText),
           onTap: () {
             // Navigacja do szczegółów wyprawy
@@ -118,7 +118,7 @@ class ExpeditionScreen extends StatelessWidget {
       itemBuilder: (context, index) {
         final expedition = expeditions[index];
         return ListTile(
-          title: Text(expedition.title),
+          title: Text(expedition.name),
           subtitle: Text(expedition.duration),
           onTap: () {
             // Navigacja do szczegółów wyprawy
@@ -144,7 +144,7 @@ class ExpeditionDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(expedition.title)),
+      appBar: AppBar(title: Text(expedition.name)),
       body: Column(
         children: <Widget>[
           Text('Duration: ${expedition.duration}'),
@@ -177,7 +177,7 @@ class SelectedExpeditionDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(expedition.title)),
+      appBar: AppBar(title: Text(expedition.name)),
       body: Column(
         children: <Widget>[
           Text('Duration: ${expedition.duration}'),
@@ -246,7 +246,7 @@ class HeroesScreen extends StatelessWidget {
         final character = characters[index];
         return ListTile(
           title: Text(character.name),
-          subtitle: Text('${character.classType}, Level: ${character.level}'),
+          subtitle: Text('${character.category}, Level: ${character.level}'),
           onTap: () {
             // Navigacja do szczegółów bohatera
             Navigator.push(
@@ -274,7 +274,7 @@ class HeroDetailsScreen extends StatelessWidget {
       body: Column(
         children: <Widget>[
           Text('Level: ${hero.level}'),
-          Text('Class: ${hero.classType}'),
+          Text('Class: ${hero.category}'),
           // Przycisk przypisania bohatera do wyprawy
           ElevatedButton(
             onPressed: () {/* Logika przypisania bohatera do wyprawy */},
@@ -326,7 +326,7 @@ void _assignHero(BuildContext context, Expedition expedition) {
                 .map((character) => ListTile(
                       title: Text(character.name),
                       subtitle: Text(
-                          '${character.classType}, Level: ${character.level}'),
+                          '${character.category}, Level: ${character.level}'),
                       onTap: () => assignHeroToExpedition(
                           character, expedition, context),
                     ))

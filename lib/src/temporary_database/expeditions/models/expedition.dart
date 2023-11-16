@@ -1,19 +1,30 @@
-import 'package:game_template/src/temporary_database/expeditions/models/expedition_type.dart';
 import 'package:game_template/src/temporary_database/expeditions/models/character.dart';
 
 class Expedition {
-  final String title;
+  final String name;
   final String duration;
   final String description;
-  final ExpeditionType type;
+  final ExpeditionCategory category;
   List<Character> assignedHeroes;
 
   Expedition({
-    required this.title,
+    required this.name,
     required this.duration,
     required this.description,
-    required this.type,
+    required this.category,
     List<Character>? assignedHeroes,
-  }) : assignedHeroes =
-            assignedHeroes ?? []; // Ustawienie pustej modyfikowalnej listy
+  }) : assignedHeroes = assignedHeroes ?? [];
+}
+
+enum ExpeditionCategory {
+  Diplomacy,
+  Exploration,
+  Protection,
+  Questing,
+  Conquest,
+  Enchantment,
+  Raiding,
+  Plundering,
+  BeastHunting,
+  ElementalTrials,
 }
