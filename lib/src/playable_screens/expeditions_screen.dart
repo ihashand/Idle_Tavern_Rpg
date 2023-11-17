@@ -46,9 +46,13 @@ class _ExpeditionsScreenState extends State<ExpeditionsScreen> {
 
     // Główna struktura ekranu
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 40, 40, 40)
+          .withOpacity(0.6), // Ustawienie tła na czarne
+
       body: content,
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Color.fromARGB(
+            255, 43, 43, 43), // Kolor tła BottomNavigationBar z przejrzystością
         unselectedItemColor: Colors.white,
         selectedItemColor: const Color.fromARGB(255, 179, 42, 42),
         items: const <BottomNavigationBarItem>[
@@ -56,10 +60,18 @@ class _ExpeditionsScreenState extends State<ExpeditionsScreen> {
               icon: Icon(Icons.home),
               label: 'Main Hall',
               backgroundColor: Colors.black),
-          BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Expeditions'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Heroes'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.backpack), label: 'Inventory'),
+              icon: Icon(Icons.map),
+              label: 'Expeditions',
+              backgroundColor: Colors.black),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Heroes',
+              backgroundColor: Colors.black),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.backpack),
+              label: 'Inventory',
+              backgroundColor: Colors.black),
         ],
         currentIndex: _selectedIndex,
         onTap: (index) => setState(() => _selectedIndex = index),
@@ -68,7 +80,6 @@ class _ExpeditionsScreenState extends State<ExpeditionsScreen> {
   }
 }
 
-// Main hall
 class MainScreen extends StatelessWidget {
   final List<Expedition> expeditions;
 
@@ -76,33 +87,180 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: expeditions.length,
-      itemBuilder: (context, index) {
-        final expedition = expeditions[index];
-        String subtitleText = expedition.duration;
-
-        if (expedition.assignedHeroes.isNotEmpty) {
-          subtitleText += " - ${expedition.assignedHeroes[0].name}";
-        }
-
-        return ListTile(
-          title: Text(expedition.name),
-          subtitle: Text(subtitleText),
-          onTap: () {
-            // Navigacja do szczegółów wyprawy
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    SelectedExpeditionDetailsScreen(expedition: expedition),
+    return SafeArea(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            color: Color.fromARGB(255, 40, 40, 40).withOpacity(0.01),
+            padding: EdgeInsets.all(8.0),
+            child: Text(
+              "Aktywne ekspedycje",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
               ),
-            );
-          },
-        );
-      },
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: expeditions.length,
+              itemBuilder: (context, index) {
+                final expedition = expeditions[index];
+                String subtitleText = expedition.duration;
+
+                if (expedition.assignedHeroes.isNotEmpty) {
+                  subtitleText += " - ${expedition.assignedHeroes[0].name}";
+                }
+
+                return Container(
+                  margin: EdgeInsets.symmetric(vertical: 8.0),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(16.0),
+                        child: Stack(
+                          children: [
+                            Opacity(
+                              opacity: 0.7,
+                              child: Image.asset(
+                                expedition.imageUrl,
+                                fit: BoxFit.cover,
+                                height: 200,
+                              ),
+                            ),
+                            Positioned(
+                              top: 16.0,
+                              right: 16.0,
+                              child: GestureDetector(
+                                onTap: () {
+                                  _showDetailsModal(expedition, context);
+                                },
+                                child: Icon(
+                                  Icons.info,
+                                  color: Colors.white,
+                                  size: 32.0,
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 10.0,
+                              left: 16.0,
+                              right: 16.0,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      // Obsługa przycisku "przyspiesz"
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor:
+                                          Colors.green.withOpacity(0.7),
+                                      minimumSize: Size(70, 20),
+                                    ),
+                                    child: Text("Expedite"),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      // Obsługa przycisku "anuluj"
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor:
+                                          Colors.red.withOpacity(0.7),
+                                      minimumSize: Size(70, 20),
+                                    ),
+                                    child: Text("Cancel"),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            expedition.name,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                            ),
+                          ),
+                          SizedBox(height: 8.0),
+                          Opacity(
+                            opacity: 1.0,
+                            child: Text(
+                              subtitleText,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
+}
+
+void _showDetailsModal(Expedition expedition, BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    builder: (context) {
+      return SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.all(16.0),
+          width: MediaQuery.of(context)
+              .size
+              .width, // Ustawienie szerokości na szerokość ekranu
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ListTile(
+                title: Text(expedition.name),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                        'Category: ${expedition.category.toString().split('.').last}'),
+                    Text('Skill: ${expedition.description}'),
+                    Text('Payment: ${expedition.duration}'),
+                  ],
+                ),
+                leading: Container(
+                  width: 80.0,
+                  height: 80.0,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: AssetImage(
+                          "assets/images/employees/ethan.jpeg"), // Use AssetImage for local assets
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }
 
 // Ekran wypraw
@@ -179,12 +337,31 @@ class SelectedExpeditionDetailsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(expedition.name)),
       body: Column(
-        children: <Widget>[
-          Text('Duration: ${expedition.duration}'),
-          Text('Description: ${expedition.description}'),
-          if (expedition.assignedHeroes.isNotEmpty)
-            Text('Assigned hero: ${expedition.assignedHeroes.first.name}'),
-          // Przycisk przypisania bohaterów do wyprawy
+        children: [
+          ListTile(
+            title: Text(expedition.name),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                    'Category: ${expedition.category.toString().split('.').last}'),
+                Text('Skill: ${expedition.description}'),
+                Text('Payment: ${expedition.duration}'),
+              ],
+            ),
+            leading: Container(
+              width: 40.0,
+              height: 40.0,
+              decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: AssetImage(
+                      "expedition.iconUrl"), // Use AssetImage for local assets
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -356,11 +533,3 @@ void assignHeroToExpedition(
 
   Navigator.of(context).pop(); // Zamyka okno dialogowe po przypisaniu bohatera
 }
-
-
-//todo juz "wybrane" ekspedycje powinny sie usuwac
-//todo powinny dzialac razem z systemem dnia w calej grze
-//todo powinny byc generowane losowo z uwzglednieniem rodzaju wyprawy
-//todo dostepni bohaterowie powinni rowniez byc generowani losowo z uwzglednieniem ich umiejetnosci
-//todo szansa na wygenerowanie bohatera ze slabymi umiejetnosciami jest wysoka.
-
