@@ -1,19 +1,39 @@
-import 'package:game_template/src/temporary_database/expeditions/models/expedition_type.dart';
 import 'package:game_template/src/temporary_database/expeditions/models/character.dart';
 
 class Expedition {
-  final String title;
-  final String duration;
-  final String description;
-  final ExpeditionType type;
+  late String name;
+  late String description;
+  late ExpeditionCategory category;
   List<Character> assignedHeroes;
+  late String imageUrl;
+  bool isHeroAssigned = false;
+  bool isActive = false;
+  Character? assignedHero;
+  int remainingTime;
+  int duration;
 
   Expedition({
-    required this.title,
-    required this.duration,
+    required this.name,
     required this.description,
-    required this.type,
+    required this.category,
     List<Character>? assignedHeroes,
-  }) : assignedHeroes =
-            assignedHeroes ?? []; // Ustawienie pustej modyfikowalnej listy
+    required this.imageUrl,
+    this.remainingTime = 0,
+    this.duration = 0,
+  }) : assignedHeroes = assignedHeroes ?? [];
+
+  // Dodajmy metodę do przypisania bohatera
+  void assignHero(Character character) {
+    assignedHero = character;
+    isHeroAssigned = true;
+    character.isBusy = true; // Oznacz bohatera jako zajętego
+  }
+}
+
+enum ExpeditionCategory {
+  Diplomacy,
+  Exploration,
+  Protection,
+  Conquest,
+  BeastHunting,
 }

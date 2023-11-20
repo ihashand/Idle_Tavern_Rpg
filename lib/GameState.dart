@@ -2,12 +2,13 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:game_template/src/temporary_database/expeditions/data/expeditions.dart';
-import 'package:game_template/src/temporary_database/expeditions/data/heroes.dart';
+import 'package:game_template/src/temporary_database/expeditions/data/characters.dart';
 import 'package:game_template/src/temporary_database/expeditions/models/character.dart';
 import 'package:game_template/src/temporary_database/expeditions/models/expedition.dart';
 import 'package:game_template/src/temporary_database/tavern/tavern_models/item.dart';
 
 class GameState extends ChangeNotifier {
+  int timeExpedtition = 0;
   List<Item> inventory = [];
   int _currentDay = 1;
   String _wheelOfFortuneResult = ''; // Dodane pole dla wyniku koła fortuny
