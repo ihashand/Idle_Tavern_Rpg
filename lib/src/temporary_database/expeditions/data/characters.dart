@@ -4,7 +4,7 @@ final List<Character> characters = [
   Character(
     skill: 50,
     payment: 1000,
-    iconUrl: 'https://example.com/sir_lancelot.png',
+    iconUrl: 'assets/images/characters/character_03.jpeg',
     category: CharacterCategory.Warrior,
     name: 'Sir Lancelot',
     level: 10,
@@ -12,7 +12,7 @@ final List<Character> characters = [
   Character(
     skill: 45,
     payment: 900,
-    iconUrl: 'https://example.com/elena_moonshadow.png',
+    iconUrl: 'assets/images/characters/character_02.jpeg',
     category: CharacterCategory.Rogue,
     name: 'Elena Moonshadow',
     level: 8,
@@ -20,7 +20,7 @@ final List<Character> characters = [
   Character(
     skill: 60,
     payment: 1200,
-    iconUrl: 'https://example.com/thorn_ironfist.png',
+    iconUrl: 'assets/images/characters/character_01.jpeg',
     category: CharacterCategory.Diplomat,
     name: 'Thorn Ironfist',
     level: 12,
@@ -28,7 +28,7 @@ final List<Character> characters = [
   Character(
     skill: 55,
     payment: 1100,
-    iconUrl: 'https://example.com/aria_stormbringer.png',
+    iconUrl: 'assets/images/characters/character_04.jpeg',
     category: CharacterCategory.Mage,
     name: 'Aria Stormbringer',
     level: 9,
@@ -36,7 +36,7 @@ final List<Character> characters = [
   Character(
     skill: 40,
     payment: 800,
-    iconUrl: 'https://example.com/finn_shadowblade.png',
+    iconUrl: 'assets/images/characters/character_05.jpeg',
     category: CharacterCategory.Rogue,
     name: 'Finn Shadowblade',
     level: 7,
@@ -44,7 +44,7 @@ final List<Character> characters = [
   Character(
     skill: 57,
     payment: 1150,
-    iconUrl: 'https://example.com/isabella_fireheart.png',
+    iconUrl: 'assets/images/characters/character_06.jpeg',
     category: CharacterCategory.Sorcerer,
     name: 'Isabella Fireheart',
     level: 11,
@@ -52,7 +52,7 @@ final List<Character> characters = [
   Character(
     skill: 52,
     payment: 1050,
-    iconUrl: 'https://example.com/gromm_stonehammer.png',
+    iconUrl: 'assets/images/characters/character_07.jpeg',
     category: CharacterCategory.Paladin,
     name: 'Gromm Stonehammer',
     level: 10,
@@ -60,7 +60,7 @@ final List<Character> characters = [
   Character(
     skill: 47,
     payment: 950,
-    iconUrl: 'https://example.com/lydia_frostwind.png',
+    iconUrl: 'assets/images/characters/character_08.jpeg',
     category: CharacterCategory.Mage,
     name: 'Lydia Frostwind',
     level: 8,
@@ -68,7 +68,7 @@ final List<Character> characters = [
   Character(
     skill: 48,
     payment: 960,
-    iconUrl: 'https://example.com/darius_blackthorn.png',
+    iconUrl: 'assets/images/characters/character_09.jpeg',
     category: CharacterCategory.Assassin,
     name: 'Darius Blackthorn',
     level: 9,
@@ -76,7 +76,7 @@ final List<Character> characters = [
   Character(
     skill: 53,
     payment: 1060,
-    iconUrl: 'https://example.com/aurora_starlight.png',
+    iconUrl: 'assets/images/characters/character_010.jpeg',
     category: CharacterCategory.Priest,
     name: 'Aurora Starlight',
     level: 10,

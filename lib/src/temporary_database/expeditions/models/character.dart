@@ -7,6 +7,7 @@ class Character {
   final int payment;
   final String iconUrl;
   final isAvailable = true;
+  bool isBusy = false;
 
   Character(
       {required this.name,
