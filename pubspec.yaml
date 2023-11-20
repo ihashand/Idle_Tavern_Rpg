@@ -50,6 +50,7 @@ flutter:
     - assets/images/employees/
     - assets/images/characters/
     - assets/images/expeditions/
+    - assets/images/race/
     - assets/translations/
 
   fonts:
