@@ -42,21 +42,27 @@ class ProfileScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Text(
-                  "Races:",
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
+              Row(
+                children: [
+                  Text(
+                    "Races:",
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.info),
-                  onPressed: () {
-                    _showPossiblePrestigeLevels(context);
-                  },
-                ),
-              ]),
+                  Spacer(),
+                  Container(
+                    width: 24.0, // Adjust the width as needed
+                    child: IconButton(
+                      icon: Icon(Icons.info),
+                      onPressed: () {
+                        _showPossiblePrestigeLevels(context);
+                      },
+                    ),
+                  ),
+                ],
+              ),
               SizedBox(height: 10),
               Column(
                 children: fantasyRaces.map((race) {
