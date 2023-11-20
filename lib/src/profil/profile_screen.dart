@@ -42,32 +42,29 @@ class ProfileScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Races:",
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                    ),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                Text(
+                  "Races:",
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
                   ),
-                  IconButton(
-                    icon: Icon(Icons.info),
-                    onPressed: () {
-                      _showPossiblePrestigeLevels(context);
-                    },
-                  ),
-                ],
-              ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.info),
+                  onPressed: () {
+                    _showPossiblePrestigeLevels(context);
+                  },
+                ),
+              ]),
               SizedBox(height: 10),
               Column(
                 children: fantasyRaces.map((race) {
                   return ListTile(
                     contentPadding: EdgeInsets.all(8.0),
                     leading: Container(
-                      width: 60.0,
-                      height: 60.0,
+                      width: 80.0,
+                      height: 80.0,
                       decoration: BoxDecoration(
                         shape: BoxShape.rectangle,
                         borderRadius: BorderRadius.circular(8.0),
@@ -105,14 +102,14 @@ class ProfileScreen extends StatelessWidget {
                             color: Colors.grey[300],
                             borderRadius: BorderRadius.circular(5.0),
                           ),
-                          child: FractionallySizedBox(
-                            widthFactor: (race.prestige % 50) / 50,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: _getColorForPrestigeLevel(
-                                  race.prestigeLevel,
-                                ),
-                                borderRadius: BorderRadius.circular(5.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(
+                                5.0), // Adjust the radius as needed
+                            child: LinearProgressIndicator(
+                              value: (race.prestige % 50) / 50,
+                              backgroundColor: Colors.grey[300],
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                _getColorForPrestigeLevel(race.prestigeLevel),
                               ),
                             ),
                           ),
@@ -142,7 +139,22 @@ class ProfileScreen extends StatelessWidget {
           title: Text("Possible Prestige Levels"),
           content: Column(
             children: possiblePrestigeLevels.map((level) {
-              return Text(level);
+              return Row(
+                children: [
+                  Container(
+                    width: 20.0,
+                    height: 20.0,
+                    margin: EdgeInsets.only(right: 8.0),
+                    decoration: BoxDecoration(
+                      color: _getColorForPrestigeLevel(PrestigeLvl.values
+                          .firstWhere((enumLevel) =>
+                              enumLevel.toString().split('.').last == level)),
+                      borderRadius: BorderRadius.circular(4.0),
+                    ),
+                  ),
+                  Text(level),
+                ],
+              );
             }).toList(),
           ),
           actions: [
