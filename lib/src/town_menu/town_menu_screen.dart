@@ -4,6 +4,7 @@ import 'package:game_template/src/playable_screens/innkeeper_screen.dart';
 import 'package:game_template/src/playable_screens/personnel_screen.dart';
 import 'package:game_template/src/playable_screens/quests_screen.dart';
 import 'package:game_template/src/playable_screens/upgrade_screen.dart';
+import 'package:game_template/src/profil/profile_screen.dart';
 import '../playable_screens/expeditions_screen.dart';
 import '../playable_screens/rooms_screen.dart';
 import '../playable_screens/warehouse_screen.dart';
@@ -63,6 +64,8 @@ class TownMenuScreenState extends State<TownMenuScreen> {
                     7, InnkeeperScreen()),
                 _buildMenuItem(context, 'personnel'.tr(), Icons.question_mark,
                     8, PersonnelScreen()),
+                _buildMenuItem(context, 'profile'.tr(), Icons.question_mark, 9,
+                    ProfileScreen()),
               ],
             ),
           ],
@@ -99,6 +102,10 @@ class TownMenuScreenState extends State<TownMenuScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.restaurant),
             label: 'kitchen'.tr(),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'profile'.tr(),
           ),
         ],
         currentIndex: _selectedIndex,
@@ -159,6 +166,12 @@ class TownMenuScreenState extends State<TownMenuScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => PersonnelScreen()),
+                );
+                break;
+              case 9:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfileScreen()),
                 );
                 break;
             }
