@@ -736,14 +736,6 @@ class _HeroesScreenState extends State<HeroesScreen> {
       margin: EdgeInsets.all(10.0),
       child: Column(
         children: [
-          Positioned(
-            right: 200.0, // Przesunięcie ikony dostępności na lewo
-            top: 10.0,
-            child: Icon(
-              isOnExpedition ? Icons.close : Icons.check,
-              color: isOnExpedition ? Colors.red : Colors.green,
-            ),
-          ),
           GestureDetector(
             onTap: () {
               Navigator.push(
