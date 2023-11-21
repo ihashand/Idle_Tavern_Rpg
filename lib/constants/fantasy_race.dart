@@ -3,7 +3,7 @@ enum FantasyRace {
   Dwarf,
   Goblin,
   Orc,
-  Elf,
+  Elv,
   Centaur,
   Werewolf,
   Vampire,
