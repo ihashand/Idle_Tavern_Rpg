@@ -19,16 +19,14 @@ List<Expedition> dailySelectedExpeditions =
 List<Expedition> dailyExpeditions =
     []; //wszystkie ekspadycje dostepne danego dnia
 List<Character> onExpeditionsCharacters = [];
+int _selectedIndex = 0;
 
 class _ExpeditionsScreenState extends State<ExpeditionsScreen> {
-  int _selectedIndex = 0;
-
   // Przykładowe dane
 
   @override
   Widget build(BuildContext context) {
     final gameState = Provider.of<GameState>(context, listen: false);
-    final currentDay = gameState.currentDay;
     final List<Item> inventoryItems = gameState.inventory;
     dailyExpeditions = gameState.dailyExpeditions;
     dailySelectedExpeditions = gameState.dailySelectedExpeditions;
@@ -39,7 +37,13 @@ class _ExpeditionsScreenState extends State<ExpeditionsScreen> {
     // Wybór zawartości na podstawie wybranego indeksu
     switch (_selectedIndex) {
       case 0:
-        content = MainScreen(expeditions: dailySelectedExpeditions);
+        content = MainScreen(
+            expeditions: dailySelectedExpeditions,
+            onNewExpeditionPressed: (index) {
+              setState(() {
+                _selectedIndex = index;
+              });
+            });
         break;
       case 1:
         content = ExpeditionScreen(expeditions: dailyExpeditions);
@@ -93,8 +97,12 @@ class _ExpeditionsScreenState extends State<ExpeditionsScreen> {
 
 class MainScreen extends StatelessWidget {
   final List<Expedition> expeditions;
+  final Function(int) onNewExpeditionPressed;
 
-  MainScreen({required this.expeditions});
+  MainScreen({
+    required this.expeditions,
+    required this.onNewExpeditionPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -123,15 +131,32 @@ class MainScreen extends StatelessWidget {
                     // Jeśli jesteśmy na ostatnim elemencie (przycisk "Nowa ekspedycja")
                     if (expeditions.length < maxExpeditions) {
                       // Wyświetl przycisk tylko jeśli liczba ekspedycji jest mniejsza niż maksymalna
+                      // Nowa ekspedycja
                       return ElevatedButton(
                         onPressed: () {
-                          // Obsługa przycisku "Nowa ekspedycja"
+                          onNewExpeditionPressed(1);
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
                           minimumSize: Size(150, 40),
+                          padding: EdgeInsets
+                              .zero, // Usuń wewnętrzny padding, aby obrazek zajmował całą przestrzeń przycisku
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                8.0), // Opcjonalnie: zaokrąglenie rogów przycisku
+                          ),
+                          backgroundColor:
+                              Colors.transparent, // Usuń domyślne tło przycisku
                         ),
-                        child: Text("Nowa ekspedycja"),
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: Text(
+                            "Nowa ekspedycja",
+                            style: TextStyle(
+                              color: Colors.white, // Kolor tekstu
+                              fontSize: 16.0, // Rozmiar tekstu
+                            ),
+                          ),
+                        ),
                       );
                     } else {
                       // Jeśli osiągnięto limit aktywnych ekspedycji, nie wyświetlaj przycisku
@@ -321,18 +346,21 @@ class ExpeditionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: expeditions.length,
-      itemBuilder: (context, index) {
-        final expedition = expeditions[index];
-        return ListTile(
-          title: Text(expedition.name),
-          subtitle: Text(expedition.duration.toString()),
-          onTap: () {
-            _showExpeditionDetails(expedition, context);
-          },
-        );
-      },
+    return Material(
+      // Dodano widget Material
+      child: ListView.builder(
+        itemCount: expeditions.length,
+        itemBuilder: (context, index) {
+          final expedition = expeditions[index];
+          return ListTile(
+            title: Text(expedition.name),
+            subtitle: Text(expedition.duration.toString()),
+            onTap: () {
+              _showExpeditionDetails(expedition, context);
+            },
+          );
+        },
+      ),
     );
   }
 
