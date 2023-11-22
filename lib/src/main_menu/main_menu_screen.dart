@@ -1,6 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:game_template/utils/build_paths.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../audio/audio_controller.dart';
@@ -29,7 +28,7 @@ class MainMenuScreenState extends State<MainMenuScreen> {
     final screenHeight = settingsController.getScreenHeight(context);
     final screenWidth = settingsController.getScreenWidth(context);
     final squarishMainAreaHeight = settingsController.getScreenHeight(context);
-    final buildingImagePaths = getBuildingImagePaths();
+    // final buildingImagePaths = getBuildingImagePaths();
 
     return Scaffold(
       body: Stack(
