@@ -25,5 +25,37 @@
     "yesButton": "Tak",
     "noButton": "Nie",
     "okButton": "OK"
+  },
+  "profileScreen": {
+    "profile": "Profil",
+    "gold": "Złoto: {gold}",
+    "diamonds": "Diamenty: {diamonds}",
+    "prestigeLvl": "Poziom prestiżu",
+    "prestige": "Poziom prestiżu: {prestigeLvl}",
+    "totalPrestige": "Całkowity prestiż: {totalPrestige}",
+    "prestigeInfo": "Dostępne poziomy:",
+    "ok": "OK",
+    "races": {
+      "Human": "Ludzie",
+      "Dwarf": "Krasnoludy",
+      "Goblin": "Gobliny",
+      "Orc": "Orkowie",
+      "Elv": "Elfy",
+      "Centaur": "Centaury",
+      "Werewolf": "Wilkołaki",
+      "Vampire": "Wampiry"
+    },
+    "prestigeLvls": {
+      "Neutral": "Neutralny",
+      "Cordial": "Serdeczny",
+      "Amicable": "Przyjazny",
+      "Friendly": "Zaprzyjaźniony",
+      "Allied": "Sprzymierzeni",
+      "Honored": "Zasłużony",
+      "Respected": "Szanowany",
+      "Revered": "Czczony",
+      "Exalted": "Wyniesiony",
+      "Idolized": "Uwielbiany"
+    }
   }
 }
