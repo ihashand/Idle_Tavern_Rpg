@@ -8,7 +8,10 @@ import 'package:game_template/src/temporary_database/expeditions/models/expediti
 import 'package:game_template/src/temporary_database/tavern/tavern_models/item.dart';
 
 class GameState extends ChangeNotifier {
-  int timeExpedtition = 0;
+  List<Expedition> allExpeditions = expeditions;
+  List<Expedition> dailyExpeditions = [];
+  List<Expedition> dailySelectedExpeditions = [];
+  List<Character> allCharacters = characters;
   List<Item> inventory = [];
   int _currentDay = 1;
   String _wheelOfFortuneResult = ''; // Dodane pole dla wyniku koła fortuny
@@ -20,12 +23,6 @@ class GameState extends ChangeNotifier {
       _wheelOfFortuneResult; // Getter dla wyniku koła fortuny
   List<bool> get daysSpun => _daysSpun;
 
-  List<Expedition> allExpeditions = expeditions;
-  List<Expedition> dailySelectedExpeditions = [];
-  List<Character> allCharacters = characters;
-
-  List<Expedition> dailyExpeditions = [];
-
   GameState() {
     // Wywołaj funkcję generateDailyExpeditions podczas inicjalizacji GameState
     // W przeciwnym wypadku wyprawy pojawialy sie dopiero 2 dnia symulacji.
@@ -35,21 +32,34 @@ class GameState extends ChangeNotifier {
   void generateDailyExpeditions() {
     // Poniższa linia kodu generuje losowy seed na podstawie aktualnego dnia
     final randomSeed = _currentDay * 12345;
+    final random = Random(randomSeed);
 
-    // Ponieważ chcesz wygenerować 6 wypraw codziennie, możesz użyć pętli for
     dailyExpeditions.clear(); // Wyczyść poprzednie wyprawy
 
-    for (int i = 0; i < 7; i++) {
-      final randomIndex = Random(randomSeed + i).nextInt(expeditions.length);
-      dailyExpeditions.add(expeditions[randomIndex]);
+    // Zbiór do śledzenia użytych ID wypraw
+    final Set<int> usedExpeditionIds = {};
+
+    while (dailyExpeditions.length < 7) {
+      final randomIndex = random.nextInt(expeditions.length);
+      final expedition = expeditions[randomIndex];
+
+      // Sprawdź, czy ID wyprawy zostało już użyte
+      if (!usedExpeditionIds.contains(expedition.id)) {
+        dailyExpeditions.add(expedition);
+        usedExpeditionIds.add(expedition.id);
+      }
     }
 
     notifyListeners();
   }
 
-  void setExpedition(Expedition expedition) {
-    dailySelectedExpeditions.add(expedition);
-    notifyListeners();
+  void cancelActiveExpeditions() {
+    // Sprawdź, czy są jakieś aktywne wyprawy
+    if (dailySelectedExpeditions.isNotEmpty) {
+      // Anuluj wszystkie aktywne wyprawy
+      dailySelectedExpeditions.clear();
+      notifyListeners();
+    }
   }
 
   void addItemToInventory(Item item) {
@@ -60,12 +70,6 @@ class GameState extends ChangeNotifier {
   set currentDay(int day) {
     _currentDay = day;
     notifyListeners(); // Powiadamianie o zmianie wartości currentDay
-  }
-
-  // Setter dla wyniku koła fortuny
-  set wheelOfFortuneResult(String result) {
-    _wheelOfFortuneResult = result;
-    notifyListeners();
   }
 
   void spinWheelOfFortune(String result) {
@@ -84,6 +88,10 @@ class GameState extends ChangeNotifier {
     } else {
       _currentDay = 1; // Wraca do pierwszego dnia po osiągnięciu 7 dni
     }
+
+    // Anuluj aktywne wyprawy przed generowaniem nowych
+    cancelActiveExpeditions();
+
     generateDailyExpeditions();
     notifyListeners(); // Powiadamianie o zmianie wartości currentDay
   }
@@ -97,5 +105,13 @@ class GameState extends ChangeNotifier {
   void updateDaysSpun(List<bool> newDaysSpun) {
     _daysSpun = newDaysSpun;
     notifyListeners();
+  }
+
+  List<Expedition> getDailyExpeditions() {
+    return dailyExpeditions;
+  }
+
+  List<Expedition> getDailySelectedExpeditions() {
+    return dailySelectedExpeditions;
   }
 }

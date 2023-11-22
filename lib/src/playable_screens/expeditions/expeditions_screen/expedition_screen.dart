@@ -1,24 +1,28 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:game_template/src/playable_screens/expeditions/expeditions_screen.dart';
 import 'package:game_template/src/temporary_database/expeditions/data/characters.dart';
 import 'package:game_template/src/temporary_database/expeditions/models/character.dart';
 import 'package:game_template/src/temporary_database/expeditions/models/expedition.dart';
 
 class ExpeditionScreen extends StatelessWidget {
-  final List<Expedition> expeditions;
+  late List<Expedition> dailyExpeditions;
+  late List<Expedition> dailySelectedExpeditions;
+  late List<Character> onExpeditionsCharacters;
 
-  const ExpeditionScreen({super.key, required this.expeditions});
+  ExpeditionScreen(
+      {super.key,
+      required this.dailyExpeditions,
+      required this.dailySelectedExpeditions,
+      required this.onExpeditionsCharacters});
 
   @override
   Widget build(BuildContext context) {
     return Material(
       // Dodano widget Material
       child: ListView.builder(
-        itemCount: expeditions.length,
+        itemCount: dailyExpeditions.length,
         itemBuilder: (context, index) {
-          final expedition = expeditions[index];
+          final expedition = dailyExpeditions[index];
           return ListTile(
             title: Text(expedition.name),
             subtitle: Text(expedition.duration.toString()),
@@ -92,7 +96,12 @@ class ExpeditionScreen extends StatelessWidget {
                       Center(
                         child: ElevatedButton(
                           onPressed: () {
-                            setExpedition(expedition, context);
+                            setExpedition(
+                                expedition,
+                                context,
+                                dailySelectedExpeditions,
+                                dailyExpeditions,
+                                onExpeditionsCharacters);
                           },
                           child: Text('Save Expedition'),
                         ),
@@ -142,13 +151,17 @@ class ExpeditionScreen extends StatelessWidget {
   void assignHeroToExpedition(
       Character character, Expedition expedition, BuildContext context) {
     expedition.assignHero(character);
-
     Navigator.of(context)
         .pop(); // Zamyka okno dialogowe po przypisaniu bohatera
   }
 }
 
-void setExpedition(Expedition expedition, BuildContext context) {
+void setExpedition(
+    Expedition expedition,
+    BuildContext context,
+    List<Expedition> dailySelectedExpeditions,
+    List<Expedition> dailyExpeditions,
+    List<Character> onExpeditionsCharacters) {
   if (expedition.assignedHero == null) {
     showDialog(
       context: context,
@@ -167,7 +180,7 @@ void setExpedition(Expedition expedition, BuildContext context) {
         );
       },
     );
-  } else if (dailySelectedExpeditions.length < maxExpeditions) {
+  } else if (dailySelectedExpeditions.length < 5) {
     showDialog(
       context: context,
       builder: (context) {
@@ -181,7 +194,8 @@ void setExpedition(Expedition expedition, BuildContext context) {
                 // Usuń wyprawę z listy aktywnych ekspedycji
                 dailyExpeditions.remove(expedition);
                 dailySelectedExpeditions.add(expedition);
-                startTimeExpedition(expedition);
+                startTimeExpedition(expedition, dailySelectedExpeditions,
+                    dailyExpeditions, onExpeditionsCharacters);
                 if (characters.contains(expedition.assignedHero)) {
                   onExpeditionsCharacters.add(expedition.assignedHero!);
                   characters.remove(expedition.assignedHero!);
@@ -217,14 +231,23 @@ void setExpedition(Expedition expedition, BuildContext context) {
   }
 }
 
-void startTimeExpedition(Expedition expedition) {
+void startTimeExpedition(
+    Expedition expedition,
+    List<Expedition> dailySelectedExpeditions,
+    List<Expedition> dailyExpeditions,
+    List<Character> onExpeditionsCharacters) {
   // Rozpocznij odliczanie czasu wyprawy
   Timer(Duration(minutes: expedition.duration.toInt()), () {
-    completeExpedition(expedition);
+    completeExpedition(expedition, dailySelectedExpeditions, dailyExpeditions,
+        onExpeditionsCharacters);
   });
 }
 
-void completeExpedition(Expedition expedition) {
+void completeExpedition(
+    Expedition expedition,
+    List<Expedition> dailySelectedExpeditions,
+    List<Expedition> dailyExpeditions,
+    List<Character> onExpeditionsCharacters) {
   dailyExpeditions.add(expedition);
   dailySelectedExpeditions.remove(expedition);
   characters.add(expedition.assignedHero!);

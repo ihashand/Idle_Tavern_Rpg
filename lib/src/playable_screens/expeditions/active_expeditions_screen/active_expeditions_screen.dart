@@ -37,7 +37,7 @@ class ActiveExpeditionsScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   if (index == expeditions.length) {
                     // Jeśli jesteśmy na ostatnim elemencie (przycisk "Nowa ekspedycja")
-                    if (expeditions.length < maxExpeditions) {
+                    if (expeditions.length < 5) {
                       // Wyświetl przycisk tylko jeśli liczba ekspedycji jest mniejsza niż maksymalna
                       // Nowa ekspedycja
                       return ElevatedButton(
