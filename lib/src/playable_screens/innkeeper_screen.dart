@@ -9,12 +9,13 @@ import 'package:game_template/src/temporary_database/tavern/tavern_models/player
 import 'package:game_template/src/temporary_database/tavern/tavern_data/player_one_data.dart';
 import 'package:provider/provider.dart';
 
-import '../../GameState.dart';
+import '../../game_state.dart';
 
 class InnkeeperScreen extends StatefulWidget {
   const InnkeeperScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _InnkeeperState createState() => _InnkeeperState();
 }
 
@@ -52,8 +53,6 @@ class PlayerInfoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    GameState gameState = Provider.of<GameState>(context);
-
     return Container(
       padding: EdgeInsets.all(16.0),
       color: Colors.blue,

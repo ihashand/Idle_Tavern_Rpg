@@ -5,7 +5,7 @@ import 'package:game_template/src/playable_screens/personnel_screen.dart';
 import 'package:game_template/src/playable_screens/quests_screen.dart';
 import 'package:game_template/src/playable_screens/upgrade_screen.dart';
 import 'package:game_template/src/profil/profile_screen.dart';
-import '../playable_screens/expeditions_screen.dart';
+import '../playable_screens/expeditions/expeditions_screen.dart';
 import '../playable_screens/rooms_screen.dart';
 import '../playable_screens/warehouse_screen.dart';
 import '../playable_screens/wood_storage_screen.dart';

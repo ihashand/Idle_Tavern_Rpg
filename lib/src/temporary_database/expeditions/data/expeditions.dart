@@ -2,6 +2,7 @@ import 'package:game_template/src/temporary_database/expeditions/models/expediti
 
 final List<Expedition> expeditions = [
   Expedition(
+    id: 1,
     name: 'Forest Exploration',
     duration: 2,
     description: 'Explore the enchanted forest',
@@ -9,6 +10,7 @@ final List<Expedition> expeditions = [
     imageUrl: 'assets/images/expeditions/exploration.jpeg',
   ),
   Expedition(
+    id: 2,
     name: 'Cave Exploration',
     duration: 1,
     description: 'Delve deep into the mysterious cave',
@@ -16,6 +18,7 @@ final List<Expedition> expeditions = [
     imageUrl: 'assets/images/expeditions/exploration.jpeg',
   ),
   Expedition(
+    id: 3,
     name: 'Mountain Climb',
     duration: 5,
     description: 'Conquer the treacherous mountain peaks',
@@ -23,6 +26,7 @@ final List<Expedition> expeditions = [
     imageUrl: 'assets/images/expeditions/beasthunting.jpeg',
   ),
   Expedition(
+    id: 4,
     name: 'Underwater Adventure',
     duration: 4,
     description: 'Discover the secrets of the deep sea',
@@ -30,6 +34,7 @@ final List<Expedition> expeditions = [
     imageUrl: 'assets/images/expeditions/diplomacy.jpeg',
   ),
   Expedition(
+    id: 5,
     name: 'Desert Expedition',
     duration: 3,
     description: 'Survive the scorching desert sands',
@@ -37,6 +42,7 @@ final List<Expedition> expeditions = [
     imageUrl: 'assets/images/expeditions/conquest.jpeg',
   ),
   Expedition(
+    id: 6,
     name: 'Haunted Mansion Quest',
     duration: 2,
     description: 'Uncover the mysteries of the haunted mansion',
@@ -44,6 +50,7 @@ final List<Expedition> expeditions = [
     imageUrl: 'assets/images/expeditions/beasthunting.jpeg',
   ),
   Expedition(
+    id: 7,
     name: 'Swamp Exploration',
     duration: 1,
     description: 'Navigate through the murky swamps',
@@ -51,6 +58,7 @@ final List<Expedition> expeditions = [
     imageUrl: 'assets/images/expeditions/protection.jpeg',
   ),
   Expedition(
+    id: 8,
     name: 'Sky Islands Expedition',
     duration: 1,
     description: 'Visit floating islands in the sky',
@@ -58,6 +66,7 @@ final List<Expedition> expeditions = [
     imageUrl: 'assets/images/expeditions/conquest.jpeg',
   ),
   Expedition(
+    id: 9,
     name: 'Ancient Ruins Expedition',
     duration: 2,
     description: 'Search for lost treasures in ancient ruins',
@@ -65,6 +74,7 @@ final List<Expedition> expeditions = [
     imageUrl: 'assets/images/expeditions/exploration.jpeg',
   ),
   Expedition(
+    id: 666,
     name: 'Time-travel Adventure',
     duration: 1,
     description: 'Travel through time and change history',
