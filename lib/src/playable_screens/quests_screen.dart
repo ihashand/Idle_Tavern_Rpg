@@ -1,13 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:game_template/src/playable_screens/expeditions_screen.dart';
+import 'package:game_template/src/playable_screens/expeditions/expeditions_screen.dart';
 import 'package:game_template/src/temporary_database/quests/available_quests_data.dart';
 import 'package:game_template/src/temporary_database/quests/quest.dart';
 import 'package:game_template/src/temporary_database/quests/reward.dart';
 import 'dart:async';
 import 'package:game_template/src/temporary_database/quests/rewards_data.dart';
 import 'package:provider/provider.dart';
-import '../../GameState.dart';
+import '../../game_state.dart';
 import '../temporary_database/quests/categories_data.dart';
 import '../temporary_database/tavern/tavern_models/item.dart';
 
