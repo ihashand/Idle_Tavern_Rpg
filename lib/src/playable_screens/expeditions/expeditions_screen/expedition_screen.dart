@@ -5,9 +5,9 @@ import 'package:game_template/src/temporary_database/expeditions/models/characte
 import 'package:game_template/src/temporary_database/expeditions/models/expedition.dart';
 
 class ExpeditionScreen extends StatelessWidget {
-  late List<Expedition> dailyExpeditions;
-  late List<Expedition> dailySelectedExpeditions;
-  late List<Character> onExpeditionsCharacters;
+  List<Expedition> dailyExpeditions;
+  List<Expedition> dailySelectedExpeditions;
+  List<Character> onExpeditionsCharacters;
 
   ExpeditionScreen(
       {super.key,

@@ -4,10 +4,10 @@ import 'package:game_template/src/temporary_database/expeditions/models/characte
 import 'package:game_template/src/temporary_database/expeditions/models/filter_type.dart';
 
 class HeroesScreen extends StatefulWidget {
-  final List<Character> characters;
-  final List<Character> assignedHeroes;
+  List<Character> characters;
+  List<Character> assignedHeroes;
 
-  const HeroesScreen(
+  HeroesScreen(
       {super.key, required this.characters, required this.assignedHeroes});
 
   @override

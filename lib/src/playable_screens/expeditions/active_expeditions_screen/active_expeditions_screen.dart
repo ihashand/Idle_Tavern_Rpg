@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:game_template/src/playable_screens/expeditions/expeditions_screen.dart';
 import 'package:game_template/src/temporary_database/expeditions/models/expedition.dart';
 
 class ActiveExpeditionsScreen extends StatelessWidget {
@@ -188,53 +187,51 @@ void _showDetailsModal(Expedition expedition, BuildContext context) {
           width: MediaQuery.of(context)
               .size
               .width, // Ustawienie szerokości na szerokość ekranu
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ListTile(
-                title: Text(expedition.name),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                        'Category: ${expedition.category.toString().split('.').last}'),
-                    Text('Skill: ${expedition.description}'),
-                    Text('Payment: ${expedition.duration}'),
-                    Text(
-                        'Category: ${expedition.category.toString().split('.').last}'),
-                    Text('Skill: ${expedition.description}'),
-                    Text('Payment: ${expedition.duration}'),
-                    Text(
-                        'Category: ${expedition.category.toString().split('.').last}'),
-                    Text('Skill: ${expedition.description}'),
-                    Text('Payment: ${expedition.duration}'),
-                    Text(
-                        'Category: ${expedition.category.toString().split('.').last}'),
-                    Text('Skill: ${expedition.description}'),
-                    Text('Payment: ${expedition.duration}'),
-                    Text('Skill: ${expedition.description}'),
-                    Text('Payment: ${expedition.duration}'),
-                    Text(
-                        'Category: ${expedition.category.toString().split('.').last}'),
-                    Text('Skill: ${expedition.description}'),
-                    Text('Payment: ${expedition.duration}'),
-                  ],
-                ),
-                leading: Container(
-                  width: 80.0,
-                  height: 80.0,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: AssetImage(
-                          "assets/images/employees/ethan.jpeg"), // Use AssetImage for local assets
-                    ),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            ListTile(
+              title: Text(expedition.name),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                      'Category: ${expedition.category.toString().split('.').last}'),
+                  Text('Skill: ${expedition.description}'),
+                  Text('Payment: ${expedition.duration}'),
+                  Text(
+                      'Category: ${expedition.category.toString().split('.').last}'),
+                  Text('Skill: ${expedition.description}'),
+                  Text('Payment: ${expedition.duration}'),
+                  Text(
+                      'Category: ${expedition.category.toString().split('.').last}'),
+                  Text('Skill: ${expedition.description}'),
+                  Text('Payment: ${expedition.duration}'),
+                  Text(
+                      'Category: ${expedition.category.toString().split('.').last}'),
+                  Text('Skill: ${expedition.description}'),
+                  Text('Payment: ${expedition.duration}'),
+                  Text('Skill: ${expedition.description}'),
+                  Text('Payment: ${expedition.duration}'),
+                  Text(
+                      'Category: ${expedition.category.toString().split('.').last}'),
+                  Text('Skill: ${expedition.description}'),
+                  Text('Payment: ${expedition.duration}'),
+                ],
+              ),
+              leading: Container(
+                width: 80.0,
+                height: 80.0,
+                decoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: AssetImage(expedition.assignedHero!
+                        .iconUrl), // Use AssetImage for local assets
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ]),
         ),
       );
     },
