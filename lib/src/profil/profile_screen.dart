@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:game_template/constants/prestige.dart';
 import 'package:game_template/src/settings/settings.dart';
@@ -13,7 +14,7 @@ class ProfileScreen extends StatelessWidget {
     final settingsController = context.watch<SettingsController>();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Player Profile"),
+        title: Text('profileScreen.profile'.tr()),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -30,13 +31,17 @@ class ProfileScreen extends StatelessWidget {
               ),
               SizedBox(height: 10),
               Text(
-                "Gold: ${player_one.gold}",
+                'profileScreen.gold'.tr(namedArgs: {
+                  'gold': player_one.gold.toString(),
+                }),
                 style: TextStyle(
                   fontSize: 18.0,
                 ),
               ),
               Text(
-                "Diamonds: ${player_one.diamonds}",
+                'profileScreen.diamonds'.tr(namedArgs: {
+                  'diamonds': player_one.diamonds.toString(),
+                }),
                 style: TextStyle(
                   fontSize: 18.0,
                 ),
@@ -45,7 +50,7 @@ class ProfileScreen extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    "Races:",
+                    'profileScreen.prestigeLvl'.tr(),
                     style: TextStyle(
                       fontSize: 20.0,
                       fontWeight: FontWeight.bold,
@@ -53,7 +58,7 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   Spacer(),
                   Container(
-                    width: 24.0, // Adjust the width as needed
+                    width: 24.0,
                     child: IconButton(
                       icon: Icon(Icons.info),
                       onPressed: () {
@@ -66,63 +71,78 @@ class ProfileScreen extends StatelessWidget {
               SizedBox(height: 10),
               Column(
                 children: fantasyRaces.map((race) {
-                  return ListTile(
-                    contentPadding: EdgeInsets.all(8.0),
-                    leading: Container(
-                      width: 80.0,
-                      height: 80.0,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(8.0),
-                        image: DecorationImage(
-                          image: AssetImage(race.iconUrl),
-                          fit: BoxFit.cover,
+                  return Row(
+                    children: [
+                      Container(
+                        width: 80.0,
+                        height: 90.0,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.circular(8.0),
+                          image: DecorationImage(
+                            image: AssetImage(race.iconUrl),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
-                    ),
-                    title: Text(
-                      "Race: ${race.race}",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Prestige Level: ${race.prestigeLevel}",
-                          style: TextStyle(
-                            fontSize: 16.0,
-                          ),
-                        ),
-                        Text(
-                          "Total Prestige: ${race.prestige}",
-                          style: TextStyle(
-                            fontSize: 16.0,
-                          ),
-                        ),
-                        SizedBox(height: 8.0),
-                        Container(
-                          height: 10.0,
-                          decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(5.0),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(
-                                5.0), // Adjust the radius as needed
-                            child: LinearProgressIndicator(
-                              value: (race.prestige % 50) / 50,
-                              backgroundColor: Colors.grey[300],
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                _getColorForPrestigeLevel(race.prestigeLevel),
-                              ),
+                      SizedBox(
+                          width: 16.0), // Add spacing between image and text
+                      Expanded(
+                        child: ListTile(
+                          contentPadding: EdgeInsets.all(8.0),
+                          title: Text(
+                            'profileScreen.races.${race.race.name}'.tr(),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'profileScreen.prestige'.tr(namedArgs: {
+                                  'prestigeLvl':
+                                      'profileScreen.prestigeLvls.${race.prestigeLevel.name}'
+                                          .tr()
+                                }),
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                              Text(
+                                'profileScreen.totalPrestige'.tr(namedArgs: {
+                                  'totalPrestige': race.prestige.toString(),
+                                }),
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                              SizedBox(height: 8.0),
+                              Container(
+                                height: 10.0,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[300],
+                                  borderRadius: BorderRadius.circular(5.0),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                      5.0), // Adjust the radius as needed
+                                  child: LinearProgressIndicator(
+                                    value: (race.prestige % 50) / 50,
+                                    backgroundColor: Colors.grey[300],
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      _getColorForPrestigeLevel(
+                                          race.prestigeLevel),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 16.0),
+                            ],
+                          ),
                         ),
-                        SizedBox(height: 16.0),
-                      ],
-                    ),
+                      ),
+                    ],
                   );
                 }).toList(),
               ),
@@ -142,7 +162,7 @@ class ProfileScreen extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Possible Prestige Levels"),
+          title: Text('profileScreen.prestigeInfo'.tr()),
           content: Column(
             children: possiblePrestigeLevels.map((level) {
               return Row(
@@ -158,7 +178,7 @@ class ProfileScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(4.0),
                     ),
                   ),
-                  Text(level),
+                  Text('profileScreen.prestigeLvls.${level}'.tr()),
                 ],
               );
             }).toList(),
@@ -168,7 +188,7 @@ class ProfileScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("OK"),
+              child: Text('ok'.tr()),
             ),
           ],
         );
