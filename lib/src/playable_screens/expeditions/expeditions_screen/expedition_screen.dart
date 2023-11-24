@@ -96,6 +96,9 @@ class ExpeditionScreen extends StatelessWidget {
                       Center(
                         child: ElevatedButton(
                           onPressed: () {
+                            Navigator.of(context)
+                                .pop(); // Zamyka okno dialogowe
+
                             setExpedition(
                                 expedition,
                                 context,
@@ -200,8 +203,6 @@ void setExpedition(
                   onExpeditionsCharacters.add(expedition.assignedHero!);
                   characters.remove(expedition.assignedHero!);
                 }
-
-                Navigator.of(context).pop(); // Zamyka okno dialogowe
                 Navigator.of(context).pop(); // Powrót do poprzedniego ekranu
               },
             ),
