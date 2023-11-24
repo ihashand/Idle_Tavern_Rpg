@@ -91,7 +91,7 @@ class ProfileScreen extends StatelessWidget {
                         child: ListTile(
                           contentPadding: EdgeInsets.all(8.0),
                           title: Text(
-                            'profileScreen.races.${race.race.name}'.tr(),
+                            'races.${race.race.name}'.tr(),
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                             ),

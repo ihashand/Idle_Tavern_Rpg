@@ -19,12 +19,23 @@
     "notEnoughGoldDialogContent": "Nie masz wystarczająco złota na ten zakup.",
     "upgradeSuccessDialogTitle": "Ulepszenie Zakończone Sukcesem",
     "upgradeSuccessDialogContent": "Gratulacje! {itemName} zostało ulepszone do poziomu {itemLevel}.",
-    "bottomNavBackLabel": "Wróć",
-    "bottomNavTavernLabel": "Tawerna",
+    "bottomNavMenuLabel": "Menu",
+    "bottomNavUpgradeLabel": "Ulepszenia",
+    "bottomNavRoomsLabel": "Pokoje",
     "confirmUpgradeContent": "Czy na pewno chcesz ulepszyć {name} do poziomu {lvl} za {cost} złota?",
     "yesButton": "Tak",
     "noButton": "Nie",
     "okButton": "OK"
+  },
+  "races": {
+    "Human": "Ludzie",
+    "Dwarf": "Krasnoludy",
+    "Goblin": "Gobliny",
+    "Orc": "Orkowie",
+    "Elv": "Elfy",
+    "Centaur": "Centaury",
+    "Werewolf": "Wilkołaki",
+    "Vampire": "Wampiry"
   },
   "profileScreen": {
     "profile": "Profil",
@@ -35,16 +46,6 @@
     "totalPrestige": "Całkowity prestiż: {totalPrestige}",
     "prestigeInfo": "Dostępne poziomy:",
     "ok": "OK",
-    "races": {
-      "Human": "Ludzie",
-      "Dwarf": "Krasnoludy",
-      "Goblin": "Gobliny",
-      "Orc": "Orkowie",
-      "Elv": "Elfy",
-      "Centaur": "Centaury",
-      "Werewolf": "Wilkołaki",
-      "Vampire": "Wampiry"
-    },
     "prestigeLvls": {
       "Neutral": "Neutralny",
       "Cordial": "Serdeczny",
