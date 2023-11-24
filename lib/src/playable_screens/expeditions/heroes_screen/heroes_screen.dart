@@ -117,11 +117,11 @@ class _HeroesScreenState extends State<HeroesScreen> {
 
   Widget _buildCharacterCard(BuildContext context, Character character) {
     bool isOnExpedition = widget.assignedHeroes.contains(character);
-
     return Card(
       margin: EdgeInsets.all(10.0),
       child: Column(
         children: [
+          SizedBox(height: 12.0),
           GestureDetector(
             onTap: () {
               Navigator.push(
@@ -132,7 +132,7 @@ class _HeroesScreenState extends State<HeroesScreen> {
               );
             },
             child: Stack(
-              alignment: Alignment.centerLeft, // Wyśrodkowanie ikony
+              alignment: Alignment.center, // Wyśrodkowanie ikony
               children: [
                 Positioned(
                   left: 20.0, // Przesunięcie ikony dostępności na lewo
