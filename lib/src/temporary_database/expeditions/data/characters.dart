@@ -6,7 +6,7 @@ final List<Character> characters = [
     payment: 1000,
     iconUrl: 'assets/images/characters/character_03.jpeg',
     category: CharacterCategory.Warrior,
-    name: 'Sir Lancelot',
+    name: 'Lancelot',
     level: 10,
   ),
   Character(
@@ -14,7 +14,7 @@ final List<Character> characters = [
     payment: 900,
     iconUrl: 'assets/images/characters/character_02.jpeg',
     category: CharacterCategory.Rogue,
-    name: 'Elena Moonshadow',
+    name: 'Moonshadow',
     level: 8,
   ),
   Character(
@@ -22,7 +22,7 @@ final List<Character> characters = [
     payment: 1200,
     iconUrl: 'assets/images/characters/character_01.jpeg',
     category: CharacterCategory.Diplomat,
-    name: 'Thorn Ironfist',
+    name: 'Ironfist',
     level: 12,
   ),
   Character(
@@ -30,7 +30,7 @@ final List<Character> characters = [
     payment: 1100,
     iconUrl: 'assets/images/characters/character_04.jpeg',
     category: CharacterCategory.Mage,
-    name: 'Aria Stormbringer',
+    name: 'Stormbringer',
     level: 9,
   ),
   Character(
@@ -38,7 +38,7 @@ final List<Character> characters = [
     payment: 800,
     iconUrl: 'assets/images/characters/character_05.jpeg',
     category: CharacterCategory.Rogue,
-    name: 'Finn Shadowblade',
+    name: 'Shadowblade',
     level: 7,
   ),
   Character(
@@ -46,7 +46,7 @@ final List<Character> characters = [
     payment: 1150,
     iconUrl: 'assets/images/characters/character_06.jpeg',
     category: CharacterCategory.Sorcerer,
-    name: 'Isabella Fireheart',
+    name: 'Isabella',
     level: 11,
   ),
   Character(
@@ -54,7 +54,7 @@ final List<Character> characters = [
     payment: 1050,
     iconUrl: 'assets/images/characters/character_07.jpeg',
     category: CharacterCategory.Paladin,
-    name: 'Gromm Stonehammer',
+    name: 'Gromm',
     level: 10,
   ),
   Character(
@@ -62,7 +62,7 @@ final List<Character> characters = [
     payment: 950,
     iconUrl: 'assets/images/characters/character_08.jpeg',
     category: CharacterCategory.Mage,
-    name: 'Lydia Frostwind',
+    name: 'Lydia',
     level: 8,
   ),
   Character(
@@ -70,7 +70,7 @@ final List<Character> characters = [
     payment: 960,
     iconUrl: 'assets/images/characters/character_09.jpeg',
     category: CharacterCategory.Assassin,
-    name: 'Darius Blackthorn',
+    name: 'Darius',
     level: 9,
   ),
   Character(
@@ -78,7 +78,7 @@ final List<Character> characters = [
     payment: 1060,
     iconUrl: 'assets/images/characters/character_010.jpeg',
     category: CharacterCategory.Priest,
-    name: 'Aurora Starlight',
+    name: 'Aurora',
     level: 10,
   ),
 ];

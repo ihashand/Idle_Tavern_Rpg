@@ -1,168 +1,227 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:game_template/src/playable_screens/expeditions/heroes_screen/hero_details_screen.dart';
 import 'package:game_template/src/temporary_database/expeditions/data/characters.dart';
 import 'package:game_template/src/temporary_database/expeditions/models/character.dart';
 import 'package:game_template/src/temporary_database/expeditions/models/expedition.dart';
 
-class ExpeditionScreen extends StatelessWidget {
-  List<Expedition> dailyExpeditions;
-  List<Expedition> dailySelectedExpeditions;
-  List<Character> onExpeditionsCharacters;
+class ExpeditionScreen extends StatefulWidget {
+  final List<Expedition> dailyExpeditions;
+  final List<Expedition> dailySelectedExpeditions;
+  final List<Character> onExpeditionsCharacters;
 
-  ExpeditionScreen(
-      {super.key,
-      required this.dailyExpeditions,
-      required this.dailySelectedExpeditions,
-      required this.onExpeditionsCharacters});
+  ExpeditionScreen({
+    Key? key,
+    required this.dailyExpeditions,
+    required this.dailySelectedExpeditions,
+    required this.onExpeditionsCharacters,
+  }) : super(key: key);
+
+  @override
+  _ExpeditionScreenState createState() => _ExpeditionScreenState();
+}
+
+Character? currentAvailableCharacter;
+
+class _ExpeditionScreenState extends State<ExpeditionScreen> {
+  Expedition? selectedExpedition; // Selected expedition
+  Character? selectedCharacter; // Selected character for the expedition
+  int currentCarouselIndex = 0; // Current index in the carousel
 
   @override
   Widget build(BuildContext context) {
+    // Main widget layout
     return Material(
-      // Dodano widget Material
+      color: Colors.grey.shade300,
       child: ListView.builder(
-        itemCount: dailyExpeditions.length,
+        itemCount: widget.dailyExpeditions.length,
         itemBuilder: (context, index) {
-          final expedition = dailyExpeditions[index];
-          return ListTile(
-            title: Text(expedition.name),
-            subtitle: Text(expedition.duration.toString()),
-            onTap: () {
-              _showExpeditionDetails(expedition, context);
-            },
-          );
+          final expedition = widget.dailyExpeditions[index];
+          return _buildExpeditionCard(expedition);
         },
       ),
     );
   }
 
-  void _showExpeditionDetails(Expedition expedition, BuildContext context) {
+  // Build individual expedition card
+  Widget _buildExpeditionCard(Expedition expedition) {
+    return Card(
+      margin: EdgeInsets.all(8.0),
+      elevation: 4.0,
+      child: InkWell(
+        onTap: () => _onExpeditionTap(expedition),
+        child: _buildExpeditionListTile(expedition),
+      ),
+    );
+  }
+
+  // Build ListTile for expedition
+  Widget _buildExpeditionListTile(Expedition expedition) {
+    return ListTile(
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(expedition.name, style: TextStyle(fontSize: 20.0)),
+          Text('${expedition.duration.toString()} min',
+              style: TextStyle(fontSize: 16.0)),
+        ],
+      ),
+      subtitle: selectedExpedition == expedition
+          ? _buildExpeditionDetails(expedition)
+          : Container(),
+    );
+  }
+
+  // Build details for selected expedition
+  Widget _buildExpeditionDetails(Expedition expedition) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Description: ${expedition.description}',
+            style: TextStyle(fontSize: 14.0)),
+        Text('Category: ${expedition.category.name}',
+            style: TextStyle(fontSize: 14.0)),
+        Align(
+          alignment: Alignment.center,
+          child: ElevatedButton(
+            onPressed: () => _showExpeditionDetails(expedition),
+            child: Text('Set expedition'),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Handle expedition card tap
+  void _onExpeditionTap(Expedition expedition) {
+    setState(() {
+      selectedExpedition = selectedExpedition == expedition ? null : expedition;
+      selectedCharacter = currentAvailableCharacter;
+    });
+  }
+
+  // Show details of the selected expedition
+  void _showExpeditionDetails(Expedition expedition) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (context) {
-        return SingleChildScrollView(
-          child: Container(
-            padding: EdgeInsets.all(16.0),
-            width: MediaQuery.of(context).size.width,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Text(
-                    expedition.name, // Powiększona nazwa ekspedycji
-                    style: TextStyle(
-                      fontSize: 24.0, // Rozmiar czcionki możesz dostosować
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                ListTile(
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Category: ${expedition.category.toString().split('.').last}',
-                      ),
-                      Text(
-                        'Skill wanted: ${expedition.description}',
-                      ),
-                      Text(
-                        'Payment: ${expedition.duration}',
-                      ),
-                      SizedBox(
-                        width: 60.0,
-                        height: 60.0,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10.0),
-                          child: expedition.isHeroAssigned &&
-                                  expedition.assignedHero != null
-                              ? Image.asset(
-                                  expedition.assignedHero!.iconUrl,
-                                  fit: BoxFit.cover,
-                                )
-                              : Image.asset(
-                                  'assets/images/characters/question.jpeg',
-                                  fit: BoxFit.cover,
-                                ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Center(
-                        child: ElevatedButton(
-                          onPressed: () => _assignHero(context, expedition),
-                          child: Text('Assign Heroes'),
-                        ),
-                      ),
-                      Center(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            setExpedition(
-                                expedition,
-                                context,
-                                dailySelectedExpeditions,
-                                dailyExpeditions,
-                                onExpeditionsCharacters);
-                          },
-                          child: Text('Save Expedition'),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+      builder: (context) => _buildBottomSheetContent(expedition),
+    ).whenComplete(() {
+      _updateCurrentAvailableCharacter();
+    });
+  }
+
+  // Build content for the bottom sheet
+  Widget _buildBottomSheetContent(Expedition expedition) {
+    return SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.all(16.0),
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Text(expedition.name,
+                  style:
+                      TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold)),
             ),
-          ),
-        );
-      },
+            _buildCharacterCarousel(),
+            Center(
+              child: ElevatedButton(
+                onPressed: () => _saveExpedition(expedition),
+                child: Text('Save Expedition'),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
-  void _assignHero(BuildContext context, Expedition expedition) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Select a Hero'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: characters
-                  .map((character) => ListTile(
-                        title: Text(character.name),
-                        subtitle: Text(
-                            '${character.category}, Level: ${character.level}'),
-                        onTap: () {
-                          assignHeroToExpedition(
-                              character, expedition, context);
-                          Navigator.of(context)
-                              .pop(); // Zamyka okno dialogowe po wybraniu bohatera
-
-                          // Otwiera ponownie szczegóły ekspedycji
-                          _showExpeditionDetails(expedition, context);
-                        },
-                      ))
-                  .toList(),
-            ),
-          ),
-        );
-      },
+  // Build carousel slider for character selection
+  Widget _buildCharacterCarousel() {
+    return CarouselSlider(
+      options: CarouselOptions(
+        height: 150.0,
+        enlargeCenterPage: true,
+        viewportFraction: 0.33,
+        onPageChanged: _onCarouselPageChanged, // Dodaj ten wiersz
+      ),
+      items:
+          characters.map((character) => _buildCarouselItem(character)).toList(),
     );
   }
 
-  void assignHeroToExpedition(
-      Character character, Expedition expedition, BuildContext context) {
-    expedition.assignHero(character);
-    Navigator.of(context)
-        .pop(); // Zamyka okno dialogowe po przypisaniu bohatera
+  @override
+  void initState() {
+    super.initState();
+    if (characters.isNotEmpty) {
+      currentAvailableCharacter = characters[0];
+    }
   }
-}
 
-void setExpedition(
-    Expedition expedition,
-    BuildContext context,
-    List<Expedition> dailySelectedExpeditions,
-    List<Expedition> dailyExpeditions,
-    List<Character> onExpeditionsCharacters) {
-  if (expedition.assignedHero == null) {
+  // Build individual carousel item
+  Widget _buildCarouselItem(Character character) {
+    bool isCenter = currentCarouselIndex == characters.indexOf(character);
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HeroDetailsScreen(hero: character),
+          ),
+        );
+      },
+      child: Card(
+        margin: EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: isCenter ? 80.0 : 60.0,
+                height: isCenter ? 80.0 : 60.0,
+                child: ClipOval(
+                  child: Image.asset(character.iconUrl, fit: BoxFit.cover),
+                ),
+              ),
+              SizedBox(height: 5.0),
+              Text(character.name, style: TextStyle(fontSize: 12)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _onCarouselPageChanged(int index, CarouselPageChangedReason reason) {
+    setState(() {
+      currentCarouselIndex = index;
+      selectedCharacter = characters[index]; // Aktualizacja selectedCharacter
+    });
+  }
+
+  void _updateCurrentAvailableCharacter() {
+    if (characters.isNotEmpty) {
+      currentAvailableCharacter = characters[0];
+    }
+  }
+
+  // Save the selected expedition with the chosen character
+  void _saveExpedition(Expedition expedition) {
+    if (selectedCharacter == null) {
+      _showNoCharacterSelectedDialog();
+    } else {
+      _assignCharacterToExpedition(expedition);
+      Navigator.of(context).pop(); // Close the bottom sheet
+    }
+  }
+
+  // Show dialog when no character is selected
+  void _showNoCharacterSelectedDialog() {
     showDialog(
       context: context,
       builder: (context) {
@@ -172,84 +231,39 @@ void setExpedition(
           actions: <Widget>[
             TextButton(
               child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  } else if (dailySelectedExpeditions.length < 5) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Hero assigned!'),
-          content: Text('Congratulations, your hero is assigned.'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                // Usuń wyprawę z listy aktywnych ekspedycji
-                dailyExpeditions.remove(expedition);
-                dailySelectedExpeditions.add(expedition);
-                startTimeExpedition(expedition, dailySelectedExpeditions,
-                    dailyExpeditions, onExpeditionsCharacters);
-                if (characters.contains(expedition.assignedHero)) {
-                  onExpeditionsCharacters.add(expedition.assignedHero!);
-                  characters.remove(expedition.assignedHero!);
-                }
-
-                Navigator.of(context).pop(); // Zamyka okno dialogowe
-                Navigator.of(context).pop(); // Powrót do poprzedniego ekranu
-              },
-            ),
-          ],
-        );
-      },
-    );
-  } else {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Limit reached'),
-          content:
-              Text('You have reached the maximum limit of active expeditions.'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              onPressed: () => Navigator.of(context).pop(),
             ),
           ],
         );
       },
     );
   }
-}
 
-void startTimeExpedition(
-    Expedition expedition,
-    List<Expedition> dailySelectedExpeditions,
-    List<Expedition> dailyExpeditions,
-    List<Character> onExpeditionsCharacters) {
-  // Rozpocznij odliczanie czasu wyprawy
-  Timer(Duration(minutes: expedition.duration.toInt()), () {
-    completeExpedition(expedition, dailySelectedExpeditions, dailyExpeditions,
-        onExpeditionsCharacters);
-  });
-}
+  // Assign the selected character to the expedition
+  void _assignCharacterToExpedition(Expedition expedition) {
+    expedition.assignHero(selectedCharacter!);
 
-void completeExpedition(
-    Expedition expedition,
-    List<Expedition> dailySelectedExpeditions,
-    List<Expedition> dailyExpeditions,
-    List<Character> onExpeditionsCharacters) {
-  dailyExpeditions.add(expedition);
-  dailySelectedExpeditions.remove(expedition);
-  characters.add(expedition.assignedHero!);
-  onExpeditionsCharacters.remove(expedition.assignedHero!);
+    widget.dailyExpeditions.remove(expedition);
+    widget.dailySelectedExpeditions.add(expedition);
+    widget.onExpeditionsCharacters.add(expedition.assignedHero!);
+    characters.remove(expedition.assignedHero!);
+
+    _startTimeExpedition(expedition);
+  }
+
+  // Start timer for expedition
+  void _startTimeExpedition(Expedition expedition) {
+    Timer(
+      Duration(minutes: expedition.duration.toInt()),
+      () => _completeExpedition(expedition),
+    );
+  }
+
+  // Complete the expedition
+  void _completeExpedition(Expedition expedition) {
+    widget.dailyExpeditions.add(expedition);
+    widget.dailySelectedExpeditions.remove(expedition);
+    characters.add(expedition.assignedHero!);
+    widget.onExpeditionsCharacters.remove(expedition.assignedHero!);
+  }
 }
