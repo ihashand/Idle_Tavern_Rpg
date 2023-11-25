@@ -1,14 +1,19 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:game_template/constants/prestige.dart';
 import 'package:game_template/src/settings/settings.dart';
 import 'package:game_template/src/temporary_database/profile/data/race.dart';
 import 'package:game_template/src/temporary_database/tavern/tavern_data/player_one_data.dart';
 import 'package:provider/provider.dart';
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({Key? key}) : super(key: key);
 
+  @override
+  ProfileScreenState createState() => ProfileScreenState();
+}
+
+class ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final settingsController = context.watch<SettingsController>();

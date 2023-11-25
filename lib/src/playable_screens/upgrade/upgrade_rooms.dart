@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:game_template/src/playable_screens/upgrade/rooms/vampire.dart';
 import 'package:game_template/src/playable_screens/upgrade/upgrade_screen.dart';
+import 'package:game_template/src/temporary_database/profile/data/race.dart';
+import 'package:game_template/src/temporary_database/profile/models/race.dart';
 import 'package:game_template/src/temporary_database/tavern/tavern_data/player_one_data.dart';
 import 'package:game_template/src/temporary_database/tavern/tavern_data/rooms_upgrade_data.dart';
 import 'package:game_template/src/temporary_database/tavern/tavern_models/tavern.dart';
@@ -129,14 +131,15 @@ class UpdateRoomsScreenState extends State<UpdateRoomsScreen> {
       upgrade.level++;
       // Apply cost multiplier for the next level
       upgrade.goldCost = (upgrade.goldCost * 1.5).round();
+      Race race = fantasyRaces
+          .firstWhere((fantasyRace) => fantasyRace.race.name == upgrade.name);
+      race.calculatePrestigeLevel();
 
       // Limit the upgrade level to 100
       if (upgrade.level > 100) {
         upgrade.level = 100;
       }
     });
-
-    _showUpgradeSuccessDialog(upgrade);
   }
 
   void _showNotEnoughGoldDialog() {
@@ -146,30 +149,6 @@ class UpdateRoomsScreenState extends State<UpdateRoomsScreen> {
         return AlertDialog(
           title: Text('upgradeScreen.notEnoughGoldDialogTitle').tr(),
           content: Text('upgradeScreen.notEnoughGoldDialogContent').tr(),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('upgradeScreen.okButton').tr(),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showUpgradeSuccessDialog(TavernUpgrade upgrade) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('upgradeScreen.upgradeSuccessDialogTitle').tr(),
-          content: Text('upgradeScreen.upgradeSuccessDialogContent').tr(
-              namedArgs: {
-                "itemName": upgrade.name,
-                "itemLevel": upgrade.level.toString()
-              }),
           actions: [
             TextButton(
               onPressed: () {
