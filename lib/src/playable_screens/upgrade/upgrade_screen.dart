@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:game_template/src/playable_screens/upgrade/upgrade_rooms.dart';
 import 'package:game_template/src/temporary_database/tavern/tavern_data/player_one_data.dart';
 import 'package:game_template/src/temporary_database/tavern/tavern_data/tavern_upgrade_data.dart';
 import 'package:game_template/src/temporary_database/tavern/tavern_models/tavern.dart';
 
 class UpgradeScreen extends StatefulWidget {
   const UpgradeScreen({Key? key}) : super(key: key);
-
   @override
   UpgradeScreenState createState() => UpgradeScreenState();
 }
@@ -17,9 +17,6 @@ class UpgradeScreenState extends State<UpgradeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('upgradeScreen.appBarTitle').tr(),
-      ),
       body: ListView.builder(
         itemCount: tavernUpgrades.length,
         itemBuilder: (context, index) {
@@ -51,12 +48,12 @@ class UpgradeScreenState extends State<UpgradeScreen> {
         selectedItemColor: Colors.white,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.arrow_back),
-            label: 'upgradeScreen.bottomNavBackLabel'.tr(),
+            icon: Icon(Icons.menu),
+            label: 'upgradeScreen.bottomNavMenuLabel'.tr(),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'upgradeScreen.bottomNavTavernLabel'.tr(),
+            icon: Icon(Icons.hotel),
+            label: 'upgradeScreen.bottomNavRoomsLabel'.tr(),
           ),
         ],
         currentIndex: _selectedIndex,
@@ -66,6 +63,11 @@ class UpgradeScreenState extends State<UpgradeScreen> {
           });
           if (index == 0) {
             Navigator.pop(context);
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => UpdateRoomsScreen()),
+            );
           }
         },
       ),

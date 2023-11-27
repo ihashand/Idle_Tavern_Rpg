@@ -52,6 +52,7 @@ flutter:
     - assets/images/characters/
     - assets/images/expeditions/
     - assets/images/race/
+    - assets/images/rooms/
     - assets/translations/
 
   fonts:

@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:game_template/src/playable_screens/innkeeper_screen.dart';
 import 'package:game_template/src/playable_screens/personnel_screen.dart';
 import 'package:game_template/src/playable_screens/quests_screen.dart';
-import 'package:game_template/src/playable_screens/upgrade_screen.dart';
+import 'package:game_template/src/playable_screens/upgrade/upgrade_screen.dart';
 import 'package:game_template/src/profil/profile_screen.dart';
 import '../playable_screens/expeditions/expeditions_screen.dart';
-import '../playable_screens/rooms_screen.dart';
 import '../playable_screens/warehouse_screen.dart';
 import '../playable_screens/wood_storage_screen.dart';
 import '../playable_screens/kitchen_screen.dart';
@@ -50,21 +49,19 @@ class TownMenuScreenState extends State<TownMenuScreen> {
                     ExpeditionsScreen()),
                 _buildMenuItem(context, 'upgrades'.tr(), Icons.upgrade, 1,
                     UpgradeScreen()),
-                _buildMenuItem(
-                    context, 'rooms'.tr(), Icons.hotel, 2, RoomsScreen()),
-                _buildMenuItem(context, 'warehouse'.tr(), Icons.storage, 3,
+                _buildMenuItem(context, 'warehouse'.tr(), Icons.storage, 2,
                     WarehouseScreen()),
-                _buildMenuItem(context, 'woodstorage'.tr(), Icons.nature, 4,
+                _buildMenuItem(context, 'woodstorage'.tr(), Icons.nature, 3,
                     WoodStorageScreen()),
-                _buildMenuItem(context, 'kitchen'.tr(), Icons.restaurant, 5,
+                _buildMenuItem(context, 'kitchen'.tr(), Icons.restaurant, 4,
                     KitchenScreen()),
-                _buildMenuItem(context, 'quests'.tr(), Icons.question_mark, 6,
+                _buildMenuItem(context, 'quests'.tr(), Icons.question_mark, 5,
                     QuestsScreen()),
                 _buildMenuItem(context, 'innkeeper'.tr(), Icons.question_mark,
-                    7, InnkeeperScreen()),
+                    6, InnkeeperScreen()),
                 _buildMenuItem(context, 'personnel'.tr(), Icons.question_mark,
-                    8, PersonnelScreen()),
-                _buildMenuItem(context, 'profile'.tr(), Icons.question_mark, 9,
+                    7, PersonnelScreen()),
+                _buildMenuItem(context, 'profile'.tr(), Icons.question_mark, 8,
                     ProfileScreen()),
               ],
             ),
@@ -86,10 +83,6 @@ class TownMenuScreenState extends State<TownMenuScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.upgrade),
             label: 'upgrades'.tr(),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.hotel),
-            label: 'rooms'.tr(),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.storage),
@@ -115,66 +108,59 @@ class TownMenuScreenState extends State<TownMenuScreen> {
           setState(() {
             _selectedIndex = index;
           });
-          if (index == 0) {
-            // If "Back" is selected, use Navigator.pop to return to the previous screen.
-            Navigator.pop(context);
-          } else {
-            // Otherwise, use Navigator.push to go to a new screen.
-            // TODO zastąpić numery enumem
-            switch (index) {
-              case 1:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ExpeditionsScreen()),
-                );
-                break;
-              case 2:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => UpgradeScreen()),
-                );
-                break;
-              case 3:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => WarehouseScreen()),
-                );
-                break;
-              case 4:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => WoodStorageScreen()),
-                );
-                break;
-              case 5:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => KitchenScreen()),
-                );
-              case 6:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => QuestsScreen()),
-                );
-              case 7:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => InnkeeperScreen()),
-                );
-                break;
-              case 8:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PersonnelScreen()),
-                );
-                break;
-              case 9:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ProfileScreen()),
-                );
-                break;
-            }
+          switch (index) {
+            case 0:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ExpeditionsScreen()),
+              );
+              break;
+            case 1:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => UpgradeScreen()),
+              );
+              break;
+            case 2:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => WarehouseScreen()),
+              );
+              break;
+            case 3:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => WoodStorageScreen()),
+              );
+              break;
+            case 4:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => KitchenScreen()),
+              );
+            case 5:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => QuestsScreen()),
+              );
+            case 6:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => InnkeeperScreen()),
+              );
+              break;
+            case 7:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PersonnelScreen()),
+              );
+              break;
+            case 8:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProfileScreen()),
+              );
+              break;
           }
         },
       ),
