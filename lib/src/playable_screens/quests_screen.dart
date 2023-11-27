@@ -6,6 +6,7 @@ import 'package:game_template/src/temporary_database/quests/quest.dart';
 import 'package:game_template/src/temporary_database/quests/reward.dart';
 import 'dart:async';
 import 'package:game_template/src/temporary_database/quests/rewards_data.dart';
+import 'package:game_template/src/temporary_database/tavern/tavern_data/player_one_data.dart';
 import 'package:provider/provider.dart';
 import '../../game_state.dart';
 import '../temporary_database/quests/categories_data.dart';
@@ -428,12 +429,16 @@ class _QuestsScreenState extends State<QuestsScreen> {
 
   void _claimQuest(Quest quest, BuildContext context) {
     Item item = quest.items[0];
-    Provider.of<GameState>(context, listen: false).addItemToInventory(item);
+    setState(() {
+      player_one.items.add(item);
+    });
   }
 
   void _claimReward(Reward reward, BuildContext context) {
     Item item = reward.item;
-    Provider.of<GameState>(context, listen: false).addItemToInventory(item);
+    setState(() {
+      player_one.items.add(item);
+    });
   }
 
   void removeQuest(String questId) {

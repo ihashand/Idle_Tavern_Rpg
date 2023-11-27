@@ -261,9 +261,27 @@ class _ExpeditionScreenState extends State<ExpeditionScreen> {
 
   // Complete the expedition
   void _completeExpedition(Expedition expedition) {
+    expedition.completeExpedition(expedition.assignedHero!);
     widget.dailyExpeditions.add(expedition);
     widget.dailySelectedExpeditions.remove(expedition);
     characters.add(expedition.assignedHero!);
     widget.onExpeditionsCharacters.remove(expedition.assignedHero!);
   }
 }
+
+  // void _performUpgrade(TavernUpgrade upgrade) {
+  //   setState(() {
+  //     player_one.gold -= upgrade.goldCost;
+  //     upgrade.level++;
+  //     // Apply cost multiplier for the next level
+  //     upgrade.goldCost = (upgrade.goldCost * 1.5).round();
+  //     Race race = fantasyRaces
+  //         .firstWhere((fantasyRace) => fantasyRace.race.name == upgrade.name);
+  //     race.calculatePrestigeLevel();
+
+  //     // Limit the upgrade level to 100
+  //     if (upgrade.level > 100) {
+  //       upgrade.level = 100;
+  //     }
+  //   });
+  // }
