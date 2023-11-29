@@ -26,7 +26,7 @@ class VampireRoomScreen extends StatelessWidget {
           SizedBox(
             width: MediaQuery.of(context).size.width * 2,
             child: Image.asset(
-              getRoomImagePaths(FantasyRace.Vampire),
+              getRoomImagePaths(FantasyRace.vampire),
               fit: BoxFit.cover,
             ),
           ),

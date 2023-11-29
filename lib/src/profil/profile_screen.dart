@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:game_template/constants/prestige.dart';
 import 'package:game_template/src/settings/settings.dart';
+import 'package:game_template/src/temporary_database/profile/data/prestige.dart';
 import 'package:game_template/src/temporary_database/profile/data/race.dart';
 import 'package:game_template/src/temporary_database/tavern/tavern_data/player_one_data.dart';
 import 'package:provider/provider.dart';
@@ -107,7 +107,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                               Text(
                                 'profileScreen.prestige'.tr(namedArgs: {
                                   'prestigeLvl':
-                                      'profileScreen.prestigeLvls.${race.prestigeLevel.name}'
+                                      'prestigeLvls.${race.prestigeLvl.name}'
                                           .tr()
                                 }),
                                 style: TextStyle(
@@ -116,7 +116,8 @@ class ProfileScreenState extends State<ProfileScreen> {
                               ),
                               Text(
                                 'profileScreen.totalPrestige'.tr(namedArgs: {
-                                  'totalPrestige': race.prestige.toString(),
+                                  'totalPrestige':
+                                      race.totalPrestige.toString(),
                                 }),
                                 style: TextStyle(
                                   fontSize: 16.0,
@@ -133,12 +134,10 @@ class ProfileScreenState extends State<ProfileScreen> {
                                   borderRadius: BorderRadius.circular(
                                       5.0), // Adjust the radius as needed
                                   child: LinearProgressIndicator(
-                                    value: (race.prestige % 50) / 50,
+                                    value: (race.totalPrestige % 50) / 50,
                                     backgroundColor: Colors.grey[300],
                                     valueColor: AlwaysStoppedAnimation<Color>(
-                                      _getColorForPrestigeLevel(
-                                          race.prestigeLevel),
-                                    ),
+                                        race.prestigeLvl.color),
                                   ),
                                 ),
                               ),
@@ -159,17 +158,13 @@ class ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _showPossiblePrestigeLevels(BuildContext context) {
-    final List<String> possiblePrestigeLevels = PrestigeLvl.values
-        .map((level) => level.toString().split('.').last)
-        .toList();
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('profileScreen.prestigeInfo'.tr()),
           content: Column(
-            children: possiblePrestigeLevels.map((level) {
+            children: prestiges.map((prestige) {
               return Row(
                 children: [
                   Container(
@@ -177,13 +172,11 @@ class ProfileScreenState extends State<ProfileScreen> {
                     height: 20.0,
                     margin: EdgeInsets.only(right: 8.0),
                     decoration: BoxDecoration(
-                      color: _getColorForPrestigeLevel(PrestigeLvl.values
-                          .firstWhere((enumLevel) =>
-                              enumLevel.toString().split('.').last == level)),
+                      color: prestige.color,
                       borderRadius: BorderRadius.circular(4.0),
                     ),
                   ),
-                  Text('profileScreen.prestigeLvls.${level}'.tr()),
+                  Text('prestigeLvls.${prestige.name}'.tr()),
                 ],
               );
             }).toList(),
@@ -199,30 +192,5 @@ class ProfileScreenState extends State<ProfileScreen> {
         );
       },
     );
-  }
-
-  Color _getColorForPrestigeLevel(PrestigeLvl prestigeLevel) {
-    switch (prestigeLevel) {
-      case PrestigeLvl.Neutral:
-        return Colors.red;
-      case PrestigeLvl.Cordial:
-        return Colors.orange;
-      case PrestigeLvl.Amicable:
-        return Colors.yellow;
-      case PrestigeLvl.Friendly:
-        return Colors.green;
-      case PrestigeLvl.Allied:
-        return Colors.blue;
-      case PrestigeLvl.Honored:
-        return Colors.indigo;
-      case PrestigeLvl.Respected:
-        return Colors.purple;
-      case PrestigeLvl.Revered:
-        return Colors.pink;
-      case PrestigeLvl.Exalted:
-        return Colors.cyan;
-      case PrestigeLvl.Idolized:
-        return Colors.teal;
-    }
   }
 }
