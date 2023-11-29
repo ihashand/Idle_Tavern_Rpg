@@ -11,15 +11,15 @@ class Expedition {
   String description;
   ExpeditionCategory category;
   String imageUrl;
-  bool isHeroAssigned = false;
   Character? assignedHero;
   int duration;
   int baseIncome;
   Item? bonusItem;
   Duration? banDuration;
   int requiredLevelForExpedition;
-  Map<Item, double>
-      additionalItems; // Items and their chances of being acquired
+  Map<Item, double> additionalItems;
+  Map<ItemType, int> requiredItems;
+  ExpeditionDifficulty difficulty;
 
   Expedition(
       {required this.id,
@@ -30,6 +30,8 @@ class Expedition {
       required this.duration,
       required this.baseIncome,
       required this.requiredLevelForExpedition,
+      required this.difficulty,
+      this.requiredItems = const {},
       this.bonusItem,
       this.additionalItems = const {},
       this.banDuration});
@@ -37,12 +39,10 @@ class Expedition {
   // Assigns a hero to the expedition
   void assignHero(Character character) {
     assignedHero = character;
-    isHeroAssigned = true;
-    character.isBusy = true; // Marks the hero as busy
   }
 
   // Completes the expedition and applies effects based on the outcome
-  void completeExpedition(Character character) {
+  void completeExpedition(Character character, Expedition expedition) {
     String outcome = determineOutcome(character);
     List<SpecialEventOnExpeditions> specialEvents = generateSpecialEvents();
     List<Map<String, dynamic>> specialEventsDetails = [];
@@ -55,20 +55,20 @@ class Expedition {
       });
     }
 
+    //jezeli jestesmy przygotowani dostajemy normalne wynagrodzenie, jezeli jestesmy nieprzygotowani dostajmy 75% kwoty.
     int finalIncome = character.isWellPrepared(requiredLevelForExpedition)
         ? baseIncome
         : (baseIncome * 0.75).toInt(); // Reduced income for unprepared heroes
 
+    //jezeli ekspedycja ma bonusowy item i dodatkowo jestesmy dobrze przygotowani, to otrzymamy dodatkowy item.
     addIncomeToTavern(finalIncome);
+
     if (bonusItem != null &&
         character.isWellPrepared(requiredLevelForExpedition)) {
       addBonusItemToTavern(bonusItem);
     }
 
-    if (!character.isWellPrepared(requiredLevelForExpedition) &&
-        banDuration != null) {
-      character.applyBan(banDuration!);
-    }
+    //system przeciazenia.
 
     // Updating the expedition history entry with more details
     character.addExpeditionHistoryEntry(ExpeditionHistoryEntry(
@@ -80,8 +80,7 @@ class Expedition {
         duration,
         specialEventsDetails));
 
-    character.afterExpedition();
-    updateExpeditionStatus();
+    character.updateAfterExpedition(expedition, character);
   }
 
   // Determines the outcome of the expedition
@@ -101,23 +100,18 @@ class Expedition {
     // Add random special events
     events.add(SpecialEventOnExpeditions(
         "Dobry event",
-        (Character hero) => player_one.gold += 100, // Success: add coins
-        (Character hero) => {} // Failure: no effect
+        (Character character) => player_one.gold += 100, // Success: add coins
+        (Character character) => {} // Failure: no effect
         ));
     events.add(SpecialEventOnExpeditions(
-        "Zly event",
-        (Character hero) => player_one.gold += 50, // Success: add experience
-        (Character hero) =>
-            hero.applyBan(Duration(hours: 12)) // Failure: impose a ban
-        ));
+            "Zly event",
+            (Character character) =>
+                player_one.gold += 50, // Success: add experience
+            (Character character) =>
+                player_one.gold -= 100) // Failure: impose a ban
+        );
 
     return events;
-  }
-
-  // Random chance calculator
-  bool _randomChance(double probability) {
-    var rand = Random();
-    return rand.nextDouble() < probability;
   }
 
   // Adds income to the tavern
@@ -129,17 +123,14 @@ class Expedition {
   void addBonusItemToTavern(Item? item) {
     player_one.items.add(item!);
   }
-
-  // Updates the status of the expedition (placeholder for actual logic)
-  void updateExpeditionStatus() {
-    // Logic to update expedition status
-  }
 }
 
 enum ExpeditionCategory {
-  Diplomacy,
-  Exploration,
-  Protection,
-  Conquest,
-  BeastHunting,
+  diplomacy,
+  exploration,
+  protection,
+  conquest,
+  beastHunting,
 }
+
+enum ExpeditionDifficulty { easy, medium, hard }

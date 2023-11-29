@@ -1,18 +1,18 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:game_template/src/playable_screens/expeditions/heroes_screen/fatigue_indicator.dart';
 import 'package:game_template/src/temporary_database/expeditions/models/character.dart';
 import 'package:game_template/src/temporary_database/expeditions/models/expedition_history_entry.dart';
-import 'package:intl/intl.dart';
 
 class HeroDetailsScreen extends StatelessWidget {
-  final Character hero;
-
-  const HeroDetailsScreen({super.key, required this.hero});
+  final Character character;
+  const HeroDetailsScreen({super.key, required this.character});
 
   @override
   Widget build(BuildContext context) {
     // Reverse the history to show the most recent events at the top
     List<ExpeditionHistoryEntry> reversedHistory =
-        hero.expeditionHistory.reversed.toList();
+        character.expeditionHistory.reversed.toList();
 
     return Scaffold(
       body: Container(
@@ -20,25 +20,42 @@ class HeroDetailsScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SizedBox(height: 65.0), // Space for the status bar
-            CircleAvatar(
-              radius: 60.0,
-              backgroundImage: AssetImage(hero.iconUrl), // Hero's avatar
-            ),
+            SizedBox(height: 65.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: 60.0,
+                    backgroundImage: AssetImage(character.iconUrl),
+                  ),
+                  SizedBox(width: 20.0),
+                  Expanded(
+                    child: FatigueIndicator(character: character),
+                  ),
+                  ElevatedButton(
+                    onPressed: character.isFatigued
+                        ? () => character.unlockCharacter()
+                        : null,
+                    child: Text('Odblokuj'),
+                  ),
+                ],
+              ),
+            ), // Space for the status bar
             SizedBox(height: 20.0),
             Text(
-              hero.name,
+              character.name,
               style: TextStyle(
                   fontSize: 24.0, fontWeight: FontWeight.bold), // Hero's name
             ),
             SizedBox(height: 10.0),
             // Displaying various hero attributes
-            Text('Poziom: ${hero.level}'),
-            Text('kategoria: ${hero.category}'),
-            Text('dostepnosc bohatera: ${hero.isAvailable}'),
-            Text('zajetosc: ${hero.isBusy}'),
-            Text('platnosc: ${hero.payment}'),
-            Text('Gotowosc ekspedycji: ${hero.isAvailableForExpedition}'),
+            Text('Poziom: ${character.level}'),
+            Text('kategoria: ${character.category.name}'),
+            Text('Zarobek: ${character.payment}'),
+            Text('Czy dostepny: ${character.isAvailableForExpedition}'),
+
             SizedBox(height: 20.0),
             Expanded(
               child: ListView.builder(

@@ -1,7 +1,6 @@
-import 'dart:async';
-
 import 'package:game_template/src/temporary_database/expeditions/models/expedition_history_entry.dart';
 import 'package:game_template/src/temporary_database/profile/models/race.dart';
+import 'package:game_template/src/temporary_database/tavern/tavern_models/item.dart';
 
 import 'expedition.dart';
 
@@ -11,14 +10,19 @@ class Character {
   final int level;
   final int payment;
   final String iconUrl;
-  final isAvailable = true;
-  bool isBusy = false;
   Race race;
-  late int prestigeLevel = race.prestige;
+  late int prestigeLevel = 1;
   int expeditionsCompletedToday;
   bool isEquipped;
-  bool isAvailableForExpedition;
+  bool isAvailableForExpedition = true;
   List<ExpeditionHistoryEntry> expeditionHistory = [];
+  List<Item> inventory = [];
+
+  bool isEquippedForExpedition(Expedition expedition) {
+    // Logika sprawdzająca, czy bohater ma wymagane przedmioty
+    // np. czy ma wystarczająco jedzenia, mikstur zdrowia, itp.
+    return false;
+  }
 
   bool isWellPrepared(int requiredLevel) {
     int preparednessCount = 0;
@@ -29,11 +33,9 @@ class Character {
     return preparednessCount >= 2;
   }
 
-  double get prestigeBonus {
-    // Zakładamy, że prestiż może mieć wartości od 0 do 100.
-    // Przykładowa logika: 0.01 bonusu za każdy punkt prestiżu
-    return prestigeLevel * 0.01;
-  }
+  double fatigueLevel = 0.0;
+  double maxFatigue = 0.3;
+  DateTime? restStartTime;
 
   Character(
       {required this.name,
@@ -43,8 +45,47 @@ class Character {
       required this.iconUrl,
       required this.race,
       this.isEquipped = false,
-      this.isAvailableForExpedition = false,
       this.expeditionsCompletedToday = 0});
+
+  void updateAfterExpedition(Expedition expedition, Character character) {
+    double fatigueIncrease;
+
+    // Ustalanie wzrostu zmęczenia na podstawie trudności ekspedycji
+    switch (expedition.difficulty) {
+      case ExpeditionDifficulty.easy:
+        fatigueIncrease = 0.1;
+        break;
+      case ExpeditionDifficulty.medium:
+        fatigueIncrease = 0.2;
+        break;
+      case ExpeditionDifficulty.hard:
+        fatigueIncrease = 0.3;
+        break;
+      default:
+        fatigueIncrease = 0.0;
+    }
+
+    fatigueLevel += fatigueIncrease;
+
+    if (fatigueLevel >= maxFatigue) {
+      restStartTime = DateTime.now(); // Ustawienie czasu rozpoczęcia odpoczynku
+      character.isAvailableForExpedition = false;
+    }
+  }
+
+  Duration get remainingRestTime {
+    if (restStartTime == null) {
+      return Duration.zero; // Brak odpoczynku, jeśli restStartTime jest null
+    }
+    Duration timePassed = DateTime.now().difference(restStartTime!);
+    Duration restDuration = Duration(minutes: 1);
+    if (timePassed >= restDuration) {
+      fatigueLevel = 0.0;
+      isAvailableForExpedition = true;
+      return Duration.zero; // Zmęczenie zostało zresetowane
+    }
+    return restDuration - timePassed;
+  }
 
   void addExpeditionHistoryEntry(ExpeditionHistoryEntry entry) {
     if (expeditionHistory.length >= 3) {
@@ -53,34 +94,18 @@ class Character {
     expeditionHistory.add(entry); // Dodaj nowy wpis
   }
 
-  void afterExpedition() {
-    expeditionsCompletedToday++;
-    if (expeditionsCompletedToday >= 2) {
-      isAvailableForExpedition = false;
-      // reset `expeditionsCompletedToday` at the end of the day
+  void unlockCharacter() {
+    if (isFatigued) {
+      fatigueLevel = 0.0;
+      restStartTime = null;
+      // Dodatkowe działania, takie jak aktualizacja stanu bohatera
     }
   }
 
-  void applyBanAfterFailedExpedition() {
-    isAvailableForExpedition = false;
-    // Logika aplikowania czasowego bana w zależności od prestiżu rasy
-    // Uruchom Timer do odblokowania bohatera po upłynięciu czasu bana
-  }
-
-  void applyBan(Duration banDuration) {
-    isAvailableForExpedition = false;
-    // Uruchom Timer do odblokowania bohatera po upłynięciu czasu bana
-    Timer(banDuration, () => isAvailableForExpedition = true);
-  }
-
-  Duration calculateAdjustedBanDuration(Duration baseBanDuration) {
-    // Oblicz czas trwania bana z uwzględnieniem prestiżu
-    double prestigeModifier = 1 - (prestigeLevel / 100); // Przykładowa logika
-    return Duration(
-        seconds: (baseBanDuration.inSeconds * prestigeModifier).round());
-  }
+  bool get isFatigued => remainingRestTime > Duration.zero;
 }
 
+// ... pozostałe metody ...
 enum CharacterCategory {
   Paladin,
   Rogue,

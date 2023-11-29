@@ -141,15 +141,20 @@ class _ExpeditionScreenState extends State<ExpeditionScreen> {
 
   // Build carousel slider for character selection
   Widget _buildCharacterCarousel() {
+    final availableCharacters = characters
+        .where((character) => character.isAvailableForExpedition)
+        .toList();
+
     return CarouselSlider(
       options: CarouselOptions(
         height: 150.0,
         enlargeCenterPage: true,
         viewportFraction: 0.33,
-        onPageChanged: _onCarouselPageChanged, // Dodaj ten wiersz
+        onPageChanged: _onCarouselPageChanged,
       ),
-      items:
-          characters.map((character) => _buildCarouselItem(character)).toList(),
+      items: availableCharacters
+          .map((character) => _buildCarouselItem(character))
+          .toList(),
     );
   }
 
@@ -169,7 +174,7 @@ class _ExpeditionScreenState extends State<ExpeditionScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => HeroDetailsScreen(hero: character),
+            builder: (context) => HeroDetailsScreen(character: character),
           ),
         );
       },
@@ -242,7 +247,6 @@ class _ExpeditionScreenState extends State<ExpeditionScreen> {
   // Assign the selected character to the expedition
   void _assignCharacterToExpedition(Expedition expedition) {
     expedition.assignHero(selectedCharacter!);
-
     widget.dailyExpeditions.remove(expedition);
     widget.dailySelectedExpeditions.add(expedition);
     widget.onExpeditionsCharacters.add(expedition.assignedHero!);
@@ -261,27 +265,10 @@ class _ExpeditionScreenState extends State<ExpeditionScreen> {
 
   // Complete the expedition
   void _completeExpedition(Expedition expedition) {
-    expedition.completeExpedition(expedition.assignedHero!);
+    expedition.completeExpedition(expedition.assignedHero!, expedition);
     widget.dailyExpeditions.add(expedition);
     widget.dailySelectedExpeditions.remove(expedition);
     characters.add(expedition.assignedHero!);
     widget.onExpeditionsCharacters.remove(expedition.assignedHero!);
   }
 }
-
-  // void _performUpgrade(TavernUpgrade upgrade) {
-  //   setState(() {
-  //     player_one.gold -= upgrade.goldCost;
-  //     upgrade.level++;
-  //     // Apply cost multiplier for the next level
-  //     upgrade.goldCost = (upgrade.goldCost * 1.5).round();
-  //     Race race = fantasyRaces
-  //         .firstWhere((fantasyRace) => fantasyRace.race.name == upgrade.name);
-  //     race.calculatePrestigeLevel();
-
-  //     // Limit the upgrade level to 100
-  //     if (upgrade.level > 100) {
-  //       upgrade.level = 100;
-  //     }
-  //   });
-  // }

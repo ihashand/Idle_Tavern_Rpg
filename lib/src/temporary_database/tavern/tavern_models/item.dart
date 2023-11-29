@@ -2,17 +2,17 @@ class Item {
   String name;
   int quantity;
   ItemType type;
-  double weight; // Opcjonalnie, jeśli chcesz uwzględniać wagę przedmiotów
+  double weight;
 
   Item(this.name, this.quantity, this.type, this.weight);
 }
 
 enum ItemType {
-  Food,
-  HealthPotion,
-  ManaPotion,
-  SpecialItem,
-  Swords
-  // Specjalne przedmioty wymagane dla niektórych ekspedycji
-  // Dodaj inne typy przedmiotów według potrzeb
+  food,
+  healthPotion,
+  manaPotion,
+  specialItem,
+  swords,
+  armor,
+  weapon
 }
