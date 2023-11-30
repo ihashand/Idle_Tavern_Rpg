@@ -1,10 +1,10 @@
 enum FantasyRace {
-  Human,
-  Dwarf,
-  Goblin,
-  Orc,
-  Elv,
-  Centaur,
-  Werewolf,
-  Vampire,
+  human,
+  dwarf,
+  goblin,
+  orc,
+  elv,
+  centaur,
+  werewolf,
+  vampire,
 }

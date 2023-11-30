@@ -28,14 +28,26 @@
     "okButton": "OK"
   },
   "races": {
-    "Human": "Ludzie",
-    "Dwarf": "Krasnoludy",
-    "Goblin": "Gobliny",
-    "Orc": "Orkowie",
-    "Elv": "Elfy",
-    "Centaur": "Centaury",
-    "Werewolf": "Wilkołaki",
-    "Vampire": "Wampiry"
+    "human": "Ludzie",
+    "dwarf": "Krasnoludy",
+    "goblin": "Gobliny",
+    "orc": "Orkowie",
+    "elv": "Elfy",
+    "centaur": "Centaury",
+    "werewolf": "Wilkołaki",
+    "vampire": "Wampiry"
+  },
+  "prestigeLvls": {
+    "neutral": "Neutralny",
+    "cordial": "Serdeczny",
+    "amicable": "Przyjazny",
+    "friendly": "Zaprzyjaźniony",
+    "allied": "Sprzymierzeni",
+    "honored": "Zasłużony",
+    "respected": "Szanowany",
+    "revered": "Czczony",
+    "exalted": "Wyniesiony",
+    "idolized": "Uwielbiany"
   },
   "profileScreen": {
     "profile": "Profil",
@@ -45,18 +57,6 @@
     "prestige": "Poziom prestiżu: {prestigeLvl}",
     "totalPrestige": "Całkowity prestiż: {totalPrestige}",
     "prestigeInfo": "Dostępne poziomy:",
-    "ok": "OK",
-    "prestigeLvls": {
-      "Neutral": "Neutralny",
-      "Cordial": "Serdeczny",
-      "Amicable": "Przyjazny",
-      "Friendly": "Zaprzyjaźniony",
-      "Allied": "Sprzymierzeni",
-      "Honored": "Zasłużony",
-      "Respected": "Szanowany",
-      "Revered": "Czczony",
-      "Exalted": "Wyniesiony",
-      "Idolized": "Uwielbiany"
-    }
+    "ok": "OK"
   }
 }
