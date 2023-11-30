@@ -1,5 +1,1 @@
-enum FilterType {
-  All,
-  OnExpedition,
-  NotOnExpedition,
-}
+enum FilterType { all, onExpedition, notOnExpedition, byFatigue }

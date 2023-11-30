@@ -20,13 +20,13 @@ final List<Quest> availableQuests = [
 ];
 
 final List<Item> availableItemsOne = [
-  Item("Ulumulu", 1),
-  Item("Siekiera", 2),
-  Item("Motyka", 3),
+  Item("Miecz", 1, ItemType.swords, 1.1),
+  Item("Mieso", 2, ItemType.food, 1.2),
+  Item("Mikstura many", 3, ItemType.manaPotion, 1.5),
 ];
 
 final List<Item> availableItemsTwo = [
-  Item("Pila", 100),
-  Item("Miecz", 200),
-  Item("Bidon", 300),
+  Item("Mikstura zdrowia", 100, ItemType.healthPotion, 1.6),
+  Item("Miecz specjany", 200, ItemType.specialItem, 2.5),
+  Item("Jajko", 300, ItemType.food, 1.2),
 ];

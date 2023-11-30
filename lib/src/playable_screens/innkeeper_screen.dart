@@ -171,11 +171,11 @@ class InventorySection extends StatelessWidget {
         children: [
           Text('Inventory, Current day: ${gameState.currentDay}',
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
-          for (Item item in gameState.inventory)
+          for (Item item in player_one.items)
             ListTile(
               title: Text(item.name),
               subtitle: Text(
-                  'Quantity: ${item.value}'), // Dodaj więcej informacji o przedmiocie
+                  'Quantity: ${item.quantity}'), // Dodaj więcej informacji o przedmiocie
             ),
           // Dodaj więcej interfejsu do zarządzania inwentarzem, np. przyciski do ulepszania itp.
         ],

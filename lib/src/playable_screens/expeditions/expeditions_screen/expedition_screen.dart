@@ -141,15 +141,20 @@ class _ExpeditionScreenState extends State<ExpeditionScreen> {
 
   // Build carousel slider for character selection
   Widget _buildCharacterCarousel() {
+    final availableCharacters = characters
+        .where((character) => character.isAvailableForExpedition)
+        .toList();
+
     return CarouselSlider(
       options: CarouselOptions(
         height: 150.0,
         enlargeCenterPage: true,
         viewportFraction: 0.33,
-        onPageChanged: _onCarouselPageChanged, // Dodaj ten wiersz
+        onPageChanged: _onCarouselPageChanged,
       ),
-      items:
-          characters.map((character) => _buildCarouselItem(character)).toList(),
+      items: availableCharacters
+          .map((character) => _buildCarouselItem(character))
+          .toList(),
     );
   }
 
@@ -169,7 +174,7 @@ class _ExpeditionScreenState extends State<ExpeditionScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => HeroDetailsScreen(hero: character),
+            builder: (context) => HeroDetailsScreen(character: character),
           ),
         );
       },
@@ -242,7 +247,6 @@ class _ExpeditionScreenState extends State<ExpeditionScreen> {
   // Assign the selected character to the expedition
   void _assignCharacterToExpedition(Expedition expedition) {
     expedition.assignHero(selectedCharacter!);
-
     widget.dailyExpeditions.remove(expedition);
     widget.dailySelectedExpeditions.add(expedition);
     widget.onExpeditionsCharacters.add(expedition.assignedHero!);
@@ -261,6 +265,7 @@ class _ExpeditionScreenState extends State<ExpeditionScreen> {
 
   // Complete the expedition
   void _completeExpedition(Expedition expedition) {
+    expedition.completeExpedition(expedition.assignedHero!, expedition);
     widget.dailyExpeditions.add(expedition);
     widget.dailySelectedExpeditions.remove(expedition);
     characters.add(expedition.assignedHero!);

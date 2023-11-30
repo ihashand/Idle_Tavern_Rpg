@@ -3,6 +3,8 @@ import 'package:game_template/src/playable_screens/expeditions/heroes_screen/her
 import 'package:game_template/src/temporary_database/expeditions/models/character.dart';
 import 'package:game_template/src/temporary_database/expeditions/models/filter_type.dart';
 
+import 'fatigue_indicator.dart';
+
 class HeroesScreen extends StatefulWidget {
   List<Character> characters;
   List<Character> assignedHeroes;
@@ -15,24 +17,24 @@ class HeroesScreen extends StatefulWidget {
 }
 
 class _HeroesScreenState extends State<HeroesScreen> {
-  FilterType selectedFilter = FilterType.All;
+  FilterType selectedFilter = FilterType.all;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 196, 196, 196),
-        title: Text('Wszyscy bohaterowie'),
+        title: Text('All Heroes'),
         automaticallyImplyLeading: false,
         actions: [
           Padding(
-            padding: const EdgeInsets.only(
-                right: 8.0), // Dodaj minimalny margines od prawej strony
+            padding:
+                const EdgeInsets.only(right: 8.0), // Add minimal right margin
             child: ElevatedButton(
               onPressed: () {
                 _showSortOptions(context);
               },
-              child: Text('Sortuj'),
+              child: Text('Sort'),
             ),
           )
         ],
@@ -56,28 +58,37 @@ class _HeroesScreenState extends State<HeroesScreen> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             ListTile(
-              title: Text('Wszyscy'),
+              title: Text('All'),
               onTap: () {
                 setState(() {
-                  selectedFilter = FilterType.All;
+                  selectedFilter = FilterType.all;
                 });
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              title: Text('Na wyprawie'),
+              title: Text('On Expedition'),
               onTap: () {
                 setState(() {
-                  selectedFilter = FilterType.OnExpedition;
+                  selectedFilter = FilterType.onExpedition;
                 });
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              title: Text('W karczmie'),
+              title: Text('At Tavern'),
               onTap: () {
                 setState(() {
-                  selectedFilter = FilterType.NotOnExpedition;
+                  selectedFilter = FilterType.notOnExpedition;
+                });
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text('After Fatigue'), // New filter option
+              onTap: () {
+                setState(() {
+                  selectedFilter = FilterType.byFatigue;
                 });
                 Navigator.pop(context);
               },
@@ -91,15 +102,19 @@ class _HeroesScreenState extends State<HeroesScreen> {
   Widget _buildFilteredCharacterList() {
     List<Character> filteredCharacters = [];
 
-    if (selectedFilter == FilterType.All) {
+    if (selectedFilter == FilterType.all) {
       filteredCharacters = [...widget.characters, ...widget.assignedHeroes];
-    } else if (selectedFilter == FilterType.OnExpedition) {
+    } else if (selectedFilter == FilterType.onExpedition) {
       filteredCharacters = [...widget.assignedHeroes];
-    } else if (selectedFilter == FilterType.NotOnExpedition) {
+    } else if (selectedFilter == FilterType.notOnExpedition) {
       filteredCharacters = [...widget.characters];
+    } else if (selectedFilter == FilterType.byFatigue) {
+      filteredCharacters = widget.characters
+          .where((character) => character.fatigueLevel >= character.maxFatigue)
+          .toList();
     }
 
-    // Możesz dodać sortowanie po kategoriach tutaj
+    // You can add sorting logic here
 
     return Expanded(
       child: GridView.builder(
@@ -117,32 +132,40 @@ class _HeroesScreenState extends State<HeroesScreen> {
 
   Widget _buildCharacterCard(BuildContext context, Character character) {
     bool isOnExpedition = widget.assignedHeroes.contains(character);
+    bool isFatigued = character.fatigueLevel >= character.maxFatigue;
+
+    // Determine the border color based on the character's state
+    Color borderColor = Colors.transparent; // Default: no border
+
+    if (isFatigued) {
+      borderColor = Colors.red; // Red border for fatigued heroes
+    } else if (isOnExpedition) {
+      borderColor = Colors.yellow; // Gold border for heroes on expedition
+    } else {
+      borderColor = Colors.green; // Green border for available heroes
+    }
+
     return Card(
       margin: EdgeInsets.all(10.0),
+      shape: RoundedRectangleBorder(
+        side: BorderSide(color: borderColor, width: 2.0),
+        borderRadius: BorderRadius.circular(10.0),
+      ),
       child: Column(
         children: [
-          SizedBox(height: 12.0),
+          SizedBox(height: 10.0),
           GestureDetector(
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => HeroDetailsScreen(hero: character),
+                  builder: (context) => HeroDetailsScreen(character: character),
                 ),
               );
             },
             child: Stack(
-              alignment: Alignment.center, // Wyśrodkowanie ikony
+              alignment: Alignment.topRight,
               children: [
-                Positioned(
-                  left: 20.0, // Przesunięcie ikony dostępności na lewo
-                  top: 10.0,
-                  child: Icon(
-                    size: 200,
-                    isOnExpedition ? Icons.close : Icons.check,
-                    color: isOnExpedition ? Colors.red : Colors.green,
-                  ),
-                ),
                 Container(
                   width: 100.0,
                   height: 100.0,
@@ -156,24 +179,53 @@ class _HeroesScreenState extends State<HeroesScreen> {
                     ),
                   ),
                 ),
+                Positioned(
+                  right:
+                      10.0, // Position the character level on the right side of the icon
+                  top: 4.0,
+                  child: Container(
+                    width: 24.0,
+                    height: 24.0,
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: Text(
+                        character.level.toString(),
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
-          SizedBox(height: 8.0),
-          Text(
-            character.name,
-            style: TextStyle(
-              fontSize: 14, // Mniejsza czcionka
-              fontWeight: FontWeight.bold,
+          Align(
+            // Center the character's name
+            alignment: Alignment.center,
+            child: Text(
+              character.name,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           Text(
-            character.category.name.toString(), // Wyświetlenie kategorii
+            isOnExpedition
+                ? 'On Expedition'
+                : character.category.name.toString(),
             style: TextStyle(
-              fontSize: 12, // Mniejsza czcionka dla kategorii
+              fontSize: 12,
               color: Colors.grey,
             ),
           ),
+          if (isFatigued) FatigueIndicator(character: character),
         ],
       ),
     );
