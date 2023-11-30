@@ -109,6 +109,7 @@ class _ExpeditionScreenState extends State<ExpeditionScreen> {
       builder: (context) => _buildBottomSheetContent(expedition),
     ).whenComplete(() {
       _updateCurrentAvailableCharacter();
+      setState(() {});
     });
   }
 
