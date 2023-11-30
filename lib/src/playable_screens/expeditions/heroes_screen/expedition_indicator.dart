@@ -1,17 +1,19 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:game_template/src/temporary_database/expeditions/models/character.dart';
+import '../../../temporary_database/expeditions/models/expedition.dart';
 
-class FatigueIndicator extends StatelessWidget {
-  final Character character;
-  const FatigueIndicator({Key? key, required this.character}) : super(key: key);
+class ExpeditionIndicator extends StatelessWidget {
+  final Expedition expedition;
+
+  const ExpeditionIndicator({Key? key, required this.expedition})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Duration>(
       stream: Stream.periodic(
         Duration(seconds: 1),
-        (_) => character.remainingRestTime,
+        (_) => expedition.remainingRestTime,
       ),
       builder: (context, snapshot) {
         if (snapshot.hasData && snapshot.data!.inSeconds > 0) {
@@ -20,8 +22,7 @@ class FatigueIndicator extends StatelessWidget {
 
           if (snapshot.hasData) {
             final duration = snapshot.data!;
-            progress =
-                duration.inSeconds / (1 * 60); // 12 minut = pełna regeneracja
+            progress = duration.inSeconds / (expedition.duration * 60);
             timeText =
                 '${duration.inMinutes.toString().padLeft(2, '0')}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
           }

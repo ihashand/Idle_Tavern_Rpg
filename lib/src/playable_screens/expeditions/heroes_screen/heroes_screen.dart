@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:game_template/src/playable_screens/expeditions/heroes_screen/hero_details_screen.dart';
 import 'package:game_template/src/temporary_database/expeditions/models/character.dart';
 import 'package:game_template/src/temporary_database/expeditions/models/filter_type.dart';
-
 import 'fatigue_indicator.dart';
 
 class HeroesScreen extends StatefulWidget {
@@ -28,8 +27,7 @@ class _HeroesScreenState extends State<HeroesScreen> {
         automaticallyImplyLeading: false,
         actions: [
           Padding(
-            padding:
-                const EdgeInsets.only(right: 8.0), // Add minimal right margin
+            padding: const EdgeInsets.only(right: 8.0),
             child: ElevatedButton(
               onPressed: () {
                 _showSortOptions(context);
@@ -85,7 +83,7 @@ class _HeroesScreenState extends State<HeroesScreen> {
               },
             ),
             ListTile(
-              title: Text('After Fatigue'), // New filter option
+              title: Text('After Fatigue'),
               onTap: () {
                 setState(() {
                   selectedFilter = FilterType.byFatigue;
@@ -114,8 +112,6 @@ class _HeroesScreenState extends State<HeroesScreen> {
           .toList();
     }
 
-    // You can add sorting logic here
-
     return Expanded(
       child: GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -133,16 +129,14 @@ class _HeroesScreenState extends State<HeroesScreen> {
   Widget _buildCharacterCard(BuildContext context, Character character) {
     bool isOnExpedition = widget.assignedHeroes.contains(character);
     bool isFatigued = character.fatigueLevel >= character.maxFatigue;
-
-    // Determine the border color based on the character's state
-    Color borderColor = Colors.transparent; // Default: no border
+    Color borderColor = Colors.transparent;
 
     if (isFatigued) {
-      borderColor = Colors.red; // Red border for fatigued heroes
+      borderColor = Colors.red;
     } else if (isOnExpedition) {
-      borderColor = Colors.yellow; // Gold border for heroes on expedition
+      borderColor = Colors.yellow;
     } else {
-      borderColor = Colors.green; // Green border for available heroes
+      borderColor = Colors.green;
     }
 
     return Card(
@@ -180,8 +174,7 @@ class _HeroesScreenState extends State<HeroesScreen> {
                   ),
                 ),
                 Positioned(
-                  right:
-                      10.0, // Position the character level on the right side of the icon
+                  right: 10.0,
                   top: 4.0,
                   child: Container(
                     width: 24.0,
@@ -206,7 +199,6 @@ class _HeroesScreenState extends State<HeroesScreen> {
             ),
           ),
           Align(
-            // Center the character's name
             alignment: Alignment.center,
             child: Text(
               character.name,
@@ -216,16 +208,13 @@ class _HeroesScreenState extends State<HeroesScreen> {
               ),
             ),
           ),
-          Text(
-            isOnExpedition
-                ? 'On Expedition'
-                : character.category.name.toString(),
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey,
-            ),
-          ),
-          if (isFatigued) FatigueIndicator(character: character),
+          if (isFatigued)
+            SizedBox(
+              width: 80.0,
+              child: FatigueIndicator(
+                character: character,
+              ),
+            )
         ],
       ),
     );

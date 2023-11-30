@@ -20,6 +20,19 @@ class Expedition {
   Map<Item, double> additionalItems;
   Map<ItemType, int> requiredItems;
   ExpeditionDifficulty difficulty;
+  DateTime? restStartTime;
+
+  Duration get remainingRestTime {
+    if (restStartTime == null) {
+      return Duration.zero;
+    }
+    Duration timePassed = DateTime.now().difference(restStartTime!);
+    Duration restDuration = Duration(minutes: duration);
+    if (timePassed >= restDuration) {
+      return Duration.zero;
+    }
+    return restDuration - timePassed;
+  }
 
   Expedition(
       {required this.id,
@@ -36,12 +49,10 @@ class Expedition {
       this.additionalItems = const {},
       this.banDuration});
 
-  // Assigns a hero to the expedition
   void assignHero(Character character) {
     assignedHero = character;
   }
 
-  // Completes the expedition and applies effects based on the outcome
   void completeExpedition(Character character, Expedition expedition) {
     String outcome = determineOutcome(character);
     List<SpecialEventOnExpeditions> specialEvents = generateSpecialEvents();
@@ -49,18 +60,14 @@ class Expedition {
 
     for (var event in specialEvents) {
       var result = event.executeEvent(character);
-      specialEventsDetails.add({
-        "description": event.description,
-        "result": result // Assuming executeEvent returns Map<String, dynamic>
-      });
+      specialEventsDetails
+          .add({"description": event.description, "result": result});
     }
 
-    //jezeli jestesmy przygotowani dostajemy normalne wynagrodzenie, jezeli jestesmy nieprzygotowani dostajmy 75% kwoty.
     int finalIncome = character.isWellPrepared(requiredLevelForExpedition)
         ? baseIncome
-        : (baseIncome * 0.75).toInt(); // Reduced income for unprepared heroes
+        : (baseIncome * 0.75).toInt();
 
-    //jezeli ekspedycja ma bonusowy item i dodatkowo jestesmy dobrze przygotowani, to otrzymamy dodatkowy item.
     addIncomeToTavern(finalIncome);
 
     if (bonusItem != null &&
@@ -68,9 +75,6 @@ class Expedition {
       addBonusItemToTavern(bonusItem);
     }
 
-    //system przeciazenia.
-
-    // Updating the expedition history entry with more details
     character.addExpeditionHistoryEntry(ExpeditionHistoryEntry(
         name,
         DateTime.now(),
@@ -83,43 +87,34 @@ class Expedition {
     character.updateAfterExpedition(expedition, character);
   }
 
-  // Determines the outcome of the expedition
   String determineOutcome(Character character) {
     if (!character.isWellPrepared(requiredLevelForExpedition)) {
-      return "Porażka"; // Failure
+      return "Porażka";
     }
-    // Simple random logic - example
-    bool isSuccess = Random().nextDouble() > 0.3; // 70% chance of success
-    return isSuccess ? "Sukces" : "Porażka"; // Success or Failure
+
+    bool isSuccess = Random().nextDouble() > 0.3;
+    return isSuccess ? "Sukces" : "Porażka";
   }
 
-  // Generates special events, randomly deciding whether to include them
   List<SpecialEventOnExpeditions> generateSpecialEvents() {
     List<SpecialEventOnExpeditions> events = [];
 
-    // Add random special events
     events.add(SpecialEventOnExpeditions(
         "Dobry event",
-        (Character character) => player_one.gold += 100, // Success: add coins
-        (Character character) => {} // Failure: no effect
-        ));
+        (Character character) => player_one.gold += 100,
+        (Character character) => {}));
     events.add(SpecialEventOnExpeditions(
-            "Zly event",
-            (Character character) =>
-                player_one.gold += 50, // Success: add experience
-            (Character character) =>
-                player_one.gold -= 100) // Failure: impose a ban
-        );
+        "Zly event",
+        (Character character) => player_one.gold += 50,
+        (Character character) => player_one.gold -= 100));
 
     return events;
   }
 
-  // Adds income to the tavern
   void addIncomeToTavern(int income) {
     player_one.gold += income;
   }
 
-  // Adds a bonus item to the tavern
   void addBonusItemToTavern(Item? item) {
     player_one.items.add(item!);
   }

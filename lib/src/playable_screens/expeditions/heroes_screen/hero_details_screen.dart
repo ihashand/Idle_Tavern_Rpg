@@ -1,8 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:game_template/src/playable_screens/expeditions/heroes_screen/fatigue_indicator.dart';
 import 'package:game_template/src/temporary_database/expeditions/models/character.dart';
 import 'package:game_template/src/temporary_database/expeditions/models/expedition_history_entry.dart';
+
+import 'fatigue_indicator.dart';
 
 class HeroDetailsScreen extends StatelessWidget {
   final Character character;
@@ -10,13 +11,12 @@ class HeroDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Reverse the history to show the most recent events at the top
     List<ExpeditionHistoryEntry> reversedHistory =
         character.expeditionHistory.reversed.toList();
 
     return Scaffold(
       body: Container(
-        color: Color.fromARGB(255, 196, 196, 196), // Background color
+        color: Color.fromARGB(255, 196, 196, 196),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -31,8 +31,11 @@ class HeroDetailsScreen extends StatelessWidget {
                     backgroundImage: AssetImage(character.iconUrl),
                   ),
                   SizedBox(width: 20.0),
-                  Expanded(
-                    child: FatigueIndicator(character: character),
+                  SizedBox(
+                    width: 70,
+                    child: FatigueIndicator(
+                      character: character,
+                    ),
                   ),
                   ElevatedButton(
                     onPressed: character.isFatigued
@@ -46,11 +49,10 @@ class HeroDetailsScreen extends StatelessWidget {
             SizedBox(height: 20.0),
             Text(
               character.name,
-              style: TextStyle(
-                  fontSize: 24.0, fontWeight: FontWeight.bold), // Hero's name
+              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10.0),
-            // Displaying various hero attributes
+
             Text('Poziom: ${character.level}'),
             Text('kategoria: ${character.category.name}'),
             Text('Zarobek: ${character.payment}'),
@@ -66,27 +68,21 @@ class HeroDetailsScreen extends StatelessWidget {
                     margin: EdgeInsets.all(8.0),
                     child: ListTile(
                       title: Text(historyEntry.expeditionName,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold)), // Expedition name
+                          style: TextStyle(fontWeight: FontWeight.bold)),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(DateFormat('dd/MM/yyyy')
-                              .format(historyEntry.date)), // Formatted date
-                          Text(
-                              'Opis: ${historyEntry.description}'), // Description
-                          Text('Wynik: ${historyEntry.outcome}'), // Outcome
-                          Text(
-                              'Zarobek: ${historyEntry.earnedGold} złota'), // Earned gold
-                          Text(
-                              'Czas trwania: ${historyEntry.duration} minut'), // Duration
-                          _buildSpecialEventsDetails(historyEntry
-                              .specialEventsDetails), // Special events
+                              .format(historyEntry.date)),
+                          Text('Opis: ${historyEntry.description}'),
+                          Text('Wynik: ${historyEntry.outcome}'),
+                          Text('Zarobek: ${historyEntry.earnedGold} złota'),
+                          Text('Czas trwania: ${historyEntry.duration} minut'),
+                          _buildSpecialEventsDetails(
+                              historyEntry.specialEventsDetails),
                         ],
                       ),
-                      onTap: () {
-                        // Logic for tapping on an expedition history entry
-                      },
+                      onTap: () {},
                     ),
                   );
                 },
@@ -98,20 +94,18 @@ class HeroDetailsScreen extends StatelessWidget {
     );
   }
 
-  // Builds the details of special events
   Widget _buildSpecialEventsDetails(
       List<Map<String, dynamic>> specialEventsDetails) {
     if (specialEventsDetails.isEmpty) {
-      return Text('Brak zdarzeń specjalnych'); // No special events
+      return Text('Brak zdarzeń specjalnych');
     }
 
     List<Widget> eventWidgets = specialEventsDetails.map((eventDetail) {
-      String eventName =
-          eventDetail["description"] ?? "Nieznane zdarzenie"; // Event name
-      bool? isSuccess = eventDetail["success"] as bool?; // Success status
+      String eventName = eventDetail["description"] ?? "Nieznane zdarzenie";
+      bool? isSuccess = eventDetail["success"] as bool?;
       String eventResult = isSuccess == null
           ? "Nieznany wynik"
-          : (isSuccess ? "Sukces" : "Porażka"); // Result
+          : (isSuccess ? "Sukces" : "Porażka");
       return Text('$eventName: $eventResult');
     }).toList();
 
