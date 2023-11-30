@@ -9,12 +9,10 @@ import '../expeditions_screen.dart';
 
 class ExpeditionScreen extends StatefulWidget {
   final List<Expedition> dailyExpeditions;
-  final List<Expedition> dailySelectedExpeditions;
 
   ExpeditionScreen({
     Key? key,
     required this.dailyExpeditions,
-    required this.dailySelectedExpeditions,
   }) : super(key: key);
 
   @override
@@ -32,12 +30,15 @@ class _ExpeditionScreenState extends State<ExpeditionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final availableExpeditions = widget.dailyExpeditions
+        .where((expedition) => !expedition.isInUse)
+        .toList();
     return Material(
       color: Colors.grey.shade300,
       child: ListView.builder(
-        itemCount: widget.dailyExpeditions.length,
+        itemCount: availableExpeditions.length,
         itemBuilder: (context, index) {
-          final expedition = widget.dailyExpeditions[index];
+          final expedition = availableExpeditions[index];
           return _buildExpeditionCard(expedition);
         },
       ),
@@ -238,8 +239,7 @@ class _ExpeditionScreenState extends State<ExpeditionScreen> {
   void _startExpedition(Expedition expedition) {
     expedition.restStartTime = DateTime.now();
     expedition.assignHero(selectedCharacter!);
-    dailyExpeditions.remove(expedition);
-    dailySelectedExpeditions.add(expedition);
+    expedition.isInUse = true;
     onExpeditionsCharacters.add(expedition.assignedHero!);
     characters.remove(expedition.assignedHero!);
     _startTimeExpedition(expedition);
@@ -254,8 +254,7 @@ class _ExpeditionScreenState extends State<ExpeditionScreen> {
 
   void _completeExpedition(Expedition expedition) {
     expedition.completeExpedition(expedition.assignedHero!, expedition);
-    dailyExpeditions.add(expedition);
-    dailySelectedExpeditions.remove(expedition);
+    expedition.isInUse = false;
     characters.add(expedition.assignedHero!);
     onExpeditionsCharacters.remove(expedition.assignedHero!);
   }

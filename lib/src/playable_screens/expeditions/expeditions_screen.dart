@@ -16,7 +16,6 @@ class ExpeditionsScreen extends StatefulWidget {
 }
 
 List<Expedition> dailyExpeditions = [];
-List<Expedition> dailySelectedExpeditions = [];
 
 class _ExpeditionsScreenState extends State<ExpeditionsScreen> {
   int _selectedIndex = 0;
@@ -29,7 +28,7 @@ class _ExpeditionsScreenState extends State<ExpeditionsScreen> {
         index: _selectedIndex,
         children: [
           ActiveExpeditionsScreen(
-            activeExpeditions: dailySelectedExpeditions,
+            activeExpeditions: dailyExpeditions,
             onNewExpeditionPressed: (index) {
               setState(() {
                 _selectedIndex = index;
@@ -38,7 +37,6 @@ class _ExpeditionsScreenState extends State<ExpeditionsScreen> {
           ),
           ExpeditionScreen(
             dailyExpeditions: dailyExpeditions,
-            dailySelectedExpeditions: dailySelectedExpeditions,
           ),
           HeroesScreen(
             characters: characters,

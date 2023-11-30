@@ -21,6 +21,7 @@ class Expedition {
   Map<ItemType, int> requiredItems;
   ExpeditionDifficulty difficulty;
   DateTime? restStartTime;
+  bool isInUse = false;
 
   Duration get remainingRestTime {
     if (restStartTime == null) {

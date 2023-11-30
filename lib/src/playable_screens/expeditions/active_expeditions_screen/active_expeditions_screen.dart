@@ -20,6 +20,9 @@ class ActiveExpeditionsScreen extends StatefulWidget {
 class _ActiveExpeditionsScreenState extends State<ActiveExpeditionsScreen> {
   @override
   Widget build(BuildContext context) {
+    final activeExpeditions = widget.activeExpeditions
+        .where((expedition) => expedition.isInUse)
+        .toList();
     return SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -38,10 +41,10 @@ class _ActiveExpeditionsScreenState extends State<ActiveExpeditionsScreen> {
           ),
           Expanded(
             child: ListView.builder(
-                itemCount: widget.activeExpeditions.length + 1,
+                itemCount: activeExpeditions.length + 1,
                 itemBuilder: (context, index) {
-                  if (index == widget.activeExpeditions.length) {
-                    if (widget.activeExpeditions.length < 5) {
+                  if (index == activeExpeditions.length) {
+                    if (activeExpeditions.length < 5) {
                       return ElevatedButton(
                         onPressed: () {
                           widget.onNewExpeditionPressed(1);
@@ -69,7 +72,7 @@ class _ActiveExpeditionsScreenState extends State<ActiveExpeditionsScreen> {
                       return SizedBox();
                     }
                   } else {
-                    final expedition = widget.activeExpeditions[index];
+                    final expedition = activeExpeditions[index];
                     return Container(
                       margin: EdgeInsets.symmetric(vertical: 8.0),
                       child: Stack(

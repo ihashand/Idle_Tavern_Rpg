@@ -229,8 +229,8 @@ void incrementDay() {
   } else {
     currentDay = 1;
   }
-  if (dailySelectedExpeditions.isNotEmpty) {
-    dailySelectedExpeditions.clear();
+  if (dailyExpeditions.where((element) => element.isInUse = false).isNotEmpty) {
+    dailyExpeditions.clear();
   }
   generateDailyExpeditions();
 }
