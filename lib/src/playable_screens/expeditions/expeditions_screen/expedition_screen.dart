@@ -258,6 +258,5 @@ class _ExpeditionScreenState extends State<ExpeditionScreen> {
     dailySelectedExpeditions.remove(expedition);
     characters.add(expedition.assignedHero!);
     onExpeditionsCharacters.remove(expedition.assignedHero!);
-    setState(() {});
   }
 }
