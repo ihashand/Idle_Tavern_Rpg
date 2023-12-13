@@ -5,7 +5,6 @@ import 'package:game_template/src/playable_screens/expeditions/heroes_screen/her
 import 'package:game_template/src/temporary_database/expeditions/data/characters.dart';
 import 'package:game_template/src/temporary_database/expeditions/models/character.dart';
 import 'package:game_template/src/temporary_database/expeditions/models/expedition.dart';
-import '../expeditions_screen.dart';
 
 class ExpeditionScreen extends StatefulWidget {
   final List<Expedition> dailyExpeditions;

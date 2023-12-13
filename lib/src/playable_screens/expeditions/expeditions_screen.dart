@@ -4,7 +4,6 @@ import 'package:game_template/src/playable_screens/expeditions/active_expedition
 import 'package:game_template/src/playable_screens/expeditions/expeditions_screen/expedition_screen.dart';
 import 'package:game_template/src/playable_screens/expeditions/heroes_screen/heroes_screen.dart';
 import 'package:game_template/src/temporary_database/expeditions/data/characters.dart';
-
 import '../../temporary_database/expeditions/models/expedition.dart';
 
 // Main menu of expedition
