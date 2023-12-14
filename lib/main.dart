@@ -6,9 +6,8 @@ import 'package:game_template/src/graphic_tavern_interior/graphic_tavern_interio
 import 'package:game_template/src/playable_screens/wood_storage_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
-import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'game_state.dart';
+import 'package:provider/provider.dart';
 import 'src/ads/ads_controller.dart';
 import 'src/app_lifecycle/app_lifecycle.dart';
 import 'src/audio/audio_controller.dart';
@@ -23,6 +22,8 @@ import 'src/settings/settings_screen.dart';
 import 'src/style/my_transition.dart';
 import 'src/style/palette.dart';
 import 'src/style/snack_bar.dart';
+import 'package:provider/provider.dart' as provider;
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 
 Future<void> main() async {
   // Subscribe to log messages.
@@ -104,11 +105,13 @@ Future<void> main() async {
       supportedLocales: const [Locale('en'), Locale('de'), Locale('pl')],
       path: 'assets/translations',
       fallbackLocale: Locale('en'),
-      child: MyApp(
-        settingsPersistence: LocalStorageSettingsPersistence(),
-        inAppPurchaseController: inAppPurchaseController,
-        adsController: adsController,
-        gamesServicesController: gamesServicesController,
+      child: riverpod.ProviderScope(
+        child: MyApp(
+          settingsPersistence: LocalStorageSettingsPersistence(),
+          inAppPurchaseController: inAppPurchaseController,
+          adsController: adsController,
+          gamesServicesController: gamesServicesController,
+        ),
       ),
     ),
   );
@@ -189,9 +192,6 @@ class MyApp extends StatelessWidget {
     return AppLifecycleObserver(
       child: MultiProvider(
         providers: [
-          ChangeNotifierProvider<GameState>(
-            create: (context) => GameState(),
-          ),
           Provider<GamesServicesController?>.value(
             value: gamesServicesController,
           ),

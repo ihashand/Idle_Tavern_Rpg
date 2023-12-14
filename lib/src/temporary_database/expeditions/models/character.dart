@@ -1,7 +1,6 @@
 import 'package:game_template/src/temporary_database/expeditions/models/expedition_history_entry.dart';
 import 'package:game_template/src/temporary_database/profile/models/race.dart';
 import 'package:game_template/src/temporary_database/tavern/tavern_models/item.dart';
-
 import 'expedition.dart';
 
 class Character {
@@ -19,8 +18,6 @@ class Character {
   List<Item> inventory = [];
 
   bool isEquippedForExpedition(Expedition expedition) {
-    // Logika sprawdzająca, czy bohater ma wymagane przedmioty
-    // np. czy ma wystarczająco jedzenia, mikstur zdrowia, itp.
     return false;
   }
 
@@ -50,7 +47,6 @@ class Character {
   void updateAfterExpedition(Expedition expedition, Character character) {
     double fatigueIncrease;
 
-    // Ustalanie wzrostu zmęczenia na podstawie trudności ekspedycji
     switch (expedition.difficulty) {
       case ExpeditionDifficulty.easy:
         fatigueIncrease = 0.1;
@@ -68,53 +64,51 @@ class Character {
     fatigueLevel += fatigueIncrease;
 
     if (fatigueLevel >= maxFatigue) {
-      restStartTime = DateTime.now(); // Ustawienie czasu rozpoczęcia odpoczynku
+      restStartTime = DateTime.now();
       character.isAvailableForExpedition = false;
     }
   }
 
   Duration get remainingRestTime {
     if (restStartTime == null) {
-      return Duration.zero; // Brak odpoczynku, jeśli restStartTime jest null
+      return Duration.zero;
     }
     Duration timePassed = DateTime.now().difference(restStartTime!);
     Duration restDuration = Duration(minutes: 1);
     if (timePassed >= restDuration) {
       fatigueLevel = 0.0;
       isAvailableForExpedition = true;
-      return Duration.zero; // Zmęczenie zostało zresetowane
+      return Duration.zero;
     }
     return restDuration - timePassed;
   }
 
   void addExpeditionHistoryEntry(ExpeditionHistoryEntry entry) {
     if (expeditionHistory.length >= 3) {
-      expeditionHistory.removeAt(0); // Usuń najstarszy wpis
+      expeditionHistory.removeAt(0);
     }
-    expeditionHistory.add(entry); // Dodaj nowy wpis
+    expeditionHistory.add(entry);
   }
 
   void unlockCharacter() {
     if (isFatigued) {
       fatigueLevel = 0.0;
       restStartTime = null;
-      // Dodatkowe działania, takie jak aktualizacja stanu bohatera
     }
   }
 
   bool get isFatigued => remainingRestTime > Duration.zero;
 }
 
-// ... pozostałe metody ...
 enum CharacterCategory {
-  Paladin,
-  Rogue,
-  Diplomat,
-  Warrior,
-  Mage,
-  Hunter,
-  Priest,
-  Sorcerer,
-  Assassin,
-  Alchemist
+  paladin,
+  rogue,
+  diplomat,
+  warrior,
+  mage,
+  hunter,
+  priest,
+  sorcerer,
+  assassin,
+  alchemist
 }

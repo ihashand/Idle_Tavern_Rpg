@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:game_template/src/temporary_database/tavern/tavern_models/employee.dart';
 import 'package:game_template/src/temporary_database/tavern/tavern_data/employees_data.dart';
@@ -7,9 +8,9 @@ import 'package:game_template/src/temporary_database/tavern/tavern_models/main_p
 import 'package:game_template/src/temporary_database/tavern/tavern_data/main_prestige_level_data.dart';
 import 'package:game_template/src/temporary_database/tavern/tavern_models/player.dart';
 import 'package:game_template/src/temporary_database/tavern/tavern_data/player_one_data.dart';
-import 'package:provider/provider.dart';
-
-import '../../game_state.dart';
+import '../temporary_database/expeditions/data/expeditions.dart';
+import '../temporary_database/expeditions/models/expedition.dart';
+import 'expeditions/expeditions_screen.dart';
 
 class InnkeeperScreen extends StatefulWidget {
   const InnkeeperScreen({super.key});
@@ -156,28 +157,23 @@ class InnExpansionSection extends StatelessWidget {
 
 class InventorySection extends StatelessWidget {
   final List<Item> inventory;
-
   const InventorySection(this.inventory, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    GameState gameState = Provider.of<GameState>(context);
-
     return Container(
       padding: EdgeInsets.all(16.0),
       color: Colors.yellow,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Inventory, Current day: ${gameState.currentDay}',
+          Text('Inventory, Current day: $currentDay',
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
           for (Item item in player_one.items)
             ListTile(
               title: Text(item.name),
-              subtitle: Text(
-                  'Quantity: ${item.quantity}'), // Dodaj więcej informacji o przedmiocie
+              subtitle: Text('Quantity: ${item.quantity}'),
             ),
-          // Dodaj więcej interfejsu do zarządzania inwentarzem, np. przyciski do ulepszania itp.
         ],
       ),
     );
@@ -198,9 +194,43 @@ class EarningsSection extends StatelessWidget {
         children: const [
           Text('Earnings',
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
-          // Add an interface to display earnings information, such as a list of earnings sources.
         ],
       ),
     );
   }
+}
+
+int currentDay = 1;
+List<bool> daysSpun = List.generate(7, (index) => false);
+
+//for a while ill keep this things here
+void generateDailyExpeditions() {
+  final randomSeed = currentDay * 12345;
+  final random = Random(randomSeed);
+
+  dailyExpeditions.clear();
+
+  final Set<int> usedExpeditionIds = {};
+
+  while (dailyExpeditions.length < 7) {
+    final randomIndex = random.nextInt(expeditions.length);
+    final expedition = expeditions[randomIndex];
+
+    if (!usedExpeditionIds.contains(expedition.id)) {
+      dailyExpeditions.add(expedition);
+      usedExpeditionIds.add(expedition.id);
+    }
+  }
+}
+
+void incrementDay() {
+  if (currentDay < 7) {
+    currentDay++;
+  } else {
+    currentDay = 1;
+  }
+  if (dailyExpeditions.where((element) => element.isInUse = false).isNotEmpty) {
+    dailyExpeditions.clear();
+  }
+  generateDailyExpeditions();
 }

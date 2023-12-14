@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../games_services/games_services.dart';
+import '../playable_screens/expeditions/expeditions_screen.dart';
+import '../playable_screens/innkeeper_screen.dart';
 import '../settings/settings.dart';
 import '../style/responsive_screen.dart';
 
@@ -19,6 +21,9 @@ class MainMenuScreenState extends State<MainMenuScreen> {
   @override
   void initState() {
     super.initState();
+    if (dailyExpeditions.isEmpty) {
+      generateDailyExpeditions();
+    }
   }
 
   @override

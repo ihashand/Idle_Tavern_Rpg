@@ -8,43 +8,42 @@ import 'package:game_template/src/temporary_database/expeditions/models/expediti
 
 class ExpeditionScreen extends StatefulWidget {
   final List<Expedition> dailyExpeditions;
-  final List<Expedition> dailySelectedExpeditions;
-  final List<Character> onExpeditionsCharacters;
 
   ExpeditionScreen({
     Key? key,
     required this.dailyExpeditions,
-    required this.dailySelectedExpeditions,
-    required this.onExpeditionsCharacters,
   }) : super(key: key);
 
   @override
   _ExpeditionScreenState createState() => _ExpeditionScreenState();
 }
 
+List<Character> onExpeditionsCharacters = [];
+
 Character? currentAvailableCharacter;
 
 class _ExpeditionScreenState extends State<ExpeditionScreen> {
-  Expedition? selectedExpedition; // Selected expedition
-  Character? selectedCharacter; // Selected character for the expedition
-  int currentCarouselIndex = 0; // Current index in the carousel
+  Expedition? selectedExpedition;
+  Character? selectedCharacter;
+  int currentCarouselIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    // Main widget layout
+    final availableExpeditions = widget.dailyExpeditions
+        .where((expedition) => !expedition.isInUse)
+        .toList();
     return Material(
       color: Colors.grey.shade300,
       child: ListView.builder(
-        itemCount: widget.dailyExpeditions.length,
+        itemCount: availableExpeditions.length,
         itemBuilder: (context, index) {
-          final expedition = widget.dailyExpeditions[index];
+          final expedition = availableExpeditions[index];
           return _buildExpeditionCard(expedition);
         },
       ),
     );
   }
 
-  // Build individual expedition card
   Widget _buildExpeditionCard(Expedition expedition) {
     return Card(
       margin: EdgeInsets.all(8.0),
@@ -56,7 +55,6 @@ class _ExpeditionScreenState extends State<ExpeditionScreen> {
     );
   }
 
-  // Build ListTile for expedition
   Widget _buildExpeditionListTile(Expedition expedition) {
     return ListTile(
       title: Row(
@@ -73,7 +71,6 @@ class _ExpeditionScreenState extends State<ExpeditionScreen> {
     );
   }
 
-  // Build details for selected expedition
   Widget _buildExpeditionDetails(Expedition expedition) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,7 +90,6 @@ class _ExpeditionScreenState extends State<ExpeditionScreen> {
     );
   }
 
-  // Handle expedition card tap
   void _onExpeditionTap(Expedition expedition) {
     setState(() {
       selectedExpedition = selectedExpedition == expedition ? null : expedition;
@@ -101,7 +97,6 @@ class _ExpeditionScreenState extends State<ExpeditionScreen> {
     });
   }
 
-  // Show details of the selected expedition
   void _showExpeditionDetails(Expedition expedition) {
     showModalBottomSheet(
       context: context,
@@ -109,10 +104,10 @@ class _ExpeditionScreenState extends State<ExpeditionScreen> {
       builder: (context) => _buildBottomSheetContent(expedition),
     ).whenComplete(() {
       _updateCurrentAvailableCharacter();
+      setState(() {});
     });
   }
 
-  // Build content for the bottom sheet
   Widget _buildBottomSheetContent(Expedition expedition) {
     return SingleChildScrollView(
       child: Container(
@@ -139,7 +134,6 @@ class _ExpeditionScreenState extends State<ExpeditionScreen> {
     );
   }
 
-  // Build carousel slider for character selection
   Widget _buildCharacterCarousel() {
     final availableCharacters = characters
         .where((character) => character.isAvailableForExpedition)
@@ -147,7 +141,7 @@ class _ExpeditionScreenState extends State<ExpeditionScreen> {
 
     return CarouselSlider(
       options: CarouselOptions(
-        height: 150.0,
+        height: 130.0,
         enlargeCenterPage: true,
         viewportFraction: 0.33,
         onPageChanged: _onCarouselPageChanged,
@@ -166,7 +160,6 @@ class _ExpeditionScreenState extends State<ExpeditionScreen> {
     }
   }
 
-  // Build individual carousel item
   Widget _buildCarouselItem(Character character) {
     bool isCenter = currentCarouselIndex == characters.indexOf(character);
     return GestureDetector(
@@ -186,7 +179,7 @@ class _ExpeditionScreenState extends State<ExpeditionScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
+              SizedBox(
                 width: isCenter ? 80.0 : 60.0,
                 height: isCenter ? 80.0 : 60.0,
                 child: ClipOval(
@@ -205,7 +198,7 @@ class _ExpeditionScreenState extends State<ExpeditionScreen> {
   void _onCarouselPageChanged(int index, CarouselPageChangedReason reason) {
     setState(() {
       currentCarouselIndex = index;
-      selectedCharacter = characters[index]; // Aktualizacja selectedCharacter
+      selectedCharacter = characters[index];
     });
   }
 
@@ -215,17 +208,15 @@ class _ExpeditionScreenState extends State<ExpeditionScreen> {
     }
   }
 
-  // Save the selected expedition with the chosen character
   void _saveExpedition(Expedition expedition) {
     if (selectedCharacter == null) {
       _showNoCharacterSelectedDialog();
     } else {
-      _assignCharacterToExpedition(expedition);
-      Navigator.of(context).pop(); // Close the bottom sheet
+      _startExpedition(expedition);
+      Navigator.of(context).pop();
     }
   }
 
-  // Show dialog when no character is selected
   void _showNoCharacterSelectedDialog() {
     showDialog(
       context: context,
@@ -244,18 +235,15 @@ class _ExpeditionScreenState extends State<ExpeditionScreen> {
     );
   }
 
-  // Assign the selected character to the expedition
-  void _assignCharacterToExpedition(Expedition expedition) {
+  void _startExpedition(Expedition expedition) {
+    expedition.restStartTime = DateTime.now();
     expedition.assignHero(selectedCharacter!);
-    widget.dailyExpeditions.remove(expedition);
-    widget.dailySelectedExpeditions.add(expedition);
-    widget.onExpeditionsCharacters.add(expedition.assignedHero!);
+    expedition.isInUse = true;
+    onExpeditionsCharacters.add(expedition.assignedHero!);
     characters.remove(expedition.assignedHero!);
-
     _startTimeExpedition(expedition);
   }
 
-  // Start timer for expedition
   void _startTimeExpedition(Expedition expedition) {
     Timer(
       Duration(minutes: expedition.duration.toInt()),
@@ -263,12 +251,10 @@ class _ExpeditionScreenState extends State<ExpeditionScreen> {
     );
   }
 
-  // Complete the expedition
   void _completeExpedition(Expedition expedition) {
     expedition.completeExpedition(expedition.assignedHero!, expedition);
-    widget.dailyExpeditions.add(expedition);
-    widget.dailySelectedExpeditions.remove(expedition);
+    expedition.isInUse = false;
     characters.add(expedition.assignedHero!);
-    widget.onExpeditionsCharacters.remove(expedition.assignedHero!);
+    onExpeditionsCharacters.remove(expedition.assignedHero!);
   }
 }

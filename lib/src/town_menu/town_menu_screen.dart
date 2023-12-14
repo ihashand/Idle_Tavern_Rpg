@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:game_template/src/newarch/screens/expeditions/home_expeditions_screen.dart';
 import 'package:game_template/src/playable_screens/innkeeper_screen.dart';
 import 'package:game_template/src/playable_screens/personnel_screen.dart';
 import 'package:game_template/src/playable_screens/quests_screen.dart';
@@ -63,6 +64,8 @@ class TownMenuScreenState extends State<TownMenuScreen> {
                     7, PersonnelScreen()),
                 _buildMenuItem(context, 'profile'.tr(), Icons.question_mark, 8,
                     ProfileScreen()),
+                _buildMenuItem(context, 'nowe ekspedycje'.tr(),
+                    Icons.question_mark, 9, HomeExpeditionsScreen()),
               ],
             ),
           ],
@@ -159,6 +162,12 @@ class TownMenuScreenState extends State<TownMenuScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => ProfileScreen()),
+              );
+            case 9:
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => HomeExpeditionsScreen()),
               );
               break;
           }

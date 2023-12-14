@@ -1,18 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:game_template/src/temporary_database/expeditions/models/expedition.dart';
+import '../heroes_screen/expedition_indicator.dart';
 
-class ActiveExpeditionsScreen extends StatelessWidget {
-  final List<Expedition> expeditions;
+class ActiveExpeditionsScreen extends StatefulWidget {
+  final List<Expedition> activeExpeditions;
   final Function(int) onNewExpeditionPressed;
 
   const ActiveExpeditionsScreen({
     super.key,
-    required this.expeditions,
+    required this.activeExpeditions,
     required this.onNewExpeditionPressed,
   });
 
   @override
+  State<ActiveExpeditionsScreen> createState() =>
+      _ActiveExpeditionsScreenState();
+}
+
+class _ActiveExpeditionsScreenState extends State<ActiveExpeditionsScreen> {
+  @override
   Widget build(BuildContext context) {
+    final activeExpeditions = widget.activeExpeditions
+        .where((expedition) => expedition.isInUse)
+        .toList();
     return SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -31,47 +41,38 @@ class ActiveExpeditionsScreen extends StatelessWidget {
           ),
           Expanded(
             child: ListView.builder(
-                itemCount: expeditions.length +
-                    1, // Dodaj 1, aby uwzględnić przycisk "Nowa ekspedycja"
+                itemCount: activeExpeditions.length + 1,
                 itemBuilder: (context, index) {
-                  if (index == expeditions.length) {
-                    // Jeśli jesteśmy na ostatnim elemencie (przycisk "Nowa ekspedycja")
-                    if (expeditions.length < 5) {
-                      // Wyświetl przycisk tylko jeśli liczba ekspedycji jest mniejsza niż maksymalna
-                      // Nowa ekspedycja
+                  if (index == activeExpeditions.length) {
+                    if (activeExpeditions.length < 5) {
                       return ElevatedButton(
                         onPressed: () {
-                          onNewExpeditionPressed(1);
+                          widget.onNewExpeditionPressed(1);
                         },
                         style: ElevatedButton.styleFrom(
                           minimumSize: Size(150, 40),
-                          padding: EdgeInsets
-                              .zero, // Usuń wewnętrzny padding, aby obrazek zajmował całą przestrzeń przycisku
+                          padding: EdgeInsets.zero,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                8.0), // Opcjonalnie: zaokrąglenie rogów przycisku
+                            borderRadius: BorderRadius.circular(8.0),
                           ),
-                          backgroundColor:
-                              Colors.transparent, // Usuń domyślne tło przycisku
+                          backgroundColor: Colors.transparent,
                         ),
                         child: Container(
                           alignment: Alignment.center,
                           child: Text(
                             "Nowa ekspedycja",
                             style: TextStyle(
-                              color: Colors.white, // Kolor tekstu
-                              fontSize: 16.0, // Rozmiar tekstu
+                              color: Colors.white,
+                              fontSize: 16.0,
                             ),
                           ),
                         ),
                       );
                     } else {
-                      // Jeśli osiągnięto limit aktywnych ekspedycji, nie wyświetlaj przycisku
-                      return SizedBox(); // Pusty kontener
+                      return SizedBox();
                     }
                   } else {
-                    final expedition = expeditions[index];
-
+                    final expedition = activeExpeditions[index];
                     return Container(
                       margin: EdgeInsets.symmetric(vertical: 8.0),
                       child: Stack(
@@ -112,9 +113,7 @@ class ActiveExpeditionsScreen extends StatelessWidget {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       ElevatedButton(
-                                        onPressed: () {
-                                          // Obsługa przycisku "przyspiesz"
-                                        },
+                                        onPressed: () {},
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor:
                                               Colors.green.withOpacity(0.7),
@@ -123,9 +122,7 @@ class ActiveExpeditionsScreen extends StatelessWidget {
                                         child: Text("Expedite"),
                                       ),
                                       ElevatedButton(
-                                        onPressed: () {
-                                          // Obsługa przycisku "anuluj"
-                                        },
+                                        onPressed: () {},
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor:
                                               Colors.red.withOpacity(0.7),
@@ -151,17 +148,10 @@ class ActiveExpeditionsScreen extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(height: 8.0),
-                              Opacity(
-                                opacity: 1.0,
-                                child: Text(
-                                  //czas ekspedycji
-                                  expedition.duration.toString(),
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
+                              SizedBox(
+                                  width: 200,
+                                  child: ExpeditionIndicator(
+                                      expedition: expedition)),
                             ],
                           ),
                         ],
@@ -184,9 +174,7 @@ void _showDetailsModal(Expedition expedition, BuildContext context) {
       return SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.all(16.0),
-          width: MediaQuery.of(context)
-              .size
-              .width, // Ustawienie szerokości na szerokość ekranu
+          width: MediaQuery.of(context).size.width,
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             ListTile(
@@ -197,25 +185,7 @@ void _showDetailsModal(Expedition expedition, BuildContext context) {
                   Text(
                       'Category: ${expedition.category.toString().split('.').last}'),
                   Text('Skill: ${expedition.description}'),
-                  Text('Payment: ${expedition.duration}'),
-                  Text(
-                      'Category: ${expedition.category.toString().split('.').last}'),
-                  Text('Skill: ${expedition.description}'),
-                  Text('Payment: ${expedition.duration}'),
-                  Text(
-                      'Category: ${expedition.category.toString().split('.').last}'),
-                  Text('Skill: ${expedition.description}'),
-                  Text('Payment: ${expedition.duration}'),
-                  Text(
-                      'Category: ${expedition.category.toString().split('.').last}'),
-                  Text('Skill: ${expedition.description}'),
-                  Text('Payment: ${expedition.duration}'),
-                  Text('Skill: ${expedition.description}'),
-                  Text('Payment: ${expedition.duration}'),
-                  Text(
-                      'Category: ${expedition.category.toString().split('.').last}'),
-                  Text('Skill: ${expedition.description}'),
-                  Text('Payment: ${expedition.duration}'),
+                  Text('Payment: ${expedition.duration}')
                 ],
               ),
               leading: Container(
@@ -225,8 +195,7 @@ void _showDetailsModal(Expedition expedition, BuildContext context) {
                   shape: BoxShape.rectangle,
                   image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: AssetImage(expedition.assignedHero!
-                        .iconUrl), // Use AssetImage for local assets
+                    image: AssetImage(expedition.assignedHero!.iconUrl),
                   ),
                 ),
               ),
