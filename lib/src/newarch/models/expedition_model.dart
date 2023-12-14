@@ -4,8 +4,9 @@ class Expedition {
   final int id;
   final String name;
   final String duration;
-  final String level;
-  final double progress; // Tylko dla aktywnych ekspedycji
+  final String description;
+  int level;
+  double progress; // Tylko dla aktywnych ekspedycji
   Character? assignedCharacter;
   bool bussy;
 
@@ -15,5 +16,6 @@ class Expedition {
       required this.duration,
       required this.level,
       required this.progress,
-      required this.bussy});
+      required this.bussy,
+      required this.description});
 }

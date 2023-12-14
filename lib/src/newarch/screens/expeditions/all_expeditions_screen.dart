@@ -8,17 +8,13 @@ import 'package:game_template/src/newarch/providers/character_provider.dart';
 import 'package:game_template/src/newarch/providers/expedition_provider.dart';
 import 'package:game_template/src/newarch/temporary_database/characters.dart';
 
-// Import your data model and temporary database
-int currentCarouselIndex = 0;
 Character? selectedCharacter;
-Character? currentAvailableCharacter;
 
 class AllExpeditionsScreen extends ConsumerWidget {
   const AllExpeditionsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Assuming 'expeditions' is your list of expeditions
     final allExpeditions = ref
         .watch(allExpeditionsProvider)
         .where((element) => element.bussy == false)
@@ -69,13 +65,18 @@ class AllExpeditionsScreen extends ConsumerWidget {
 
 void _showExpeditionDetails(Expedition expedition, BuildContext context,
     List<Character> allCharacters, WidgetRef ref) {
+  if (allCharacters.isNotEmpty && selectedCharacter == null) {
+    selectedCharacter = allCharacters.first;
+  }
+
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     builder: (context) =>
         _buildBottomSheetContent(expedition, context, allCharacters, ref),
   ).whenComplete(() {
-    _updateCurrentAvailableCharacter();
+    // Dodajemy to, aby zresetować wybraną postać po zamknięciu modalu
+    selectedCharacter = null;
   });
 }
 
@@ -89,10 +90,18 @@ Widget _buildBottomSheetContent(Expedition expedition, BuildContext context,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Center(
-            child: Text(expedition.name,
-                style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold)),
+            child: Text(
+              expedition.name,
+              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+            ),
           ),
-          _buildCharacterCarousel(context, allCharacters),
+          Center(
+            child: Text(
+              expedition.description,
+              style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
+            ),
+          ),
+          _buildCharacterCarousel(context, allCharacters, expedition, ref),
           Center(
             child: ElevatedButton(
               onPressed: () =>
@@ -106,24 +115,85 @@ Widget _buildBottomSheetContent(Expedition expedition, BuildContext context,
   );
 }
 
-Widget _buildCharacterCarousel(
-    BuildContext context, List<Character> allCharacters) {
-  return CarouselSlider(
-    options: CarouselOptions(
-      height: 130.0,
-      enlargeCenterPage: true,
-      viewportFraction: 0.33,
-      onPageChanged: (index, reason) =>
-          _onCarouselPageChanged(index, reason, allCharacters),
-    ),
-    items: allCharacters
-        .map((character) => _buildCarouselItem(character, context))
-        .toList(),
+void _saveExpedition(Expedition expedition, BuildContext context,
+    List<Character> allCharacters, WidgetRef ref) {
+  expedition.bussy = true;
+
+  if (selectedCharacter != null) {
+    selectedCharacter!.bussy = true;
+  }
+
+  ref.read(allExpeditionsProvider.notifier).update((state) {
+    return state.map((e) => e.id == expedition.id ? expedition : e).toList();
+  });
+
+  ref.read(characterProvider.notifier).update((state) {
+    return state
+        .map((c) => c.id == selectedCharacter!.id ? selectedCharacter! : c)
+        .toList();
+  });
+
+  Navigator.of(context).pop();
+}
+
+Widget _buildCharacterCarousel(BuildContext context,
+    List<Character> allCharacters, Expedition expedition, WidgetRef ref) {
+  return Column(
+    children: [
+      Text(
+        "Gotowość do wyprawy",
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 16.0,
+        ),
+      ),
+      Consumer(
+        builder: (context, ref, child) {
+          double progress = ref.watch(expeditionProgressProvider);
+          return SizedBox(
+            width: 200.0, // Zmniejszenie długości paska
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: LinearProgressIndicator(
+                value: progress / 100,
+                minHeight: 15.0,
+                backgroundColor: Colors.grey[300],
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+              ),
+            ),
+          );
+        },
+      ),
+      CarouselSlider(
+        options: CarouselOptions(
+          height: 130.0,
+          enlargeCenterPage: true,
+          viewportFraction: 0.33,
+          onPageChanged: (index, reason) {
+            _onCarouselPageChanged(index, reason, allCharacters, ref);
+            ref.read(expeditionProgressProvider.notifier).state =
+                ExpeditionProgress().calculateProgress(expedition);
+          },
+        ),
+        items: allCharacters
+            .map((character) => _buildCarouselItem(character, context))
+            .toList(),
+      ),
+    ],
   );
 }
 
+void _onCarouselPageChanged(int index, CarouselPageChangedReason reason,
+    List<Character> allCharacters, WidgetRef ref) {
+  if (index < allCharacters.length) {
+    selectedCharacter = allCharacters[index];
+  } else {
+    selectedCharacter = null;
+  }
+}
+
 Widget _buildCarouselItem(Character character, BuildContext context) {
-  bool isCenter = currentCarouselIndex == characters.indexOf(character);
+  bool isCenter = 0 == characters.indexOf(character);
   return GestureDetector(
     onTap: () {
       // Navigator.push(
@@ -141,8 +211,8 @@ Widget _buildCarouselItem(Character character, BuildContext context) {
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
-              width: isCenter ? 80.0 : 60.0,
-              height: isCenter ? 80.0 : 60.0,
+              width: isCenter ? 60.0 : 40.0,
+              height: isCenter ? 60.0 : 40.0,
               child: ClipOval(
                 child: Image.asset(character.avatarPath, fit: BoxFit.cover),
               ),
@@ -156,43 +226,31 @@ Widget _buildCarouselItem(Character character, BuildContext context) {
   );
 }
 
-void _onCarouselPageChanged(int index, CarouselPageChangedReason reason,
-    List<Character> allCharacters) {
-  currentCarouselIndex = index;
-  if (index < allCharacters.length) {
-    selectedCharacter = allCharacters[index];
-  } else {
-    selectedCharacter = null;
+class ExpeditionProgress {
+  double calculateProgress(Expedition expedition) {
+    double progress = 0.0;
+
+    // Dodaj logikę, która oblicza postęp na podstawie warunków
+    if (selectedCharacter != null) {
+      // Warunek 1: Bohater musi być wypoczęty
+      if (selectedCharacter!.isRested) {
+        progress += 20.0;
+      }
+
+      // Warunek 2: Bohater musi mieć uzupełniony prowiant i mikstury
+      if (selectedCharacter!.hasSupplies) {
+        progress += 30.0;
+      }
+
+      // Warunek 3: Bohater musi mieć odpowiedni poziom
+      if (selectedCharacter!.level >= expedition.level) {
+        progress += 50.0;
+      }
+    }
+
+    // Ogranicz postęp do zakresu 0-100
+    progress = progress.clamp(0.0, 100.0);
+
+    return progress;
   }
-}
-
-void _updateCurrentAvailableCharacter() {
-  if (characters.isNotEmpty) {
-    currentAvailableCharacter = characters[0];
-  }
-}
-
-void _saveExpedition(Expedition expedition, BuildContext context,
-    List<Character> allCharacters, WidgetRef ref) {
-  // Ustawianie ekspedycji na zajętą
-  expedition.bussy =
-      true; // Poprawka: Użyj operatora przypisania "=" zamiast "=="
-
-  // Przypisanie wybranego bohatera do ekspedycji
-  if (selectedCharacter != null) {
-    selectedCharacter!.bussy = true; // Ustawianie bohatera na zajętego
-  }
-
-  // Aktualizacja list ekspedycji i bohaterów
-  ref.read(allExpeditionsProvider.notifier).update((state) {
-    return state.map((e) => e.id == expedition.id ? expedition : e).toList();
-  });
-
-  ref.read(characterProvider.notifier).update((state) {
-    return state
-        .map((c) => c.id == selectedCharacter!.id ? selectedCharacter! : c)
-        .toList();
-  });
-
-  Navigator.of(context).pop();
 }

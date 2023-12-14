@@ -10,12 +10,15 @@ class ActiveExpeditionsScreen extends ConsumerWidget {
     // Tutaj powinna być logika pobierania danych o aktywnych ekspedycjach
     // Na razie używamy danych przykładowych
 
-    final activeExpeditions = ref.watch(activeExpeditionsProvider);
+    final allExpeditions = ref
+        .watch(allExpeditionsProvider)
+        .where((expedition) => expedition.bussy == true)
+        .toList();
 
     return ListView.builder(
-      itemCount: activeExpeditions.length,
+      itemCount: allExpeditions.length,
       itemBuilder: (context, index) {
-        var expedition = activeExpeditions[index];
+        var expedition = allExpeditions[index];
         return ListTile(
           title: Text(expedition.name),
           subtitle: LinearProgressIndicator(value: expedition.progress),
